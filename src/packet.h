@@ -2,7 +2,6 @@
 #define __PACKET_H__
 
 #include "stdint.h"
-#include "memory_node.h"
 
 // enum defining various cache states for MSI protocol
 typedef enum
