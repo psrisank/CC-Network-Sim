@@ -9,6 +9,12 @@ enum DataType
 	READ, WRITE
 };
 
+typedef enum
+{
+	NORMAL, ERROR
+}
+flag_t;
+
 // struct holding data inside a Packet
 typedef struct DataNode
 {
@@ -24,6 +30,7 @@ typedef struct Packet
 {
 	uint8_t id;
 	uint32_t time;
+	flag_t flag;
 	
 	uint8_t src;
 	uint8_t dst;

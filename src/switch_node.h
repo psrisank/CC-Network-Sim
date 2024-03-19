@@ -2,7 +2,7 @@
 #define __SWITCH_NODE_H__
 
 #include "stdint.h"
-#include "packet.h"
+#include "port.h"
 
 // definitions for memory node
 #define SW_NUM_TOP_PORTS	1
@@ -15,18 +15,8 @@ typedef struct SwitchNode
 	uint8_t id;
 	uint32_t time;
 
-	Packet top_ports_tx[SW_NUM_TOP_PORTS][SW_QUEUE_SIZE];
-	uint32_t top_head_tx;
-	uint32_t top_tail_tx;
-	Packet top_ports_rx[SW_NUM_TOP_PORTS][SW_QUEUE_SIZE];
-	uint32_t top_head_rx;
-	uint32_t top_tail_rx;
-	Packet bot_ports_tx[SW_NUM_BOT_PORTS][SW_QUEUE_SIZE];
-	uint32_t bot_head_tx;
-	uint32_t bot_tail_tx;
-	Packet bot_ports_rx[SW_NUM_BOT_PORTS][SW_QUEUE_SIZE];
-	uint32_t bot_head_rx;
-	uint32_t bot_tail_rx;
+	Port top_ports[SW_NUM_TOP_PORTS];
+	Port bot_ports[SW_NUM_TOP_PORTS];
 }
 SwitchNode;
 

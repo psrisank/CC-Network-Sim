@@ -2,7 +2,7 @@
 #define __MEMORY_NODE_H__
 
 #include "stdint.h"
-#include "packet.h"
+#include "port.h"
 
 // definitions for memory node
 #define NUM_PORTS			1
@@ -16,20 +16,16 @@ typedef struct MemoryNode
 	uint32_t time;
 	// array of ports (queues) -> needs to contain a Packet struct type
 	// array of MemoryLines
-	Packet top_ports_tx[MEM_NUM_TOP_PORTS][MEM_QUEUE_SIZE];
-	uint32_t top_head_tx;
-	uint32_t top_tail_tx;
-	Packet top_ports_rx[MEM_NUM_TOP_PORTS][MEM_QUEUE_SIZE];
-	uint32_t top_head_rx;
-	uint32_t top_tail_rx;
+	Port top_ports[MEM_NUM_TOP_PORTS];
 }
 MemoryNode;
 
 // enum defining various cache states for MSI protocol
-enum StatesMSI
+typedef enum
 {
 	MODIFIED, SHARED, INVALID
-};
+}
+StatesMSI_t;
 
 // struct holding data inside a MemoryNode
 typedef struct MemoryLine
@@ -37,7 +33,7 @@ typedef struct MemoryLine
 	uint8_t address;
 	uint32_t value;
 	// status of all control nodes
-	enum StatesMSI state;
+	StatesMSI_t state;
 }
 MemoryLine;
 

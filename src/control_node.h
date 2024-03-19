@@ -2,7 +2,7 @@
 #define __CONTROL_NODE_H__
 
 #include "stdint.h"
-#include "packet.h"
+#include "port.h"
 
 // definitions for memory node
 #define NUM_PORTS			1
@@ -16,12 +16,7 @@ typedef struct ControlNode
 	uint32_t time;
 	// array of ports (queues) -> needs to contain a Packet struct type
 	// array of MemoryLines
-	Packet bot_ports_tx[CTRL_NUM_BOT_PORTS][CTRL_QUEUE_SIZE];
-	uint32_t bot_head_tx;
-	uint32_t bot_tail_tx;
-	Packet bot_ports_rx[CTRL_NUM_BOT_PORTS][CTRL_QUEUE_SIZE];
-	uint32_t bot_head_rx;
-	uint32_t bot_tail_rx;
+	Port bot_ports[CTRL_NUM_BOT_PORTS];
 }
 ControlNode;
 
