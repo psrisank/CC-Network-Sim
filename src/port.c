@@ -1,5 +1,6 @@
 #include "stdio.h"
-#include "string.h"
+#include "stdint.h"
+// #include "string.h"
 
 #include "port.h"
 
@@ -16,7 +17,11 @@ Packet pop_packet(Port * port, BufferType_t type, char remove)
 			Packet pkt = (* port).tx[0];
 			if (remove)
 			{
-				memmove((* port).tx, (* port).tx + sizeof(Packet), QUEUE_SIZE);
+				for (uint32_t i = 0; i < (* port).tail_tx; i++)
+				{
+					(* port).tx[i] = (* port).tx[i + 1];
+				}
+				// memmove((* port).tx, (* port).tx + sizeof(Packet), QUEUE_SIZE * sizeof(Packet));
 				(* port).tail_tx--;
 			}
 			return pkt;
@@ -34,7 +39,11 @@ Packet pop_packet(Port * port, BufferType_t type, char remove)
 			Packet pkt = (* port).rx[0];
 			if (remove)
 			{
-				memmove((* port).rx, (* port).rx + sizeof(Packet), QUEUE_SIZE);
+				for (uint32_t i = 0; i < (* port).tail_rx; i++)
+				{
+					(* port).rx[i] = (* port).rx[i + 1];
+				}
+				// memmove((* port).rx, (* port).rx + sizeof(Packet), QUEUE_SIZE * sizeof(Packet));
 				(* port).tail_rx--;
 			}
 			return pkt;
@@ -86,6 +95,11 @@ int push_packet(Port * port, BufferType_t type, Packet pkt)
 	{
 		return -1;
 	}
+}
+
+char port_empty(Port port)
+{
+	return ((port.tail_tx == 0) && (port.tail_rx == 0));
 }
 
 void print_port(Port port, BufferType_t type)

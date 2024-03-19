@@ -7,7 +7,7 @@ Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t 
 {
 	Packet return_packet;
 	return_packet.id = global_id;
-	return_packet.time = global_time; // TODO increment?
+	return_packet.time = global_time + 1; // queue for next global time
 	return_packet.flag = ERROR;
 	return_packet.src = node.id;
 	return_packet.dst = pkt.src;

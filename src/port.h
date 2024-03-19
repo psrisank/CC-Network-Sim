@@ -26,6 +26,7 @@ Port;
 
 Packet pop_packet(Port * port, BufferType_t type, char remove);
 int push_packet(Port * port, BufferType_t type, Packet pkt);
+char port_empty(Port port);
 void print_port(Port port, BufferType_t type);
 
 #endif
