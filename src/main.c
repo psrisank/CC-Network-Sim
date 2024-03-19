@@ -90,12 +90,13 @@ int main()
 	control_nodes[0].bot_tail_tx++;
 
 	// main loop
-	for (;;) // TODO loop through packets to send
+	for (; global_time < 10;) // TODO loop through packets to send
 	{
+		printf("--- GLOBAL TIME = %d\n", global_time);
 		// outgoing from control nodes
 		for (int i = 0; i < NUM_CONTROL_NODES; i++)
 		{
-			printf("* Control node with ID %d at time %d\n", control_nodes[i].id, control_nodes[i].time);
+			printf("* Control node with ID %d at time %d\n", control_nodes[i].id, global_time);
 			// loop through outgoing ports to switch nodes
 			for (int j = 0; j < CTRL_NUM_BOT_PORTS; j++)
 			{
@@ -127,12 +128,9 @@ int main()
 					if (curr_packet_rx.dst == control_nodes[i].id)
 					{
 						printf("Packet with ID %d has arrived at control node with ID %d\n", curr_packet_tx.id, control_nodes[i].id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
-						// place node into switch
-						switch_nodes[0].top_ports_rx[i][switch_nodes[0].top_tail_rx] = curr_packet_tx;
-						switch_nodes[0].top_tail_rx++;
+						// TODO act on this
 						// remove node from control node
-						control_nodes[i].bot_head_tx++;
+						control_nodes[i].bot_head_rx++;
 					}
 					else
 					{
@@ -146,27 +144,151 @@ int main()
 		// outgoing from switch nodes
 		for (int i = 0; i < NUM_SWITCH_NODES; i++)
 		{
-			printf("* Switch node with ID %d at time %d\n", switch_nodes[i].id, switch_nodes[i].time);
+			printf("* Switch node with ID %d at time %d\n", switch_nodes[i].id, global_time);
 			// loop through outgoing ports to memory nodes
 			for (int j = 0; j < SW_NUM_BOT_PORTS; j++)
 			{
+				Packet curr_packet_tx = switch_nodes[i].bot_ports_tx[j][switch_nodes[i].bot_head_tx];
+				Packet curr_packet_rx = switch_nodes[i].bot_ports_rx[j][switch_nodes[i].bot_head_rx];
+				if ((switch_nodes[i].bot_head_tx != switch_nodes[i].bot_tail_tx) && (curr_packet_tx.time <= global_time))
+				{
+					// need to act on this packet
+					if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
+					{
+						printf("Moving packet with ID %d to memory node with ID %d\n", curr_packet_tx.id, memory_nodes[i].id);
+						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						// place node into switch
+						memory_nodes[i].top_ports_rx[i][memory_nodes[i].top_tail_rx] = curr_packet_tx;
+						memory_nodes[i].top_tail_rx++;
+						// remove node from control node
+						switch_nodes[i].bot_head_tx++;
+					}
+					else
+					{
+						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
+						switch_nodes[i].bot_head_tx++;
+					}
+				}
+
+				if ((switch_nodes[i].bot_head_rx != switch_nodes[i].bot_tail_rx) && (curr_packet_rx.time <= global_time))
+				{
+					// need to act on this packet
+					if ((curr_packet_rx.dst >= control_node_min_id) && (curr_packet_rx.dst <= control_node_max_id))
+					{
+						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
+						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						// place node into switch
+						switch_nodes[0].top_ports_tx[i][switch_nodes[0].top_tail_tx] = curr_packet_rx;
+						switch_nodes[0].top_tail_tx++;
+						// remove node from control node
+						switch_nodes[0].bot_head_rx++;
+					}
+					else
+					{
+						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+						switch_nodes[0].bot_head_rx++;
+					}
+				}
+			}
+
+			for (int j = 0; j < SW_NUM_TOP_PORTS; j++)
+			{
+				Packet curr_packet_tx = switch_nodes[i].top_ports_tx[j][switch_nodes[i].top_head_tx];
+				Packet curr_packet_rx = switch_nodes[i].top_ports_rx[j][switch_nodes[i].top_head_rx];
+				if ((switch_nodes[i].top_head_tx != switch_nodes[i].top_tail_tx) && (curr_packet_tx.time <= global_time))
+				{
+					// need to act on this packet
+					if ((curr_packet_tx.dst >= control_node_min_id) && (curr_packet_tx.dst <= control_node_max_id))
+					{
+						printf("Moving packet with ID %d to control node with ID %d\n", curr_packet_tx.id, control_nodes[i].id);
+						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						// place node into switch
+						control_nodes[i].bot_ports_rx[i][control_nodes[i].bot_tail_rx] = curr_packet_tx;
+						control_nodes[i].bot_tail_rx++;
+						// remove node from control node
+						switch_nodes[i].top_head_tx++;
+					}
+					else
+					{
+						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
+						switch_nodes[i].top_head_tx++;
+					}
+				}
+
+				if ((switch_nodes[i].top_head_rx != switch_nodes[i].top_tail_rx) && (curr_packet_rx.time <= global_time))
+				{
+					// need to act on this packet
+					if ((curr_packet_rx.dst >= memory_node_min_id) && (curr_packet_rx.dst <= memory_node_max_id))
+					{
+						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
+						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						// place node into switch
+						switch_nodes[0].bot_ports_tx[i][switch_nodes[0].bot_tail_tx] = curr_packet_rx;
+						switch_nodes[0].bot_tail_tx++;
+						// remove node from control node
+						switch_nodes[0].top_head_rx++;
+					}
+					else
+					{
+						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+						switch_nodes[0].top_head_rx++;
+					}
+				}
 			}
 		}
 
 		// // outgoing from memory nodes
 		for (int i = 0; i < NUM_MEMORY_NODES; i++)
 		{
-			printf("* Memory node with ID %d at time %d\n", memory_nodes[i].id, memory_nodes[i].time);
+			printf("* Memory node with ID %d at time %d\n", memory_nodes[i].id, global_time);
 			// loop through outgoing ports to switch nodes
 			for (int j = 0; j < MEM_NUM_TOP_PORTS; j++)
 			{
+				Packet curr_packet_tx = memory_nodes[i].top_ports_tx[j][memory_nodes[i].top_head_tx];
+				Packet curr_packet_rx = memory_nodes[i].top_ports_rx[j][memory_nodes[i].top_head_rx];
+				if ((memory_nodes[i].top_head_tx != memory_nodes[i].top_tail_tx) && (curr_packet_tx.time <= global_time))
+				{
+					// need to act on this packet
+					if ((curr_packet_tx.dst >= control_node_min_id) && (curr_packet_tx.dst <= control_node_max_id))
+					{
+						printf("Moving packet with ID %d to switch with ID %d\n", curr_packet_tx.id, switch_nodes[0].id);
+						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						// place node into switch
+						switch_nodes[0].bot_ports_rx[i][switch_nodes[0].bot_tail_rx] = curr_packet_tx;
+						switch_nodes[0].bot_tail_rx++;
+						// remove node from control node
+						memory_nodes[i].top_head_tx++;
+					}
+					else
+					{
+						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
+						memory_nodes[i].top_head_tx++;
+					}
+				}
+
+				if ((memory_nodes[i].top_head_rx != memory_nodes[i].top_tail_rx) && (curr_packet_rx.time <= global_time))
+				{
+					// need to act on this packet
+					if (curr_packet_rx.dst == memory_nodes[i].id)
+					{
+						printf("Packet with ID %d has arrived at memory node with ID %d\n", curr_packet_tx.id, memory_nodes[i].id);
+						// TODO act on this
+						// remove node from control node
+						memory_nodes[i].top_head_rx++;
+					}
+					else
+					{
+						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+						memory_nodes[i].top_head_rx++;
+					}
+				}
 			}
 		}
 		
 		// end of loop
 		global_time += GLOBAL_TIME_INCR;
 
-		return EXIT_FAILURE;
+		// return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
