@@ -3,11 +3,17 @@
 
 #include "stdint.h"
 
+// enum defining various cache states for MSI protocol
+enum DataType
+{
+	READ, WRITE
+};
+
 // struct holding data inside a Packet
 typedef struct DataNode
 {
 	// fields
-	uint8_t type;
+	enum DataType type;
 	uint32_t addr;
 	uint32_t data;
 }
