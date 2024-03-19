@@ -2,16 +2,12 @@
 #define __PACKET_H__
 
 #include "stdint.h"
+#include "memory_node.h"
 
 // enum defining various cache states for MSI protocol
-enum DataType
-{
-	READ, WRITE
-};
-
 typedef enum
 {
-	NORMAL, ERROR
+	NORMAL, READ, WRITE, ERROR
 }
 flag_t;
 
@@ -19,7 +15,6 @@ flag_t;
 typedef struct DataNode
 {
 	// fields
-	enum DataType type;
 	uint32_t addr;
 	uint32_t data;
 }
