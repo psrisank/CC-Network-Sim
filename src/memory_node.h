@@ -16,19 +16,21 @@ typedef struct MemoryNode
 }
 MemoryNode;
 
+// enum defining various cache states for MSI protocol
+enum StatesMSI
+{
+	MODIFIED, SHARED, INVALID
+};
+
 // struct holding data inside a MemoryNode
 typedef struct MemoryLine
 {
 	uint8_t address;
 	uint32_t value;
 	// status of all control nodes
+	enum StatesMSI state;
 }
 MemoryLine;
 
-// enum defining various cache states for MSI protocol
-const enum StatesMSI
-{
-	MODIFIED, SHARED, INVALID
-};
 
 #endif

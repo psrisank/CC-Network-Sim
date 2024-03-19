@@ -3,6 +3,16 @@
 
 #include "stdint.h"
 
+// struct holding data inside a Packet
+typedef struct DataNode
+{
+	// fields
+	uint8_t type;
+	uint32_t addr;
+	uint32_t data;
+}
+DataNode;
+
 // top-level struct for a packet
 typedef struct Packet
 {
@@ -14,15 +24,5 @@ typedef struct Packet
 	DataNode data;
 }
 Packet;
-
-// struct holding data inside a Packet
-typedef struct DataNode
-{
-	// fields
-	uint8_t type;
-	uint32_t addr;
-	uint32_t data;
-}
-DataNode;
 
 #endif
