@@ -6,8 +6,8 @@
 
 // definitions for memory node
 #define NUM_PORTS			1
-#define CTRL_NUM_BOT_PORTS	1
-#define CTRL_QUEUE_SIZE		256
+#define CMP_NUM_BOT_PORTS	1
+#define CMP_QUEUE_SIZE		256
 
 // top-level struct for a memory node
 typedef struct ComputeNode
@@ -16,7 +16,7 @@ typedef struct ComputeNode
 	uint32_t time;
 	// array of ports (queues) -> needs to contain a Packet struct type
 	// array of MemoryLines
-	Port bot_ports[CTRL_NUM_BOT_PORTS];
+	Port bot_ports[CMP_NUM_BOT_PORTS];
 }
 ComputeNode;
 

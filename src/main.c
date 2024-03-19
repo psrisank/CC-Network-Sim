@@ -26,7 +26,7 @@ int main()
 		node.id = global_id;
 		global_id++;
 		node.time = global_time;
-		for (int j = 0; j < CTRL_NUM_BOT_PORTS; j++)
+		for (int j = 0; j < CMP_NUM_BOT_PORTS; j++)
 		{
 			node.bot_ports[j].tail_tx = 0;
 			node.bot_ports[j].tail_rx = 0;
@@ -95,6 +95,8 @@ int main()
 	MemoryLine line = { 0x00000000, 0xDEADBEEF, SHARED };
 	memory_nodes[0].memory[0] = line;
 
+	printf("COMPUTE NODES ID: [%d-%d], SWITCH NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, switch_mode_min_id, switch_node_max_id, memory_node_min_id, memory_node_max_id);
+
 	// main loop
 	char finished = 1;
 	do // TODO loop through packets to send
@@ -105,7 +107,7 @@ int main()
 		{
 			printf("* Compute node with ID %d at time %d\n", compute_nodes[i].id, global_time);
 			// loop through outgoing ports to switch nodes
-			for (int j = 0; j < CTRL_NUM_BOT_PORTS; j++)
+			for (int j = 0; j < CMP_NUM_BOT_PORTS; j++)
 			{
 				Packet curr_packet_tx = pop_packet((&(compute_nodes[i].bot_ports[j])), TX, 0);
 				Packet curr_packet_rx = pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 0);
@@ -291,7 +293,7 @@ int main()
 		finished = 1;
 		for (int i = 0; i < NUM_COMPUTE_NODES; i++)
 		{
-			for (int j = 0; j < CTRL_NUM_BOT_PORTS; j++)
+			for (int j = 0; j < CMP_NUM_BOT_PORTS; j++)
 			{
 				finished &= port_empty(compute_nodes[i].bot_ports[j]);
 			}

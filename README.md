@@ -4,7 +4,7 @@ Network simulator implemented in C with cache coherence protocol
 ## Goals
 
 - [X] Send packets from compute node to memory node
-- [ ] Send packets from memory node to compute node (concurrently)
+- [X] Send packets from memory node to compute node (concurrently)
 - [ ] Generate packets from desired parameters (to be executed by C simulator)
 - [ ] Cache coherence over simulator
 - [ ] Save packet information to file
@@ -19,4 +19,6 @@ The simulator aims to simulate full-duplex connections, with independent TX and 
 
 Currently, a test packet is created and placed into the compute node's TX queue.  In the main loop, at global time 0, the packet is sent to the switch node's input RX queue.  At global time 1, the switch processes this packet, verifies that it is destined to a memory node, and places it in it's TX queue.  At global time 2, the packet is sent to the memory node's input RX queue.  At global time 3, the packet is processed by the memory node and has "arrived."
 
-Next steps are to verify sending packets both directions at the same time, and add logic to handle sending to different memory nodes/compute nodes through a single switch (different ports).
+When the memory node receives a "read" packet for data, it retrieves the value and sends a packet back to the compute node with the data value.  These packets can be sent concurrently.
+
+Next steps are to add logic to handle sending to different memory nodes/compute nodes through a single switch (different ports).
