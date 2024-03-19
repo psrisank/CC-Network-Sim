@@ -176,7 +176,7 @@ int main()
 					if ((curr_packet_rx.dst >= control_node_min_id) && (curr_packet_rx.dst <= control_node_max_id))
 					{
 						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						curr_packet_rx.time += GLOBAL_TIME_INCR;
 						// place node into switch
 						switch_nodes[0].top_ports_tx[i][switch_nodes[0].top_tail_tx] = curr_packet_rx;
 						switch_nodes[0].top_tail_tx++;
@@ -221,7 +221,7 @@ int main()
 					if ((curr_packet_rx.dst >= memory_node_min_id) && (curr_packet_rx.dst <= memory_node_max_id))
 					{
 						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						curr_packet_rx.time += GLOBAL_TIME_INCR;
 						// place node into switch
 						switch_nodes[0].bot_ports_tx[i][switch_nodes[0].bot_tail_tx] = curr_packet_rx;
 						switch_nodes[0].bot_tail_tx++;
