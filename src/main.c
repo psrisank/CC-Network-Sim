@@ -78,25 +78,19 @@ int main()
 
 	// TODO TESTING REMOVE
 	// create test data for packet
-	DataNode data_node;
-	data_node.type = WRITE;
-	data_node.addr = 0x12345678;
-	data_node.data = 0xDEADBEEF;
+	DataNode data_node = { 0x00000000, 0x00000000 };
 	// create packet with data
-	Packet test_packet;
-	test_packet.id = global_id;
-	global_id++;
-	test_packet.time = global_time;
-	test_packet.flag = NORMAL;
-	test_packet.src = compute_nodes[0].id;
-	test_packet.dst = memory_nodes[0].id;
-	test_packet.data = data_node;
+	uint8_t dest = ((data_node.addr >> 2) / MEM_NUM_LINES) + memory_node_min_id; // TODO SAVE THIS
+	Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, dest, data_node };
 	// place a packet in compute node destined to memory node
 	if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
 	{
 		return EXIT_FAILURE;
 	}
 	print_port(compute_nodes[0].bot_ports[0], TX);
+	// initialize memory location
+	MemoryLine line = { 0x00000000, 0xDEADBEEF, SHARED };
+	memory_nodes[0].memory[0] = line;
 
 	// main loop
 	for (; global_time < 10;) // TODO loop through packets to send
@@ -247,7 +241,7 @@ int main()
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
 					// need to act on this packet
-					if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
+					if ((curr_packet_tx.dst >= compute_node_min_id) && (curr_packet_tx.dst <= compute_node_max_id))
 					{
 						printf("Moving packet with ID %d to switch with ID %d\n", curr_packet_tx.id, switch_nodes[0].id);
 						curr_packet_tx.time += GLOBAL_TIME_INCR;
@@ -268,7 +262,13 @@ int main()
 					if (curr_packet_rx.dst == memory_nodes[i].id)
 					{
 						printf("Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
-						// TODO act on this
+						// handle return packet
+						Packet return_packet = process_packet(memory_nodes[i], curr_packet_rx, global_id++, global_time);
+						if (return_packet.flag != ERROR)
+						{
+							// place packet in outgoing buffer
+							push_packet((&(memory_nodes[i].top_ports[i])), TX, return_packet);
+						}
 					}
 					else
 					{
