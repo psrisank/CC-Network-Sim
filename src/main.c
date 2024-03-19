@@ -3,7 +3,7 @@
 #include "stdint.h"
 
 #include "main.h"
-#include "control_node.h"
+#include "compute_node.h"
 #include "switch_node.h"
 #include "memory_node.h"
 #include "packet.h"
@@ -17,12 +17,12 @@ int main()
 	uint32_t global_time = 0;
 	uint32_t global_id = 1; // skip 0 for debugging purposes later
 
-	// control nodes
-	ControlNode control_nodes[NUM_CONTROL_NODES];
-	uint32_t control_node_min_id = global_id;
-	for (int i = 0; i < NUM_CONTROL_NODES; i++)
+	// compute nodes
+	ComputeNode compute_nodes[NUM_COMPUTE_NODES];
+	uint32_t compute_node_min_id = global_id;
+	for (int i = 0; i < NUM_COMPUTE_NODES; i++)
 	{
-		ControlNode node;
+		ComputeNode node;
 		node.id = global_id;
 		global_id++;
 		node.time = global_time;
@@ -31,9 +31,9 @@ int main()
 			node.bot_ports[j].tail_tx = 0;
 			node.bot_ports[j].tail_rx = 0;
 		}
-		control_nodes[i] = node;
+		compute_nodes[i] = node;
 	}
-	uint32_t control_node_max_id = global_id - 1;
+	uint32_t compute_node_max_id = global_id - 1;
 
 	// switch nodes
 	SwitchNode switch_nodes[NUM_SWITCH_NODES];
@@ -88,29 +88,29 @@ int main()
 	global_id++;
 	test_packet.time = global_time;
 	test_packet.flag = NORMAL;
-	test_packet.src = control_nodes[0].id;
+	test_packet.src = compute_nodes[0].id;
 	test_packet.dst = memory_nodes[0].id;
 	test_packet.data = data_node;
-	// place a packet in control node destined to memory node
-	if (push_packet((&(control_nodes[0].bot_ports[0])), TX, test_packet) != 0)
+	// place a packet in compute node destined to memory node
+	if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
 	{
 		return EXIT_FAILURE;
 	}
-	print_port(control_nodes[0].bot_ports[0], TX);
+	print_port(compute_nodes[0].bot_ports[0], TX);
 
 	// main loop
 	for (; global_time < 10;) // TODO loop through packets to send
 	{
 		printf("--- GLOBAL TIME = %d\n", global_time);
-		// outgoing from control nodes
-		for (int i = 0; i < NUM_CONTROL_NODES; i++)
+		// outgoing from compute nodes
+		for (int i = 0; i < NUM_COMPUTE_NODES; i++)
 		{
-			printf("* Control node with ID %d at time %d\n", control_nodes[i].id, global_time);
+			printf("* Compute node with ID %d at time %d\n", compute_nodes[i].id, global_time);
 			// loop through outgoing ports to switch nodes
 			for (int j = 0; j < CTRL_NUM_BOT_PORTS; j++)
 			{
-				Packet curr_packet_tx = pop_packet((&(control_nodes[i].bot_ports[j])), TX, 0);
-				Packet curr_packet_rx = pop_packet((&(control_nodes[i].bot_ports[j])), RX, 0);
+				Packet curr_packet_tx = pop_packet((&(compute_nodes[i].bot_ports[j])), TX, 0);
+				Packet curr_packet_rx = pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 0);
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
 					// need to act on this packet
@@ -125,24 +125,24 @@ int main()
 					{
 						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
 					}
-					// remove packet from control node
-					pop_packet((&(control_nodes[i].bot_ports[j])), TX, 1);
+					// remove packet from compute node
+					pop_packet((&(compute_nodes[i].bot_ports[j])), TX, 1);
 				}
 
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
 					// need to act on this packet
-					if (curr_packet_rx.dst == control_nodes[i].id)
+					if (curr_packet_rx.dst == compute_nodes[i].id)
 					{
-						printf("Packet with ID %d has arrived at control node with ID %d [0x%08x, 0x%08x]\n", curr_packet_tx.id, control_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
+						printf("Packet with ID %d has arrived at compute node with ID %d [0x%08x, 0x%08x]\n", curr_packet_tx.id, compute_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 						// TODO act on this
 					}
 					else
 					{
 						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
 					}
-					// remove packet from control node
-					pop_packet((&(control_nodes[i].bot_ports[j])), RX, 1);
+					// remove packet from compute node
+					pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 1);
 				}
 			}
 		}
@@ -177,7 +177,7 @@ int main()
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
 					// need to act on this packet
-					if ((curr_packet_rx.dst >= control_node_min_id) && (curr_packet_rx.dst <= control_node_max_id))
+					if ((curr_packet_rx.dst >= compute_node_min_id) && (curr_packet_rx.dst <= compute_node_max_id))
 					{
 						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
 						curr_packet_rx.time += GLOBAL_TIME_INCR;
@@ -200,12 +200,12 @@ int main()
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
 					// need to act on this packet
-					if ((curr_packet_tx.dst >= control_node_min_id) && (curr_packet_tx.dst <= control_node_max_id))
+					if ((curr_packet_tx.dst >= compute_node_min_id) && (curr_packet_tx.dst <= compute_node_max_id))
 					{
-						printf("Moving packet with ID %d to control node with ID %d\n", curr_packet_tx.id, control_nodes[i].id);
+						printf("Moving packet with ID %d to compute node with ID %d\n", curr_packet_tx.id, compute_nodes[i].id);
 						curr_packet_tx.time += GLOBAL_TIME_INCR;
-						// place packet into control node
-						push_packet((&(control_nodes[i].bot_ports[i])), RX, curr_packet_tx);
+						// place packet into compute node
+						push_packet((&(compute_nodes[i].bot_ports[i])), RX, curr_packet_tx);
 					}
 					else
 					{

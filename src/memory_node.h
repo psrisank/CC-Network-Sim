@@ -32,7 +32,7 @@ typedef struct MemoryLine
 {
 	uint8_t address;
 	uint32_t value;
-	// status of all control nodes
+	// status of all compute nodes
 	StatesMSI_t state;
 }
 MemoryLine;
