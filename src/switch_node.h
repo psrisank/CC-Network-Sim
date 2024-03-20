@@ -3,11 +3,12 @@
 
 #include "stdint.h"
 #include "port.h"
+#include "main.h"
 
 // definitions for memory node
-#define SW_NUM_TOP_PORTS	1
-#define SW_NUM_BOT_PORTS	1
-#define SW_QUEUE_SIZE		256
+#define SW_NUM_TOP_PORTS	NUM_COMPUTE_NODES
+#define SW_NUM_BOT_PORTS	NUM_MEMORY_NODES
+#define SW_QUEUE_SIZE		256	// in packets
 
 // top-level struct for a switch node
 typedef struct SwitchNode

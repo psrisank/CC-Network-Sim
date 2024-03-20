@@ -3,7 +3,7 @@
 #include "memory_node.h"
 #include "packet.h"
 
-Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t global_time)
+Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id)
 {
 	Packet return_packet;
 	return_packet.id = global_id;
@@ -15,7 +15,8 @@ Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t 
 	if (pkt.flag == READ)
 	{
 		return_packet.flag = NORMAL;
-		DataNode return_data = { pkt.data.addr, node.memory[pkt.data.addr >> 2].value };
+		uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node.id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
+		DataNode return_data = { pkt.data.addr, node.memory[address_to_access].value };
 		return_packet.data = return_data;
 	}
 	else if (pkt.flag == WRITE)

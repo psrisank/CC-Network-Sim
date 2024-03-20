@@ -15,7 +15,7 @@ int main()
 
 	// universal variables
 	uint32_t global_time = 0;
-	uint32_t global_id = 1; // skip 0 for debugging purposes later
+	uint32_t global_id = 0;
 
 	// compute nodes
 	ComputeNode compute_nodes[NUM_COMPUTE_NODES];
@@ -78,22 +78,42 @@ int main()
 
 	// TODO TESTING REMOVE
 	// create test data for packet
-	DataNode data_node = { 0x00000000, 0x00000000 };
+	DataNode data_node = { 0x0, 0x00000000 };
+	DataNode data_node_2 = { 0x200, 0x00000000 };
+	DataNode data_node_3 = { 0x100, 0x00000000 };
 	// create packet with data
-	uint8_t dest = ((data_node.addr >> 2) / MEM_NUM_LINES) + memory_node_min_id; // TODO SAVE THIS
+	// uint8_t dest = ((data_node.addr >> 3) / MEM_NUM_LINES) + memory_node_min_id; // TODO SAVE THIS
 	// place a packet in compute node destined to memory node
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, dest, data_node };
+		Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node };
 		if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
+		{
+			return EXIT_FAILURE;
+		}
+
+		Packet test_packet_3 = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node_3 };
+		if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_3) != 0)
+		{
+			return EXIT_FAILURE;
+		}
+
+		Packet test_packet_2 = { global_id++, global_time, READ, compute_nodes[1].id, 0, data_node_2 };
+		if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_2) != 0)
 		{
 			return EXIT_FAILURE;
 		}
 	}
 	print_port(compute_nodes[0].bot_ports[0], TX);
+	print_port(compute_nodes[1].bot_ports[0], TX);
+	print_port(compute_nodes[2].bot_ports[0], TX);
 	// initialize memory location
-	MemoryLine line = { 0x00000000, 0xDEADBEEF, SHARED };
+	MemoryLine line = { 0x0, 0xDEADBEEF, SHARED };
 	memory_nodes[0].memory[0] = line;
+	MemoryLine line_2 = { 0x200, 0xABBAABBA, SHARED };
+	memory_nodes[1].memory[0] = line_2;
+	MemoryLine line_3 = { 0x100, 0xCDCDCDCD, SHARED };
+	memory_nodes[0].memory[32] = line_3;
 
 	printf("COMPUTE NODES ID: [%d-%d], SWITCH NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, switch_mode_min_id, switch_node_max_id, memory_node_min_id, memory_node_max_id);
 
@@ -101,7 +121,7 @@ int main()
 	char finished = 1;
 	do // TODO loop through packets to send
 	{
-		printf("--- GLOBAL TIME = %d\n", global_time);
+		printf("\n--- GLOBAL TIME = %d\n", global_time);
 		// outgoing from compute nodes
 		for (int i = 0; i < NUM_COMPUTE_NODES; i++)
 		{
@@ -114,17 +134,17 @@ int main()
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
 					// need to act on this packet
-					if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
-					{
+					// if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
+					// {
 						printf("Moving packet with ID %d to switch with ID %d\n", curr_packet_tx.id, switch_nodes[0].id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
-						// place packet into switch
+						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom value
+						// place packet into switch port corresponding to compute node ID
 						push_packet((&(switch_nodes[0].top_ports[i])), RX, curr_packet_tx);
-					}
-					else
-					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
-					}
+					// }
+					// else
+					// {
+					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
+					// }
 					// remove packet from compute node
 					pop_packet((&(compute_nodes[i].bot_ports[j])), TX, 1);
 				}
@@ -155,6 +175,7 @@ int main()
 
 			for (int j = 0; j < SW_NUM_TOP_PORTS; j++)
 			{
+				printf("** Top port %d\n", j);
 				Packet curr_packet_tx = pop_packet((&(switch_nodes[i].top_ports[j])), TX, 0);
 				Packet curr_packet_rx = pop_packet((&(switch_nodes[i].top_ports[j])), RX, 0);
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
@@ -162,10 +183,10 @@ int main()
 					// need to act on this packet
 					if ((curr_packet_tx.dst >= compute_node_min_id) && (curr_packet_tx.dst <= compute_node_max_id))
 					{
-						printf("Moving packet with ID %d to compute node with ID %d\n", curr_packet_tx.id, compute_nodes[i].id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						printf("Moving packet with ID %d to compute node with ID %d\n", curr_packet_tx.id, curr_packet_tx.dst);
+						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into compute node
-						push_packet((&(compute_nodes[i].bot_ports[i])), RX, curr_packet_tx);
+						push_packet((&(compute_nodes[j].bot_ports[i])), RX, curr_packet_tx);
 					}
 					else
 					{
@@ -178,17 +199,19 @@ int main()
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
 					// need to act on this packet
-					if ((curr_packet_rx.dst >= memory_node_min_id) && (curr_packet_rx.dst <= memory_node_max_id))
-					{
+					// if ((curr_packet_rx.dst >= memory_node_min_id) && (curr_packet_rx.dst <= memory_node_max_id))
+					// {
 						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
-						curr_packet_rx.time += GLOBAL_TIME_INCR;
-						// place node into switch bottom output port
-						push_packet((&(switch_nodes[0].bot_ports[i])), TX, curr_packet_rx);
-					}
-					else
-					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
-					}
+						curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
+						// place node into switch bottom output port corresponding to address
+						uint32_t correct_memory_node = ((curr_packet_rx.data.addr >> 3) / 64);
+						curr_packet_rx.dst = correct_memory_node + memory_node_min_id;
+						push_packet((&(switch_nodes[i].bot_ports[correct_memory_node])), TX, curr_packet_rx);
+					// }
+					// else
+					// {
+					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+					// }
 					// remove packet from switch top input port
 					pop_packet((&(switch_nodes[i].top_ports[j])), RX, 1);
 				}
@@ -196,22 +219,23 @@ int main()
 
 			for (int j = 0; j < SW_NUM_BOT_PORTS; j++)
 			{
+				printf("** Bottom port %d\n", j);
 				Packet curr_packet_tx = pop_packet((&(switch_nodes[i].bot_ports[j])), TX, 0);
 				Packet curr_packet_rx = pop_packet((&(switch_nodes[i].bot_ports[j])), RX, 0);
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
 					// need to act on this packet
-					if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
-					{
-						printf("Moving packet with ID %d to memory node with ID %d\n", curr_packet_tx.id, memory_nodes[i].id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
+					// if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
+					// {
+						printf("Moving packet with ID %d to memory node with ID %d\n", curr_packet_tx.id, curr_packet_tx.dst);
+						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into memory node
-						push_packet((&(memory_nodes[i].top_ports[i])), RX, curr_packet_tx);
-					}
-					else
-					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
-					}
+						push_packet((&(memory_nodes[j].top_ports[i])), RX, curr_packet_tx);
+					// }
+					// else
+					// {
+					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
+					// }
 					// remove packet from switch bottom output port
 					pop_packet((&(switch_nodes[i].bot_ports[j])), TX, 1);
 				}
@@ -222,9 +246,10 @@ int main()
 					if ((curr_packet_rx.dst >= compute_node_min_id) && (curr_packet_rx.dst <= compute_node_max_id))
 					{
 						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
-						curr_packet_rx.time += GLOBAL_TIME_INCR;
+						curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into switch top output port
-						push_packet((&(switch_nodes[0].top_ports[i])), TX, curr_packet_rx);
+						uint32_t correct_compute_node = curr_packet_rx.dst - compute_node_min_id;
+						push_packet((&(switch_nodes[i].top_ports[correct_compute_node])), TX, curr_packet_rx);
 					}
 					else
 					{
@@ -251,7 +276,7 @@ int main()
 					if ((curr_packet_tx.dst >= compute_node_min_id) && (curr_packet_tx.dst <= compute_node_max_id))
 					{
 						printf("Moving packet with ID %d to switch with ID %d\n", curr_packet_tx.id, switch_nodes[0].id);
-						curr_packet_tx.time += GLOBAL_TIME_INCR;
+						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into switch
 						push_packet((&(switch_nodes[0].bot_ports[i])), RX, curr_packet_tx);
 					}
@@ -266,21 +291,21 @@ int main()
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
 					// need to act on this packet
-					if (curr_packet_rx.dst == memory_nodes[i].id)
-					{
+					// if (curr_packet_rx.dst == memory_nodes[i].id)
+					// {
 						printf("Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 						// handle return packet
-						Packet return_packet = process_packet(memory_nodes[i], curr_packet_rx, global_id++, global_time);
+						Packet return_packet = process_packet(memory_nodes[i], curr_packet_rx, global_id++, global_time, memory_node_min_id);
 						if (return_packet.flag != ERROR)
 						{
 							// place packet in outgoing buffer
-							push_packet((&(memory_nodes[i].top_ports[i])), TX, return_packet);
+							push_packet((&(memory_nodes[i].top_ports[j])), TX, return_packet);
 						}
-					}
-					else
-					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
-					}
+					// }
+					// else
+					// {
+					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+					// }
 					// remove packet from memory node
 					pop_packet((&(memory_nodes[i].top_ports[j])), RX, 1);
 				}

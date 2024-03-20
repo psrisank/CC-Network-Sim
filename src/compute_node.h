@@ -5,9 +5,8 @@
 #include "port.h"
 
 // definitions for memory node
-#define NUM_PORTS			1
-#define CMP_NUM_BOT_PORTS	1
-#define CMP_QUEUE_SIZE		256
+#define CMP_NUM_BOT_PORTS	1	// should not ever be changed
+#define CMP_QUEUE_SIZE		256	// in packets
 
 // top-level struct for a memory node
 typedef struct ComputeNode

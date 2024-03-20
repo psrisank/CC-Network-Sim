@@ -6,10 +6,10 @@
 #include "packet.h"
 
 // definitions for memory node
-#define NUM_PORTS			1
-#define MEM_NUM_TOP_PORTS	1
-#define MEM_QUEUE_SIZE		256
+#define MEM_NUM_TOP_PORTS	1	// should not ever be changed
+#define MEM_QUEUE_SIZE		256	// in packets
 #define MEM_NUM_LINES		64
+#define MEM_LINE_SIZE		64	// in bits
 
 // enum defining various cache states for MSI protocol
 typedef enum
@@ -40,6 +40,6 @@ typedef struct MemoryNode
 }
 MemoryNode;
 
-Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t global_time);
+Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
 
 #endif
