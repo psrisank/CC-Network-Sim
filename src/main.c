@@ -9,9 +9,15 @@
 #include "packet.h"
 #include "port.h"
 
-int main()
+int main(int argc, char ** argv)
 {
 	// TODO parse input file here
+	printf(ANSI_COLOR_RED     "RED"     ANSI_COLOR_RESET " ");
+	printf(ANSI_COLOR_GREEN   "GREEN"   ANSI_COLOR_RESET " ");
+	printf(ANSI_COLOR_YELLOW  "YELLOW"  ANSI_COLOR_RESET " ");
+	printf(ANSI_COLOR_BLUE    "BLUE"    ANSI_COLOR_RESET " ");
+	printf(ANSI_COLOR_MAGENTA "MAGENTA" ANSI_COLOR_RESET " ");
+	printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n");
 
 	// universal variables
 	uint32_t global_time = 0;
@@ -106,7 +112,6 @@ int main()
 	}
 	print_port(compute_nodes[0].bot_ports[0], TX);
 	print_port(compute_nodes[1].bot_ports[0], TX);
-	print_port(compute_nodes[2].bot_ports[0], TX);
 	// initialize memory location
 	MemoryLine line = { 0x0, 0xDEADBEEF, SHARED };
 	memory_nodes[0].memory[0] = line;
@@ -136,7 +141,7 @@ int main()
 					// need to act on this packet
 					// if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
 					// {
-						printf("Moving packet with ID %d to switch with ID %d\n", curr_packet_tx.id, switch_nodes[0].id);
+						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, switch_nodes[0].id);
 						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom value
 						// place packet into switch port corresponding to compute node ID
 						push_packet((&(switch_nodes[0].top_ports[i])), RX, curr_packet_tx);
@@ -154,12 +159,12 @@ int main()
 					// need to act on this packet
 					if (curr_packet_rx.dst == compute_nodes[i].id)
 					{
-						printf("Packet with ID %d has arrived at compute node with ID %d [0x%08x, 0x%08x]\n", curr_packet_rx.id, compute_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
+						printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at compute node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, compute_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 						// TODO act on this
 					}
 					else
 					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+						printf(ANSI_COLOR_RED "Packet with ID %d has invalid destination" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
 					}
 					// remove packet from compute node
 					pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 1);
@@ -183,7 +188,7 @@ int main()
 					// need to act on this packet
 					if ((curr_packet_tx.dst >= compute_node_min_id) && (curr_packet_tx.dst <= compute_node_max_id))
 					{
-						printf("Moving packet with ID %d to compute node with ID %d\n", curr_packet_tx.id, curr_packet_tx.dst);
+						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to compute node with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, curr_packet_tx.dst);
 						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into compute node
 						push_packet((&(compute_nodes[j].bot_ports[i])), RX, curr_packet_tx);
@@ -201,7 +206,7 @@ int main()
 					// need to act on this packet
 					// if ((curr_packet_rx.dst >= memory_node_min_id) && (curr_packet_rx.dst <= memory_node_max_id))
 					// {
-						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
+						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
 						curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place node into switch bottom output port corresponding to address
 						uint32_t correct_memory_node = ((curr_packet_rx.data.addr >> 3) / 64);
@@ -227,7 +232,7 @@ int main()
 					// need to act on this packet
 					// if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
 					// {
-						printf("Moving packet with ID %d to memory node with ID %d\n", curr_packet_tx.id, curr_packet_tx.dst);
+						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to memory node with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, curr_packet_tx.dst);
 						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into memory node
 						push_packet((&(memory_nodes[j].top_ports[i])), RX, curr_packet_tx);
@@ -245,7 +250,7 @@ int main()
 					// need to act on this packet
 					if ((curr_packet_rx.dst >= compute_node_min_id) && (curr_packet_rx.dst <= compute_node_max_id))
 					{
-						printf("Moving packet with ID %d to output queue\n", curr_packet_rx.id);
+						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
 						curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into switch top output port
 						uint32_t correct_compute_node = curr_packet_rx.dst - compute_node_min_id;
@@ -253,7 +258,7 @@ int main()
 					}
 					else
 					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
+						printf(ANSI_COLOR_RED "Packet with ID %d has invalid destination" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
 					}
 					// remove packet from switch bottom input port
 					pop_packet((&(switch_nodes[i].bot_ports[j])), RX, 1);
@@ -275,14 +280,14 @@ int main()
 					// need to act on this packet
 					if ((curr_packet_tx.dst >= compute_node_min_id) && (curr_packet_tx.dst <= compute_node_max_id))
 					{
-						printf("Moving packet with ID %d to switch with ID %d\n", curr_packet_tx.id, switch_nodes[0].id);
+						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, switch_nodes[0].id);
 						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into switch
 						push_packet((&(switch_nodes[0].bot_ports[i])), RX, curr_packet_tx);
 					}
 					else
 					{
-						printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
+						printf(ANSI_COLOR_RED "Packet with ID %d has invalid destination" ANSI_COLOR_RESET "\n", curr_packet_tx.id);
 					}
 					// remove packet from memory node
 					pop_packet((&(memory_nodes[i].top_ports[j])), TX, 1);
@@ -293,7 +298,7 @@ int main()
 					// need to act on this packet
 					// if (curr_packet_rx.dst == memory_nodes[i].id)
 					// {
-						printf("Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
+						printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 						// handle return packet
 						Packet return_packet = process_packet(memory_nodes[i], curr_packet_rx, global_id++, global_time, memory_node_min_id);
 						if (return_packet.flag != ERROR)
