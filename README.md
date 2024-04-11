@@ -22,3 +22,11 @@ Currently, a test packet is created and placed into the compute node's TX queue.
 When the memory node receives a "read" packet for data, it retrieves the value and sends a packet back to the compute node with the data value.  These packets can be sent concurrently.
 
 Next steps are to add logic to handle sending to different memory nodes/compute nodes through a single switch (different ports).
+
+## Input/output file format
+
+The input/output file are csv (comma separated values) files with the following columns:
+
+**Time, Packet ID, Flag, SRC, DST, Address, Data**
+
+For the input file, the **SRC** field determines which node's TX buffer the packet is placed in before the simulator begins running.  Additionally, the **Packet ID** field is IGNORED for the input file to avoid clashing with the global ID within the simulator.

@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "stdint.h"
+#include "string.h"
 
 #include "main.h"
 #include "compute_node.h"
@@ -11,29 +12,28 @@
 
 int main(int argc, char ** argv)
 {
-	if (argc < 2)
+	if (argc < 3)
 	{
-		printf(ANSI_COLOR_RED "Usage: ./sim [logfile]\n" ANSI_COLOR_RESET " ");
+		printf(ANSI_COLOR_RED "Usage: ./sim [input file] [logfile]" ANSI_COLOR_RESET "\n");
 		return EXIT_FAILURE;
 	}
 
+	// universal variables
+	uint32_t global_time = 0;
+	uint32_t global_id = 0;
+
 	// debug messages
+#ifdef DEBUG
 	printf(ANSI_COLOR_RED     "RED"     ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_GREEN   "GREEN"   ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_YELLOW  "YELLOW"  ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_BLUE    "BLUE"    ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_MAGENTA "MAGENTA" ANSI_COLOR_RESET " ");
-	printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n");
+	printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n\n");
+#endif
 
-	printf("Output file: %s\n", argv[1]);
-
-	// parse input file
-	FILE * input_file;
-	input_file = fopen(argv[1], "r");
-
-	// universal variables
-	uint32_t global_time = 0;
-	uint32_t global_id = 0;
+	printf("Input file: %s\n", argv[1]);
+	printf("Output file: %s\n\n", argv[2]);
 
 	// compute nodes
 	ComputeNode compute_nodes[NUM_COMPUTE_NODES];
@@ -94,48 +94,173 @@ int main(int argc, char ** argv)
 	}
 	uint32_t memory_node_max_id = global_id - 1;
 
+	// parse input file
+	FILE * input_file;
+	input_file = fopen(argv[1], "r");
+	if (input_file == NULL)
+	{
+		printf(ANSI_COLOR_RED "Input file does not exist!" ANSI_COLOR_RESET "\n");
+		return EXIT_FAILURE;
+	}
+	char line[255]; // maximum line length 255 (better not be longer)
+	char * token;
+	while (fgets(line, sizeof(line), input_file) != NULL)
+	{
+		printf("Current line: %s", line);
+		// create packet to be generated from this line
+		DataNode data_node;
+		Packet packet;
+		// loop through each line in file
+		int curr_field = 0;
+		token = strtok(line, ",");
+		while (token != NULL)
+		{
+		#ifdef DEBUG
+			printf("Current token: %s\n", token);
+		#endif
+			switch (curr_field)
+			{
+				case 0:
+				{
+					// time
+					packet.time = atoi(token);
+					break;
+				}
+
+				case 1:
+				{
+					// packet ID
+					packet.id = global_id++;
+					break;
+				}
+
+				case 2:
+				{
+					// flag
+					packet.flag = atoi(token);
+					break;
+				}
+
+				case 3:
+				{
+					// src
+					packet.src = atoi(token);
+					break;
+				}
+
+				case 4:
+				{
+					// dst
+					packet.dst = atoi(token);
+					break;
+				}
+
+				case 5:
+				{
+					// address
+					data_node.addr = (uint32_t) strtol(token, NULL, 16);
+					break;
+				}
+
+				case 6:
+				{
+					// data
+					data_node.data = (uint32_t) strtol(token, NULL, 16);
+					break;
+				}
+
+				default:
+				{
+					// error
+					printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
+					fclose(input_file);
+					return EXIT_FAILURE;
+				}
+			}
+			token = strtok(NULL, ",");
+			curr_field++;
+		}
+		// place packet in correct buffer
+		packet.data = data_node;
+		if (packet.src <= compute_node_max_id)
+		{
+			if (push_packet((&compute_nodes[packet.src - compute_node_min_id].bot_ports[0]), TX, packet) != 0)
+			{
+				printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
+				fclose(input_file);
+				return EXIT_FAILURE;
+			}
+		}
+		else if (packet.src <= switch_node_max_id)
+		{
+			printf(ANSI_COLOR_RED "Invalid packet SRC address (switch)!" ANSI_COLOR_RESET "\n");
+			fclose(input_file);
+			return EXIT_FAILURE;
+		}
+		else if (packet.src <= memory_node_max_id)
+		{
+			if (push_packet((&memory_nodes[packet.src - memory_node_min_id].top_ports[0]), TX, packet) != 0)
+			{
+				printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
+				fclose(input_file);
+				return EXIT_FAILURE;
+			}
+		}
+		else
+		{
+			printf(ANSI_COLOR_RED "Invalid packet SRC address!" ANSI_COLOR_RESET "\n");
+			fclose(input_file);
+			return EXIT_FAILURE;
+		}
+    }
+	fclose(input_file);
+
+	// create output file
+	FILE * output_file;
+	output_file = fopen(argv[2], "w");
+
 	// TODO TESTING REMOVE
 	// create test data for packet
-	DataNode data_node = { 0x0, 0x00000000 };
-	DataNode data_node_2 = { 0x200, 0x00000000 };
-	DataNode data_node_3 = { 0x100, 0x00000000 };
-	// create packet with data
-	// uint8_t dest = ((data_node.addr >> 3) / MEM_NUM_LINES) + memory_node_min_id; // TODO SAVE THIS
-	// place a packet in compute node destined to memory node
-	for (int i = 0; i < 1; i++)
-	{
-		Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node };
-		if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
-		{
-			fclose(input_file);
-			return EXIT_FAILURE;
-		}
+	// DataNode data_node = { 0x0, 0x00000000 };
+	// DataNode data_node_2 = { 0x200, 0x00000000 };
+	// DataNode data_node_3 = { 0x100, 0x00000000 };
+	// // create packet with data
+	// // uint8_t dest = ((data_node.addr >> 3) / MEM_NUM_LINES) + memory_node_min_id; // TODO SAVE THIS
+	// // place a packet in compute node destined to memory node
+	// for (int i = 0; i < 1; i++)
+	// {
+	// 	Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node };
+	// 	if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
+	// 	{
+	// 		fclose(output_file);
+	// 		return EXIT_FAILURE;
+	// 	}
 
-		Packet test_packet_3 = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node_3 };
-		if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_3) != 0)
-		{
-			fclose(input_file);
-			return EXIT_FAILURE;
-		}
+	// 	Packet test_packet_3 = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node_3 };
+	// 	if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_3) != 0)
+	// 	{
+	// 		fclose(output_file);
+	// 		return EXIT_FAILURE;
+	// 	}
 
-		Packet test_packet_2 = { global_id++, global_time, READ, compute_nodes[1].id, 0, data_node_2 };
-		if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_2) != 0)
-		{
-			fclose(input_file);
-			return EXIT_FAILURE;
-		}
-	}
+	// 	Packet test_packet_2 = { global_id++, global_time, READ, compute_nodes[1].id, 0, data_node_2 };
+	// 	if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_2) != 0)
+	// 	{
+	// 		fclose(output_file);
+	// 		return EXIT_FAILURE;
+	// 	}
+	// }
 	print_port(compute_nodes[0].bot_ports[0], TX);
 	print_port(compute_nodes[1].bot_ports[0], TX);
 	// initialize memory location
-	MemoryLine line = { 0x0, 0xDEADBEEF, SHARED };
-	memory_nodes[0].memory[0] = line;
+	MemoryLine line_1 = { 0x0, 0xDEADBEEF, SHARED };
+	memory_nodes[0].memory[0] = line_1;
 	MemoryLine line_2 = { 0x200, 0xABBAABBA, SHARED };
 	memory_nodes[1].memory[0] = line_2;
 	MemoryLine line_3 = { 0x100, 0xCDCDCDCD, SHARED };
 	memory_nodes[0].memory[32] = line_3;
 
-	printf("COMPUTE NODES ID: [%d-%d], SWITCH NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, switch_mode_min_id, switch_node_max_id, memory_node_min_id, memory_node_max_id);
+	printf("\nCOMPUTE NODES ID: [%d-%d], SWITCH NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, switch_mode_min_id, switch_node_max_id, memory_node_min_id, memory_node_max_id);
 
 	// main loop
 	char finished = 1;
@@ -207,6 +332,12 @@ int main(int argc, char ** argv)
 						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into compute node
 						push_packet((&(compute_nodes[j].bot_ports[i])), RX, curr_packet_tx);
+						// write to log file
+						char hex_addr[11];
+						char hex_data[11];
+						snprintf(hex_addr, sizeof(hex_addr), "0x%08X", curr_packet_tx.data.addr);
+						snprintf(hex_data, sizeof(hex_data), "0x%08X", curr_packet_tx.data.data);
+						fprintf(output_file, "%d,%d,%d,%d,%d,%s,%s\n", global_time, curr_packet_tx.id, curr_packet_tx.flag, curr_packet_tx.src, curr_packet_tx.dst, hex_addr, hex_data);
 					}
 					else
 					{
@@ -251,6 +382,12 @@ int main(int argc, char ** argv)
 						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 						// place packet into memory node
 						push_packet((&(memory_nodes[j].top_ports[i])), RX, curr_packet_tx);
+						// write to log file
+						char hex_addr[11];
+						char hex_data[11];
+						snprintf(hex_addr, sizeof(hex_addr), "0x%08X", curr_packet_tx.data.addr);
+						snprintf(hex_data, sizeof(hex_data), "0x%08X", curr_packet_tx.data.data);
+						fprintf(output_file, "%d,%d,%d,%d,%d,%s,%s\n", global_time, curr_packet_tx.id, curr_packet_tx.flag, curr_packet_tx.src, curr_packet_tx.dst, hex_addr, hex_data);
 					// }
 					// else
 					// {
@@ -363,6 +500,6 @@ int main(int argc, char ** argv)
 		}
 	} while (finished == 0);
 
-	fclose(input_file);
+	fclose(output_file);
 	return EXIT_SUCCESS;
 }
