@@ -9,7 +9,7 @@
 #define MEM_NUM_TOP_PORTS	1	// should not ever be changed
 #define MEM_QUEUE_SIZE		256	// in packets
 #define MEM_NUM_LINES		64
-#define MEM_LINE_SIZE		64	// in bits
+#define MEM_LINE_SIZE		32	// in bits
 
 // enum defining various cache states for MSI protocol
 typedef enum

@@ -107,7 +107,9 @@ int main(int argc, char ** argv)
 	char * token;
 	while (fgets(line, sizeof(line), packet_input_file) != NULL)
 	{
+	#ifdef DEBUG
 		printf("Current line: %s", line);
+	#endif
 		// create packet to be generated from this line
 		DataNode data_node;
 		Packet packet;
@@ -226,7 +228,9 @@ int main(int argc, char ** argv)
 	}
 	while (fgets(line, sizeof(line), memory_input_file) != NULL)
 	{
+	#ifdef DEBUG
 		printf("Current line: %s", line);
+	#endif
 		// create packet to be generated from this line
 		MemoryLine data_line;
 		// loop through each line in file
@@ -272,6 +276,12 @@ int main(int argc, char ** argv)
 			curr_field++;
 		}
 		// place memory line in correct memory node
+		uint8_t memory_node_num = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) / MEM_NUM_LINES;
+		uint8_t memory_node_line = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) % MEM_NUM_LINES;
+	#ifdef DEBUG
+		printf("Memory node: %d line %d\n", memory_node_num, memory_node_line);
+	#endif
+		memory_nodes[memory_node_num].memory[memory_node_line] = data_line;
 	}
 	fclose(memory_input_file);
 
@@ -286,13 +296,6 @@ int main(int argc, char ** argv)
 		print_port(compute_nodes[i - compute_node_min_id].bot_ports[0], TX);
 	}
 #endif
-	// initialize memory location
-	MemoryLine line_1 = { 0x0, 0xDEADBEEF, SHARED };
-	memory_nodes[0].memory[0] = line_1;
-	MemoryLine line_2 = { 0x200, 0xABBAABBA, SHARED };
-	memory_nodes[1].memory[0] = line_2;
-	MemoryLine line_3 = { 0x100, 0xCDCDCDCD, SHARED };
-	memory_nodes[0].memory[32] = line_3;
 
 	printf("\nCOMPUTE NODES ID: [%d-%d], SWITCH NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, switch_mode_min_id, switch_node_max_id, memory_node_min_id, memory_node_max_id);
 
