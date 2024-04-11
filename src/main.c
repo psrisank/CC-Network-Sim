@@ -11,13 +11,25 @@
 
 int main(int argc, char ** argv)
 {
-	// TODO parse input file here
+	if (argc < 2)
+	{
+		printf(ANSI_COLOR_RED "Usage: ./sim [logfile]\n" ANSI_COLOR_RESET " ");
+		return EXIT_FAILURE;
+	}
+
+	// debug messages
 	printf(ANSI_COLOR_RED     "RED"     ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_GREEN   "GREEN"   ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_YELLOW  "YELLOW"  ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_BLUE    "BLUE"    ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_MAGENTA "MAGENTA" ANSI_COLOR_RESET " ");
 	printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n");
+
+	printf("Output file: %s\n", argv[1]);
+
+	// parse input file
+	FILE * input_file;
+	input_file = fopen(argv[1], "r");
 
 	// universal variables
 	uint32_t global_time = 0;
@@ -95,18 +107,21 @@ int main(int argc, char ** argv)
 		Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node };
 		if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
 		{
+			fclose(input_file);
 			return EXIT_FAILURE;
 		}
 
 		Packet test_packet_3 = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node_3 };
 		if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_3) != 0)
 		{
+			fclose(input_file);
 			return EXIT_FAILURE;
 		}
 
 		Packet test_packet_2 = { global_id++, global_time, READ, compute_nodes[1].id, 0, data_node_2 };
 		if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_2) != 0)
 		{
+			fclose(input_file);
 			return EXIT_FAILURE;
 		}
 	}
@@ -348,5 +363,6 @@ int main(int argc, char ** argv)
 		}
 	} while (finished == 0);
 
+	fclose(input_file);
 	return EXIT_SUCCESS;
 }
