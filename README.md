@@ -1,13 +1,17 @@
 # CC-Network-Sim
 Network simulator implemented in C with cache coherence protocol
 
+## Usage
+
+`./[exec] [packet input file] [memory input file] [packet log file]
+
 ## Goals
 
 - [X] Send packets from compute node to memory node
 - [X] Send packets from memory node to compute node (concurrently)
 - [ ] Generate packets from desired parameters (to be executed by C simulator)
 - [ ] Cache coherence over simulator
-- [ ] Save packet information to file
+- [X] Save packet information to file
 
 ## Logic
 
@@ -22,3 +26,17 @@ Currently, a test packet is created and placed into the compute node's TX queue.
 When the memory node receives a "read" packet for data, it retrieves the value and sends a packet back to the compute node with the data value.  These packets can be sent concurrently.
 
 Next steps are to add logic to handle sending to different memory nodes/compute nodes through a single switch (different ports).
+
+## Packet input/log file format
+
+The input/log file are csv (comma separated values) files with the following columns:
+
+**Time, Packet ID, Flag, src, dst, Address, Data**
+
+For the input file, the **src** field determines which node's TX buffer the packet is placed in before the simulator begins running.  Additionally, the **Packet ID** field is IGNORED for the input file to avoid clashing with the global ID within the simulator.
+
+## Memory input file format
+
+The memory addresses should also be initialized in an input file.  This file is also csv with the following columns:
+
+**Address, Data, MSI State**
