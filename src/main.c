@@ -12,9 +12,9 @@
 
 int main(int argc, char ** argv)
 {
-	if (argc < 3)
+	if (argc < 4)
 	{
-		printf(ANSI_COLOR_RED "Usage: ./sim [input file] [logfile]" ANSI_COLOR_RESET "\n");
+		printf(ANSI_COLOR_RED "Usage: ./[exec] [packet input file] [memory input file] [packet log file]" ANSI_COLOR_RESET "\n");
 		return EXIT_FAILURE;
 	}
 
@@ -32,8 +32,9 @@ int main(int argc, char ** argv)
 	printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n\n");
 #endif
 
-	printf("Input file: %s\n", argv[1]);
-	printf("Output file: %s\n\n", argv[2]);
+	printf("Packet input file: %s\n", argv[1]);
+	printf("Memory input file: %s\n", argv[2]);
+	printf("Packet logging file: %s\n\n", argv[3]);
 
 	// compute nodes
 	ComputeNode compute_nodes[NUM_COMPUTE_NODES];
@@ -95,16 +96,16 @@ int main(int argc, char ** argv)
 	uint32_t memory_node_max_id = global_id - 1;
 
 	// parse input file
-	FILE * input_file;
-	input_file = fopen(argv[1], "r");
-	if (input_file == NULL)
+	FILE * packet_input_file;
+	packet_input_file = fopen(argv[1], "r");
+	if (packet_input_file == NULL)
 	{
 		printf(ANSI_COLOR_RED "Input file does not exist!" ANSI_COLOR_RESET "\n");
 		return EXIT_FAILURE;
 	}
 	char line[255]; // maximum line length 255 (better not be longer)
 	char * token;
-	while (fgets(line, sizeof(line), input_file) != NULL)
+	while (fgets(line, sizeof(line), packet_input_file) != NULL)
 	{
 		printf("Current line: %s", line);
 		// create packet to be generated from this line
@@ -173,7 +174,7 @@ int main(int argc, char ** argv)
 				{
 					// error
 					printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
-					fclose(input_file);
+					fclose(packet_input_file);
 					return EXIT_FAILURE;
 				}
 			}
@@ -187,14 +188,14 @@ int main(int argc, char ** argv)
 			if (push_packet((&compute_nodes[packet.src - compute_node_min_id].bot_ports[0]), TX, packet) != 0)
 			{
 				printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
-				fclose(input_file);
+				fclose(packet_input_file);
 				return EXIT_FAILURE;
 			}
 		}
 		else if (packet.src <= switch_node_max_id)
 		{
 			printf(ANSI_COLOR_RED "Invalid packet SRC address (switch)!" ANSI_COLOR_RESET "\n");
-			fclose(input_file);
+			fclose(packet_input_file);
 			return EXIT_FAILURE;
 		}
 		else if (packet.src <= memory_node_max_id)
@@ -202,56 +203,89 @@ int main(int argc, char ** argv)
 			if (push_packet((&memory_nodes[packet.src - memory_node_min_id].top_ports[0]), TX, packet) != 0)
 			{
 				printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
-				fclose(input_file);
+				fclose(packet_input_file);
 				return EXIT_FAILURE;
 			}
 		}
 		else
 		{
 			printf(ANSI_COLOR_RED "Invalid packet SRC address!" ANSI_COLOR_RESET "\n");
-			fclose(input_file);
+			fclose(packet_input_file);
 			return EXIT_FAILURE;
 		}
     }
-	fclose(input_file);
+	fclose(packet_input_file);
+
+	// parse memory init file
+	FILE * memory_input_file;
+	memory_input_file = fopen(argv[2], "r");
+	if (memory_input_file == NULL)
+	{
+		printf(ANSI_COLOR_RED "Input file does not exist!" ANSI_COLOR_RESET "\n");
+		return EXIT_FAILURE;
+	}
+	while (fgets(line, sizeof(line), memory_input_file) != NULL)
+	{
+		printf("Current line: %s", line);
+		// create packet to be generated from this line
+		MemoryLine data_line;
+		// loop through each line in file
+		int curr_field = 0;
+		token = strtok(line, ",");
+		while (token != NULL)
+		{
+		#ifdef DEBUG
+			printf("Current token: %s\n", token);
+		#endif
+			switch (curr_field)
+			{
+				case 0:
+				{
+					// address
+					data_line.address = (uint32_t) strtol(token, NULL, 16);
+					break;
+				}
+
+				case 1:
+				{
+					// value
+					data_line.value = (uint32_t) strtol(token, NULL, 16);
+					break;
+				}
+
+				case 2:
+				{
+					// MSI state
+					data_line.state = atoi(token);
+					break;
+				}
+
+				default:
+				{
+					// error
+					printf(ANSI_COLOR_RED "Invalid input file format!" ANSI_COLOR_RESET "\n");
+					fclose(memory_input_file);
+					return EXIT_FAILURE;
+				}
+			}
+			token = strtok(NULL, ",");
+			curr_field++;
+		}
+		// place memory line in correct memory node
+	}
+	fclose(memory_input_file);
 
 	// create output file
 	FILE * output_file;
-	output_file = fopen(argv[2], "w");
+	output_file = fopen(argv[3], "w");
 
-	// TODO TESTING REMOVE
-	// create test data for packet
-	// DataNode data_node = { 0x0, 0x00000000 };
-	// DataNode data_node_2 = { 0x200, 0x00000000 };
-	// DataNode data_node_3 = { 0x100, 0x00000000 };
-	// // create packet with data
-	// // uint8_t dest = ((data_node.addr >> 3) / MEM_NUM_LINES) + memory_node_min_id; // TODO SAVE THIS
-	// // place a packet in compute node destined to memory node
-	// for (int i = 0; i < 1; i++)
-	// {
-	// 	Packet test_packet = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node };
-	// 	if (push_packet((&(compute_nodes[0].bot_ports[0])), TX, test_packet) != 0)
-	// 	{
-	// 		fclose(output_file);
-	// 		return EXIT_FAILURE;
-	// 	}
-
-	// 	Packet test_packet_3 = { global_id++, global_time, READ, compute_nodes[0].id, 0, data_node_3 };
-	// 	if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_3) != 0)
-	// 	{
-	// 		fclose(output_file);
-	// 		return EXIT_FAILURE;
-	// 	}
-
-	// 	Packet test_packet_2 = { global_id++, global_time, READ, compute_nodes[1].id, 0, data_node_2 };
-	// 	if (push_packet((&(compute_nodes[1].bot_ports[0])), TX, test_packet_2) != 0)
-	// 	{
-	// 		fclose(output_file);
-	// 		return EXIT_FAILURE;
-	// 	}
-	// }
-	print_port(compute_nodes[0].bot_ports[0], TX);
-	print_port(compute_nodes[1].bot_ports[0], TX);
+#ifdef DEBUG
+	printf("\n");
+	for (uint32_t i = compute_node_min_id; i <= compute_node_max_id; i++)
+	{
+		print_port(compute_nodes[i - compute_node_min_id].bot_ports[0], TX);
+	}
+#endif
 	// initialize memory location
 	MemoryLine line_1 = { 0x0, 0xDEADBEEF, SHARED };
 	memory_nodes[0].memory[0] = line_1;
@@ -278,18 +312,10 @@ int main(int argc, char ** argv)
 				Packet curr_packet_rx = pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 0);
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
-					// need to act on this packet
-					// if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
-					// {
-						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, switch_nodes[0].id);
-						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom value
-						// place packet into switch port corresponding to compute node ID
-						push_packet((&(switch_nodes[0].top_ports[i])), RX, curr_packet_tx);
-					// }
-					// else
-					// {
-					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
-					// }
+					printf(ANSI_COLOR_BLUE "Moving packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, switch_nodes[0].id);
+					curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom value
+					// place packet into switch port corresponding to compute node ID
+					push_packet((&(switch_nodes[0].top_ports[i])), RX, curr_packet_tx);
 					// remove packet from compute node
 					pop_packet((&(compute_nodes[i].bot_ports[j])), TX, 1);
 				}
@@ -349,20 +375,12 @@ int main(int argc, char ** argv)
 
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
-					// need to act on this packet
-					// if ((curr_packet_rx.dst >= memory_node_min_id) && (curr_packet_rx.dst <= memory_node_max_id))
-					// {
-						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
-						curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
-						// place node into switch bottom output port corresponding to address
-						uint32_t correct_memory_node = ((curr_packet_rx.data.addr >> 3) / 64);
-						curr_packet_rx.dst = correct_memory_node + memory_node_min_id;
-						push_packet((&(switch_nodes[i].bot_ports[correct_memory_node])), TX, curr_packet_rx);
-					// }
-					// else
-					// {
-					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
-					// }
+					printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
+					curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
+					// place node into switch bottom output port corresponding to address
+					uint32_t correct_memory_node = ((curr_packet_rx.data.addr >> 3) / 64);
+					curr_packet_rx.dst = correct_memory_node + memory_node_min_id;
+					push_packet((&(switch_nodes[i].bot_ports[correct_memory_node])), TX, curr_packet_rx);
 					// remove packet from switch top input port
 					pop_packet((&(switch_nodes[i].top_ports[j])), RX, 1);
 				}
@@ -375,24 +393,16 @@ int main(int argc, char ** argv)
 				Packet curr_packet_rx = pop_packet((&(switch_nodes[i].bot_ports[j])), RX, 0);
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
-					// need to act on this packet
-					// if ((curr_packet_tx.dst >= memory_node_min_id) && (curr_packet_tx.dst <= memory_node_max_id))
-					// {
-						printf(ANSI_COLOR_BLUE "Moving packet with ID %d to memory node with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, curr_packet_tx.dst);
-						curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
-						// place packet into memory node
-						push_packet((&(memory_nodes[j].top_ports[i])), RX, curr_packet_tx);
-						// write to log file
-						char hex_addr[11];
-						char hex_data[11];
-						snprintf(hex_addr, sizeof(hex_addr), "0x%08X", curr_packet_tx.data.addr);
-						snprintf(hex_data, sizeof(hex_data), "0x%08X", curr_packet_tx.data.data);
-						fprintf(output_file, "%d,%d,%d,%d,%d,%s,%s\n", global_time, curr_packet_tx.id, curr_packet_tx.flag, curr_packet_tx.src, curr_packet_tx.dst, hex_addr, hex_data);
-					// }
-					// else
-					// {
-					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_tx.id);
-					// }
+					printf(ANSI_COLOR_BLUE "Moving packet with ID %d to memory node with ID %d" ANSI_COLOR_RESET "\n", curr_packet_tx.id, curr_packet_tx.dst);
+					curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
+					// place packet into memory node
+					push_packet((&(memory_nodes[j].top_ports[i])), RX, curr_packet_tx);
+					// write to log file
+					char hex_addr[11];
+					char hex_data[11];
+					snprintf(hex_addr, sizeof(hex_addr), "0x%08X", curr_packet_tx.data.addr);
+					snprintf(hex_data, sizeof(hex_data), "0x%08X", curr_packet_tx.data.data);
+					fprintf(output_file, "%d,%d,%d,%d,%d,%s,%s\n", global_time, curr_packet_tx.id, curr_packet_tx.flag, curr_packet_tx.src, curr_packet_tx.dst, hex_addr, hex_data);
 					// remove packet from switch bottom output port
 					pop_packet((&(switch_nodes[i].bot_ports[j])), TX, 1);
 				}
@@ -448,21 +458,14 @@ int main(int argc, char ** argv)
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
 					// need to act on this packet
-					// if (curr_packet_rx.dst == memory_nodes[i].id)
-					// {
-						printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
-						// handle return packet
-						Packet return_packet = process_packet(memory_nodes[i], curr_packet_rx, global_id++, global_time, memory_node_min_id);
-						if (return_packet.flag != ERROR)
-						{
-							// place packet in outgoing buffer
-							push_packet((&(memory_nodes[i].top_ports[j])), TX, return_packet);
-						}
-					// }
-					// else
-					// {
-					// 	printf("Packet with ID %d has invalid destination\n", curr_packet_rx.id);
-					// }
+					printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
+					// handle return packet
+					Packet return_packet = process_packet(memory_nodes[i], curr_packet_rx, global_id++, global_time, memory_node_min_id);
+					if (return_packet.flag != ERROR)
+					{
+						// place packet in outgoing buffer
+						push_packet((&(memory_nodes[i].top_ports[j])), TX, return_packet);
+					}
 					// remove packet from memory node
 					pop_packet((&(memory_nodes[i].top_ports[j])), RX, 1);
 				}
