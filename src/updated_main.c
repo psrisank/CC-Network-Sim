@@ -144,11 +144,11 @@ int main(int argc, char ** argv)
 	}
 	int pkt_iterator;
 	while (fgets(line, sizeof(line), cmd_inputs)) {
-		uint8_t pkt_time, pkt_src;
-		uint32_t pkt_addr, pkt_data;
+		uint8_t pkt_src;
+		uint32_t pkt_time, pkt_addr, pkt_data;
 		flag_t pkt_flag;
 		token = strtok(line, ",");
-		pkt_time = (uint8_t) strtol(token, NULL, 10);
+		pkt_time = (uint32_t) strtol(token, NULL, 10);
 		token = strtok(NULL, ",");
 		pkt_src = (uint8_t) strtol(token, NULL, 10);
 		token = strtok(NULL, ",");
@@ -418,6 +418,7 @@ int main(int argc, char ** argv)
         printf("\n\n");
     }
 
+	printf("TOTAL MESSAGES:\nCOMPUTE: %d\nMEMORY: %d\n\n", get_compute_control_count(), get_memory_control_count());
 
 
 	fclose(output_file);

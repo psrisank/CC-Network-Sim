@@ -3,6 +3,8 @@
 #include "memory_node.h"
 #include "packet.h"
 
+int control_message_memory_node_global_counter = 0;
+
 Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id)
 {
 	Packet return_packet;
@@ -13,6 +15,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.dst = pkt.src;
 	uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
 
+	control_message_memory_node_global_counter++;
 	if (pkt.flag == READ)
 	{
 		return_packet.flag = NORMAL;
@@ -31,4 +34,9 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	}
 
 	return return_packet;
+}
+
+int get_memory_control_count()
+{
+	return control_message_memory_node_global_counter;
 }

@@ -2,17 +2,17 @@ import random
 
 # put variables here for trace generation
 total_num_requests = 1000
-time_between_packets = 100
+time_between_packets = 10
 
-num_compute_nodes = 2
+num_compute_nodes = 5
 memory_min_addr = 0x00000000
-memory_max_addr = 0x00001000
+memory_max_addr = 0x00000200
 
 # type of test to run
 # 0 = r/w percentage
 # 1 = sharing ratio
-test_type = 1
-read_percentage = 0.5
+test_type = 0
+read_percentage = 0
 sharing_ratio = 0.5
 
 # calculated values (do not edit)
@@ -23,7 +23,7 @@ memory_max_addr_int = memory_max_addr // 4
 if (test_type == 1):
 	total_num_requests -= int(total_num_requests * sharing_ratio)
 
-with open("output_trace.csv", 'w') as output_file:
+with open("artifacts/output_trace.csv", 'w') as output_file:
 	for curr_packet in range(total_num_requests):
 		if (test_type == 0):
 			# r/w percentage
