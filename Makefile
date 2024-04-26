@@ -13,7 +13,7 @@ INPUTFILE = control_node_input.csv
 MEMFILE = meminit.csv
 LOGFILE = switchlog.csv
 
-all: $(EXECUTABLE)
+all: clean $(EXECUTABLE)
 	./$(BINDIR)/$(EXECUTABLE) $(ARTIFACTDIR)/$(INPUTFILE) $(ARTIFACTDIR)/$(MEMFILE) $(ARTIFACTDIR)/$(LOGFILE)
 
 $(EXECUTABLE): $(OBJECTS)

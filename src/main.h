@@ -3,9 +3,9 @@
 
 #define GLOBAL_TIME_INCR	1
 
-#define NUM_COMPUTE_NODES	2
+#define NUM_COMPUTE_NODES	5
 #define NUM_SWITCH_NODES	1	// should not ever be changed
-#define NUM_MEMORY_NODES	2
+#define NUM_MEMORY_NODES	5
 
 // console color codes
 #define ANSI_COLOR_RED		"\x1b[31m"

@@ -5,6 +5,7 @@
 #include "port.h"
 #include "math.h"
 #include "packet.h"
+#include <stdio.h>
 
 // definitions for memory node
 #define CMP_NUM_BOT_PORTS	1	// should not ever be changed
@@ -49,7 +50,7 @@ void updateNodeState(ComputeNode* node);
 int read_action(ComputeNode node, uint32_t address);
 void write_action(ComputeNode* node, uint32_t address, uint32_t wdata);
 void cnode_process_packet(ComputeNode* node, Packet pkt);
-
+void print_cache(ComputeNode* node);
 
 
 #endif

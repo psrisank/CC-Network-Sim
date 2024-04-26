@@ -412,6 +412,11 @@ int main(int argc, char ** argv)
 	} while (finished == 0);
 
 
+    for (uint32_t i = 0; i <= compute_node_max_id; i++) {
+        printf("Compute node %d\n----------------\n", i);
+        print_cache(&compute_nodes[i]);
+        printf("\n\n");
+    }
 
 
 
