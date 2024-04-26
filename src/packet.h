@@ -22,7 +22,7 @@ DataNode;
 // top-level struct for a packet
 typedef struct Packet
 {
-	uint8_t id;
+	uint32_t id;
 	uint32_t time;
 	flag_t flag;
 	

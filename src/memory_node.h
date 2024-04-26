@@ -41,5 +41,6 @@ typedef struct MemoryNode
 MemoryNode;
 
 Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
+int get_memory_control_count();
 
 #endif

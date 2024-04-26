@@ -51,6 +51,7 @@ int read_action(ComputeNode node, uint32_t address);
 void write_action(ComputeNode* node, uint32_t address, uint32_t wdata);
 void cnode_process_packet(ComputeNode* node, Packet pkt);
 void print_cache(ComputeNode* node);
+int get_compute_control_count();
 
 
 #endif
