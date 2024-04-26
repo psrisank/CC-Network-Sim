@@ -1,48 +1,67 @@
+import sys
 import random
 
 # put variables here for trace generation
 total_num_requests = 1000
 time_between_packets = 10
 
-num_compute_nodes = 5
 memory_min_addr = 0x00000000
 memory_max_addr = 0x00000200
 
-# type of test to run
-# 0 = r/w percentage
-# 1 = sharing ratio
-test_type = 0
-read_percentage = 0
-sharing_ratio = 0.5
+if (len(sys.argv) != 5):
+	print("Correct usage is 'python generator.py [write ratio] [sharing ratio] [num compute nodes] [output file name]'")
+	exit()
+
+# test parameters
+read_percentage = float(sys.argv[1])
+sharing_ratio = float(sys.argv[2])
+num_compute_nodes = int(sys.argv[3])
 
 # calculated values (do not edit)
 num_read_packets = read_percentage * total_num_requests
 memory_min_addr_int = memory_min_addr // 4
 memory_max_addr_int = memory_max_addr // 4
 
-if (test_type == 1):
-	total_num_requests -= int(total_num_requests * sharing_ratio)
+packets = list()
 
-with open("artifacts/output_trace.csv", 'w') as output_file:
-	for curr_packet in range(total_num_requests):
-		if (test_type == 0):
-			# r/w percentage
-			global_time = (curr_packet * time_between_packets)
-			compute_node_id = random.randint(0, num_compute_nodes - 1)
-			address = random.randint(memory_min_addr_int, memory_max_addr_int) * 4
-			write = 0 if (curr_packet < num_read_packets) else 1
-			wdata = random.randint(0, 0xFFFFFFFF)
+# zeroth iteration of packets (prep sharing ratio)
+if (sharing_ratio > 0):
+	for i in range(num_compute_nodes):
+		global_time = (i * time_between_packets)
+		packets.append([global_time, i, 0x00000000, 0, 0x00000000])
 
-			packet_formatted = f"{global_time},{compute_node_id},0x{address:08X},{write},0x{wdata:08X}\n"
-			output_file.write(packet_formatted)
+# first iteration of packets (random address/wdata)
+for curr_packet in range(num_compute_nodes, total_num_requests + num_compute_nodes):
+	global_time = (curr_packet * time_between_packets)
+	compute_node_id = random.randint(0, num_compute_nodes - 1)
+	address = 0
+	while ((address >> 2) % 4 == 0):
+		# get address that isnt going to be in first cache line
+		address = random.randint(memory_min_addr_int, memory_max_addr_int) * 4
+	write = 0
+	wdata = random.randint(0, 0xFFFFFFFF)
 
-		elif (test_type == 1):
-			# sharing ratio
-			global_time = (curr_packet * time_between_packets)
-			compute_node_id = random.randint(0, num_compute_nodes - 1)
-			address = random.randint(memory_min_addr_int + num_compute_nodes, memory_max_addr_int) * 4
-			write = random.randint(0, 1)
-			wdata = random.randint(0, 0xFFFFFFFF)
+	packets.append([global_time, compute_node_id, address, write, wdata])
 
-			packet_formatted = f"{global_time},{compute_node_id},0x{address:08X},{write},0x{wdata:08X}\n"
-			output_file.write(packet_formatted)
+num_write = 0
+num_shared = 0
+
+# second iteration of packets (correct r/w ratio)
+while (num_write < (total_num_requests * read_percentage)):
+	if (packets[random.randint(num_compute_nodes, total_num_requests + num_compute_nodes - 1)][3] == 0):
+		# convert read to write
+		packets[random.randint(num_compute_nodes, total_num_requests + num_compute_nodes - 1)][3] = 1
+		num_write += 1
+
+# third iteration of packets (correct sharing ratio)
+while (num_shared < (total_num_requests * sharing_ratio)):
+	if (packets[random.randint(num_compute_nodes, total_num_requests + num_compute_nodes - 1)][2] != 0x00000000):
+		# convert to shared address
+		packets[random.randint(num_compute_nodes, total_num_requests + num_compute_nodes - 1)][2] = 0x00000000
+		num_shared += 1
+
+# write packet list to output file
+with open(sys.argv[4], 'w') as output_file:
+	for packet in packets:
+		packet_formatted = f"{packet[0]},{packet[1]},0x{packet[2]:08X},{packet[3]},0x{packet[4]:08X}\n"
+		output_file.write(packet_formatted)
