@@ -137,7 +137,7 @@ int main(int argc, char ** argv)
 	fclose(mem_input);
 
 	// Creating packets based off input trace
-	Packet packets[1000];
+	Packet packets[2000];
 	FILE* cmd_inputs = fopen(argv[1], "r");
 	if (cmd_inputs == NULL) {
 		return EXIT_FAILURE;
