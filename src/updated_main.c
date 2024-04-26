@@ -269,6 +269,18 @@ int main(int argc, char ** argv)
 					uint32_t correct_memory_node = ((curr_packet_rx.data.addr >> 3) / 64);
 					curr_packet_rx.dst = correct_memory_node + memory_node_min_id;
 					push_packet((&(switch_nodes[i].bot_ports[correct_memory_node])), TX, curr_packet_rx);
+					// invalidate on write packets to all other compute nodes
+					if (curr_packet_rx.flag == WRITE)
+					{
+						for (int k = 0; k < NUM_COMPUTE_NODES; k++)
+						{
+							if (compute_nodes[k].id != curr_packet_rx.src)
+							{
+								Packet invalidate_packet = (Packet) {global_id++, global_time + 1, INVALIDATE, switch_nodes[i].id, compute_nodes[k].id, (DataNode) {curr_packet_rx.data.addr, curr_packet_rx.data.data}};
+								push_packet((&(switch_nodes[i].top_ports[k])), TX, invalidate_packet);
+							}
+						}
+					}
 					// remove packet from switch top input port
 					pop_packet((&(switch_nodes[i].top_ports[j])), RX, 1);
 				}
