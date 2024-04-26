@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -std=c99 -Wall -Wextra -g 
 
 SRCDIR = src
 BINDIR = bin
@@ -9,11 +9,11 @@ OBJECTS = $(patsubst $(SRCDIR)/%.c, $(BINDIR)/%.o, $(SOURCES))
 EXECUTABLE = sim
 
 ARTIFACTDIR = artifacts
-INPUTFILE = "testing.csv"
-MEMFILE = "meminit.csv"
-LOGFILE = "switchlog.csv"
+INPUTFILE = control_node_input.csv
+MEMFILE = meminit.csv
+LOGFILE = switchlog.csv
 
-all: $(EXECUTABLE)
+all: clean $(EXECUTABLE)
 	./$(BINDIR)/$(EXECUTABLE) $(ARTIFACTDIR)/$(INPUTFILE) $(ARTIFACTDIR)/$(MEMFILE) $(ARTIFACTDIR)/$(LOGFILE)
 
 $(EXECUTABLE): $(OBJECTS)

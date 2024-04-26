@@ -12,11 +12,11 @@
 #define MEM_LINE_SIZE		32	// in bits
 
 // enum defining various cache states for MSI protocol
-typedef enum
-{
-	MODIFIED, SHARED, INVALID
-}
-StatesMSI_t;
+// typedef enum
+// {
+// 	MODIFIED, SHARED, INVALID
+// }
+// StatesMSI_t;
 
 // struct holding data inside a MemoryNode
 typedef struct MemoryLine
@@ -24,7 +24,7 @@ typedef struct MemoryLine
 	uint32_t address;
 	uint32_t value;
 	// status of all compute nodes
-	StatesMSI_t state;
+	//StatesMSI_t state;
 }
 MemoryLine;
 
@@ -40,6 +40,6 @@ typedef struct MemoryNode
 }
 MemoryNode;
 
-Packet process_packet(MemoryNode node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
 
 #endif
