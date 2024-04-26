@@ -29,9 +29,13 @@ Next steps are to add logic to handle sending to different memory nodes/compute 
 
 ## Packet input/log file format
 
-The input/log file are csv (comma separated values) files with the following columns:
+The log file is a csv (comma separated values) file with the following columns:
 
 **Time, Packet ID, Flag, src, dst, Address, Data**
+
+The input file is a csv file with the following columns:
+
+**Time, Compute Node ID, Address, R/W, WData (if applicable)**
 
 For the input file, the **src** field determines which node's TX buffer the packet is placed in before the simulator begins running.  Additionally, the **Packet ID** field is IGNORED for the input file to avoid clashing with the global ID within the simulator.
 
@@ -40,3 +44,7 @@ For the input file, the **src** field determines which node's TX buffer the pack
 The memory addresses should also be initialized in an input file.  This file is also csv with the following columns:
 
 **Address, Data, MSI State**
+
+
+# Cache Information
+The cache in this simulator is assumed to be a direct mapped cache. The cache contains 4 blocks.

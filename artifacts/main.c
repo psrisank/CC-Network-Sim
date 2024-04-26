@@ -10,6 +10,8 @@
 #include "packet.h"
 #include "port.h"
 
+#define DEBUG
+
 int main(int argc, char ** argv)
 {
 	if (argc < 4)
@@ -23,14 +25,14 @@ int main(int argc, char ** argv)
 	uint32_t global_id = 0;
 
 	// debug messages
-#ifdef DEBUG
-	printf(ANSI_COLOR_RED     "RED"     ANSI_COLOR_RESET " ");
-	printf(ANSI_COLOR_GREEN   "GREEN"   ANSI_COLOR_RESET " ");
-	printf(ANSI_COLOR_YELLOW  "YELLOW"  ANSI_COLOR_RESET " ");
-	printf(ANSI_COLOR_BLUE    "BLUE"    ANSI_COLOR_RESET " ");
-	printf(ANSI_COLOR_MAGENTA "MAGENTA" ANSI_COLOR_RESET " ");
-	printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n\n");
-#endif
+	#ifdef DEBUG
+		printf(ANSI_COLOR_RED     "RED"     ANSI_COLOR_RESET " ");
+		printf(ANSI_COLOR_GREEN   "GREEN"   ANSI_COLOR_RESET " ");
+		printf(ANSI_COLOR_YELLOW  "YELLOW"  ANSI_COLOR_RESET " ");
+		printf(ANSI_COLOR_BLUE    "BLUE"    ANSI_COLOR_RESET " ");
+		printf(ANSI_COLOR_MAGENTA "MAGENTA" ANSI_COLOR_RESET " ");
+		printf(ANSI_COLOR_CYAN    "CYAN"    ANSI_COLOR_RESET "\n\n");
+	#endif
 
 	printf("Packet input file: %s\n", argv[1]);
 	printf("Memory input file: %s\n", argv[2]);
@@ -107,20 +109,21 @@ int main(int argc, char ** argv)
 	char * token;
 	while (fgets(line, sizeof(line), packet_input_file) != NULL)
 	{
-	#ifdef DEBUG
-		printf("Current line: %s", line);
-	#endif
+		#ifdef DEBUG
+			printf("Current line: %s", line);
+		#endif
 		// create packet to be generated from this line
 		DataNode data_node;
 		Packet packet;
 		// loop through each line in file
 		int curr_field = 0;
 		token = strtok(line, ",");
+		int id, time, flag, src, dst;
 		while (token != NULL)
 		{
-		#ifdef DEBUG
-			printf("Current token: %s\n", token);
-		#endif
+			#ifdef DEBUG
+				printf("Current token: %s\n", token);
+			#endif
 			switch (curr_field)
 			{
 				case 0:
@@ -183,6 +186,9 @@ int main(int argc, char ** argv)
 			token = strtok(NULL, ",");
 			curr_field++;
 		}
+
+		// expected behavior: only place packets for writes, and data requests into buffers.
+
 		// place packet in correct buffer
 		packet.data = data_node;
 		if (packet.src <= compute_node_max_id)
@@ -217,6 +223,13 @@ int main(int argc, char ** argv)
 		}
     }
 	fclose(packet_input_file);
+
+
+
+
+
+
+
 
 	// parse memory init file
 	FILE * memory_input_file;
@@ -509,3 +522,62 @@ int main(int argc, char ** argv)
 	fclose(output_file);
 	return EXIT_SUCCESS;
 }
+
+
+
+        // while (fgets(line, sizeof(line), cmd_inputs)) {
+        //     uint32_t inst[5];
+        //     //printf("Parsing: %s", line);
+        //     token = strtok(line, ",");
+        //     if (strtol(token, NULL, 10) != global_time) {
+        //         continue;
+        //     }
+        //     else {
+        //         inst[0] = strtol(token, NULL, 10);
+        //         token = strtok(NULL, ",");
+        //     }
+        //     int inst_iter = 1;
+        //     while (token) {
+        //         uint32_t n = strtol(token, NULL, 16);
+        //         inst[inst_iter] = n;
+        //         //printf("0x%x ", n);
+        //         inst_iter++;
+        //         token = strtok(NULL, ",");
+        //     }
+        //     printf("\n");
+        //     for (int i = 0; i < 5; i++) {
+        //         printf("%x, ", inst[i]);
+        //     }
+
+
+        //     printf("\nProcessing instruction for compute node ID %x...\n", inst[0]);
+        //     // Action variables
+        //     int write = inst[3];
+        //     uint32_t cnode_id = inst[1];
+        //     uint32_t cnode_addr = inst[2];
+        //     uint32_t cnode_wdata = inst[4];
+        //     DataNode data_node;
+
+        //     // determine action depending on validity of data
+        //     // WRITES
+        //     if (write) {
+        //         continue;
+        //     }
+        //     // READS
+        //     else {
+        //         switch(requestData(compute_nodes[inst[1]], inst[2])) {
+        //             case 0: { // do nothing since data is valid and address matches
+        //                 printf("cache read hit.\n");
+        //                 continue;
+        //             }
+        //             case 1: { // get new data to replace item in queue
+        //                 printf("cache read miss without wb.\n");
+        //                 continue;
+        //             }
+        //             case 2: { // essentially send two packets, first write the data to memory, then read it in
+        //                 printf("cache read miss with wb.\n");
+        //                 continue;
+        //             }
+        //         }
+        //     }
+        // }
