@@ -59,7 +59,7 @@ void updateNodeState(ComputeNode* node) {
 	}
 }
 
-int requestData(ComputeNode node, uint32_t address) {
+int read_action(ComputeNode node, uint32_t address) {
 	int index = address % 4;
 	if (node.cache[index].valid == 1) {
 		if (node.cache[index].address == address) { // cache hit
@@ -79,8 +79,23 @@ int requestData(ComputeNode node, uint32_t address) {
 	}
 }
 
-void cnode_process_packet(ComputeNode node, Packet pkt) {
+void write_action(ComputeNode* node, uint32_t address, uint32_t wdata) {
+	int index = address % 4;
+	node->cache[index].value = wdata;
+	node->cache[index].address = address;
+}
 
+void cnode_process_packet(ComputeNode* node, Packet pkt) {
+	if (pkt.flag == INVALIDATE) {
+		node->cache[pkt.data.addr % 4].state = INVALID;
+		node->cache[pkt.data.addr % 4].valid = 0;
+	}
+	else if (pkt.flag == NORMAL) {
+		node->cache[pkt.data.addr % 4].value = pkt.data.data;
+		node->cache[pkt.data.addr % 4].address = pkt.data.addr;
+		node->cache[pkt.data.addr % 4].valid = 1;
+		node->cache[pkt.data.addr % 4].state = SHARED;
+	}
 }
 
 
