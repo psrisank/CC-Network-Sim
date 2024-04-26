@@ -300,7 +300,8 @@ int main(int argc, char ** argv)
 						{
 							if (compute_nodes[k].id != curr_packet_rx.src)
 							{
-								Packet invalidate_packet = (Packet) {global_id++, global_time + 1, INVALIDATE, switch_nodes[i].id, compute_nodes[k].id, (DataNode) {curr_packet_rx.data.addr, curr_packet_rx.data.data}};
+								Packet invalidate_packet = (Packet) {global_id++, global_time + 1, INVALIDATE, switch_nodes[i].id, compute_nodes[k].id, (DataNode) {curr_packet_rx.data.addr, 0xFFFFFFFF}};
+								printf(ANSI_COLOR_YELLOW "Sending invalidate packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", invalidate_packet.id, switch_nodes[i].id);
 								push_packet((&(switch_nodes[i].top_ports[k])), TX, invalidate_packet);
 							}
 						}
