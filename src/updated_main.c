@@ -405,7 +405,6 @@ int main(int argc, char ** argv)
 
 
 		global_time++;
-		// printf("fuck you %d, %d\n", pkt_cnt, packets[2].time);
 		if ((packets[pkt_cnt - 1].time + 10) == global_time) {
 			finished = 1;
 		}

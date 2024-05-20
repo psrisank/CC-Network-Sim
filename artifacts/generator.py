@@ -60,6 +60,10 @@ while (num_shared < (total_num_requests * sharing_ratio)):
 		packets[rand_num][2] = 0x00000000
 		num_shared += 1
 
+# shuffle packets to produce variance
+for i in range(5):
+	random.shuffle(packets)
+
 # write packet list to output file
 with open(sys.argv[4], 'w') as output_file:
 	for packet in packets:
