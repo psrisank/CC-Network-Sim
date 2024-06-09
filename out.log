@@ -6,8 +6,8 @@ Write ratio: 0.0
 
 Invalidation Messages from switch: 0
 Write messages to memory nodes: 0
-Data request messages to memory nodes: 1001
-Memory node to control node with data :1001
+Data request messages to memory nodes: 993
+Memory node to control node with data :993
 
 
 Write ratio: 0.1
@@ -15,8 +15,8 @@ Write ratio: 0.1
 
 Invalidation Messages from switch: 12700
 Write messages to memory nodes: 100
-Data request messages to memory nodes: 1002
-Memory node to control node with data :1002
+Data request messages to memory nodes: 995
+Memory node to control node with data :995
 
 
 Write ratio: 0.2
@@ -24,8 +24,8 @@ Write ratio: 0.2
 
 Invalidation Messages from switch: 25400
 Write messages to memory nodes: 200
-Data request messages to memory nodes: 1006
-Memory node to control node with data :1006
+Data request messages to memory nodes: 999
+Memory node to control node with data :999
 
 
 Write ratio: 0.3
@@ -33,8 +33,8 @@ Write ratio: 0.3
 
 Invalidation Messages from switch: 38100
 Write messages to memory nodes: 300
-Data request messages to memory nodes: 1028
-Memory node to control node with data :1028
+Data request messages to memory nodes: 1025
+Memory node to control node with data :1025
 
 
 Write ratio: 0.4
@@ -42,17 +42,17 @@ Write ratio: 0.4
 
 Invalidation Messages from switch: 50800
 Write messages to memory nodes: 400
-Data request messages to memory nodes: 1046
-Memory node to control node with data :1046
+Data request messages to memory nodes: 1045
+Memory node to control node with data :1044
 
 
 Write ratio: 0.5
 
 
-Invalidation Messages from switch: 54864
-Write messages to memory nodes: 432
-Data request messages to memory nodes: 939
-Memory node to control node with data :937
+Invalidation Messages from switch: 63500
+Write messages to memory nodes: 500
+Data request messages to memory nodes: 1071
+Memory node to control node with data :1071
 
 
 Write ratio: 0.6
@@ -60,8 +60,8 @@ Write ratio: 0.6
 
 Invalidation Messages from switch: 76200
 Write messages to memory nodes: 600
-Data request messages to memory nodes: 1134
-Memory node to control node with data :1133
+Data request messages to memory nodes: 1116
+Memory node to control node with data :1116
 
 
 Write ratio: 0.7
@@ -69,8 +69,8 @@ Write ratio: 0.7
 
 Invalidation Messages from switch: 88900
 Write messages to memory nodes: 700
-Data request messages to memory nodes: 1239
-Memory node to control node with data :1238
+Data request messages to memory nodes: 1246
+Memory node to control node with data :1246
 
 
 Write ratio: 0.8
@@ -78,8 +78,8 @@ Write ratio: 0.8
 
 Invalidation Messages from switch: 101600
 Write messages to memory nodes: 800
-Data request messages to memory nodes: 1411
-Memory node to control node with data :1411
+Data request messages to memory nodes: 1400
+Memory node to control node with data :1400
 
 
 Write ratio: 0.9
@@ -87,8 +87,8 @@ Write ratio: 0.9
 
 Invalidation Messages from switch: 114300
 Write messages to memory nodes: 900
-Data request messages to memory nodes: 1641
-Memory node to control node with data :1641
+Data request messages to memory nodes: 1638
+Memory node to control node with data :1638
 
 
 Write ratio: 1.0
@@ -96,8 +96,8 @@ Write ratio: 1.0
 
 Invalidation Messages from switch: 127000
 Write messages to memory nodes: 1000
-Data request messages to memory nodes: 1000
-Memory node to control node with data :1000
+Data request messages to memory nodes: 994
+Memory node to control node with data :994
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,8 +107,8 @@ Write ratio: 0.0
 
 Invalidation Messages from switch: 0
 Write messages to memory nodes: 0
-Data request messages to memory nodes: 873
-Memory node to control node with data :873
+Data request messages to memory nodes: 937
+Memory node to control node with data :937
 
 
 Write ratio: 0.1
@@ -116,8 +116,8 @@ Write ratio: 0.1
 
 Invalidation Messages from switch: 12700
 Write messages to memory nodes: 100
-Data request messages to memory nodes: 963
-Memory node to control node with data :962
+Data request messages to memory nodes: 967
+Memory node to control node with data :967
 
 
 Write ratio: 0.2
@@ -125,109 +125,8 @@ Write ratio: 0.2
 
 Invalidation Messages from switch: 25400
 Write messages to memory nodes: 200
-Data request messages to memory nodes: 997
-Memory node to control node with data :996
-
-
-Write ratio: 0.3
-
-
-Invalidation Messages from switch: 38100
-Write messages to memory nodes: 300
-Data request messages to memory nodes: 1011
-Memory node to control node with data :1011
-
-
-Write ratio: 0.4
-
-
-Invalidation Messages from switch: 50800
-Write messages to memory nodes: 400
-Data request messages to memory nodes: 1036
-Memory node to control node with data :1036
-
-
-Write ratio: 0.5
-
-
-Invalidation Messages from switch: 63500
-Write messages to memory nodes: 500
-Data request messages to memory nodes: 1069
-Memory node to control node with data :1069
-
-
-Write ratio: 0.6
-
-
-Invalidation Messages from switch: 76200
-Write messages to memory nodes: 600
-Data request messages to memory nodes: 1145
-Memory node to control node with data :1145
-
-
-Write ratio: 0.7
-
-
-Invalidation Messages from switch: 88900
-Write messages to memory nodes: 700
-Data request messages to memory nodes: 1233
-Memory node to control node with data :1233
-
-
-Write ratio: 0.8
-
-
-Invalidation Messages from switch: 101600
-Write messages to memory nodes: 800
-Data request messages to memory nodes: 1395
-Memory node to control node with data :1395
-
-
-Write ratio: 0.9
-
-
-Invalidation Messages from switch: 114300
-Write messages to memory nodes: 900
-Data request messages to memory nodes: 1625
-Memory node to control node with data :1625
-
-
-Write ratio: 1.0
-
-
-Invalidation Messages from switch: 127000
-Write messages to memory nodes: 1000
-Data request messages to memory nodes: 999
-Memory node to control node with data :999
-
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 0.4
-Write ratio: 0.0
-
-
-Invalidation Messages from switch: 0
-Write messages to memory nodes: 0
-Data request messages to memory nodes: 677
-Memory node to control node with data :676
-
-
-Write ratio: 0.1
-
-
-Invalidation Messages from switch: 12700
-Write messages to memory nodes: 100
-Data request messages to memory nodes: 972
-Memory node to control node with data :972
-
-
-Write ratio: 0.2
-
-
-Invalidation Messages from switch: 25400
-Write messages to memory nodes: 200
-Data request messages to memory nodes: 988
-Memory node to control node with data :986
+Data request messages to memory nodes: 976
+Memory node to control node with data :976
 
 
 Write ratio: 0.3
@@ -244,8 +143,8 @@ Write ratio: 0.4
 
 Invalidation Messages from switch: 50800
 Write messages to memory nodes: 400
-Data request messages to memory nodes: 1032
-Memory node to control node with data :1032
+Data request messages to memory nodes: 1019
+Memory node to control node with data :1019
 
 
 Write ratio: 0.5
@@ -253,8 +152,8 @@ Write ratio: 0.5
 
 Invalidation Messages from switch: 63500
 Write messages to memory nodes: 500
-Data request messages to memory nodes: 1079
-Memory node to control node with data :1077
+Data request messages to memory nodes: 1070
+Memory node to control node with data :1070
 
 
 Write ratio: 0.6
@@ -262,109 +161,8 @@ Write ratio: 0.6
 
 Invalidation Messages from switch: 76200
 Write messages to memory nodes: 600
-Data request messages to memory nodes: 1132
+Data request messages to memory nodes: 1131
 Memory node to control node with data :1131
-
-
-Write ratio: 0.7
-
-
-Invalidation Messages from switch: 88900
-Write messages to memory nodes: 700
-Data request messages to memory nodes: 1239
-Memory node to control node with data :1239
-
-
-Write ratio: 0.8
-
-
-Invalidation Messages from switch: 101600
-Write messages to memory nodes: 800
-Data request messages to memory nodes: 1386
-Memory node to control node with data :1385
-
-
-Write ratio: 0.9
-
-
-Invalidation Messages from switch: 114300
-Write messages to memory nodes: 900
-Data request messages to memory nodes: 1588
-Memory node to control node with data :1588
-
-
-Write ratio: 1.0
-
-
-Invalidation Messages from switch: 127000
-Write messages to memory nodes: 1000
-Data request messages to memory nodes: 997
-Memory node to control node with data :997
-
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 0.6
-Write ratio: 0.0
-
-
-Invalidation Messages from switch: 0
-Write messages to memory nodes: 0
-Data request messages to memory nodes: 468
-Memory node to control node with data :465
-
-
-Write ratio: 0.1
-
-
-Invalidation Messages from switch: 12700
-Write messages to memory nodes: 100
-Data request messages to memory nodes: 956
-Memory node to control node with data :956
-
-
-Write ratio: 0.2
-
-
-Invalidation Messages from switch: 25400
-Write messages to memory nodes: 200
-Data request messages to memory nodes: 984
-Memory node to control node with data :984
-
-
-Write ratio: 0.3
-
-
-Invalidation Messages from switch: 38100
-Write messages to memory nodes: 300
-Data request messages to memory nodes: 1001
-Memory node to control node with data :1000
-
-
-Write ratio: 0.4
-
-
-Invalidation Messages from switch: 50800
-Write messages to memory nodes: 400
-Data request messages to memory nodes: 1018
-Memory node to control node with data :1018
-
-
-Write ratio: 0.5
-
-
-Invalidation Messages from switch: 63500
-Write messages to memory nodes: 500
-Data request messages to memory nodes: 1067
-Memory node to control node with data :1067
-
-
-Write ratio: 0.6
-
-
-Invalidation Messages from switch: 76200
-Write messages to memory nodes: 600
-Data request messages to memory nodes: 1132
-Memory node to control node with data :1132
 
 
 Write ratio: 0.7
@@ -381,8 +179,8 @@ Write ratio: 0.8
 
 Invalidation Messages from switch: 101600
 Write messages to memory nodes: 800
-Data request messages to memory nodes: 1396
-Memory node to control node with data :1396
+Data request messages to memory nodes: 1387
+Memory node to control node with data :1387
 
 
 Write ratio: 0.9
@@ -390,8 +188,8 @@ Write ratio: 0.9
 
 Invalidation Messages from switch: 114300
 Write messages to memory nodes: 900
-Data request messages to memory nodes: 1606
-Memory node to control node with data :1605
+Data request messages to memory nodes: 1629
+Memory node to control node with data :1629
 
 
 Write ratio: 1.0
@@ -399,19 +197,19 @@ Write ratio: 1.0
 
 Invalidation Messages from switch: 127000
 Write messages to memory nodes: 1000
-Data request messages to memory nodes: 997
-Memory node to control node with data :997
+Data request messages to memory nodes: 995
+Memory node to control node with data :995
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 0.8
+Sharing Ratio: 0.4
 Write ratio: 0.0
 
 
 Invalidation Messages from switch: 0
 Write messages to memory nodes: 0
-Data request messages to memory nodes: 235
-Memory node to control node with data :235
+Data request messages to memory nodes: 810
+Memory node to control node with data :810
 
 
 Write ratio: 0.1
@@ -419,8 +217,8 @@ Write ratio: 0.1
 
 Invalidation Messages from switch: 12700
 Write messages to memory nodes: 100
-Data request messages to memory nodes: 925
-Memory node to control node with data :925
+Data request messages to memory nodes: 969
+Memory node to control node with data :969
 
 
 Write ratio: 0.2
@@ -428,8 +226,8 @@ Write ratio: 0.2
 
 Invalidation Messages from switch: 25400
 Write messages to memory nodes: 200
-Data request messages to memory nodes: 979
-Memory node to control node with data :979
+Data request messages to memory nodes: 986
+Memory node to control node with data :986
 
 
 Write ratio: 0.3
@@ -455,8 +253,8 @@ Write ratio: 0.5
 
 Invalidation Messages from switch: 63500
 Write messages to memory nodes: 500
-Data request messages to memory nodes: 1080
-Memory node to control node with data :1080
+Data request messages to memory nodes: 1065
+Memory node to control node with data :1065
 
 
 Write ratio: 0.6
@@ -464,8 +262,8 @@ Write ratio: 0.6
 
 Invalidation Messages from switch: 76200
 Write messages to memory nodes: 600
-Data request messages to memory nodes: 1126
-Memory node to control node with data :1125
+Data request messages to memory nodes: 1123
+Memory node to control node with data :1123
 
 
 Write ratio: 0.7
@@ -473,8 +271,8 @@ Write ratio: 0.7
 
 Invalidation Messages from switch: 88900
 Write messages to memory nodes: 700
-Data request messages to memory nodes: 1236
-Memory node to control node with data :1236
+Data request messages to memory nodes: 1242
+Memory node to control node with data :1242
 
 
 Write ratio: 0.8
@@ -482,62 +280,8 @@ Write ratio: 0.8
 
 Invalidation Messages from switch: 101600
 Write messages to memory nodes: 800
-Data request messages to memory nodes: 1351
-Memory node to control node with data :1351
+Data request messages to memory nodes: 1394
+Memory node to control node with data :1394
 
 
 Write ratio: 0.9
-
-
-Invalidation Messages from switch: 114300
-Write messages to memory nodes: 900
-Data request messages to memory nodes: 1590
-Memory node to control node with data :1590
-
-
-Write ratio: 1.0
-
-
-Invalidation Messages from switch: 127000
-Write messages to memory nodes: 1000
-Data request messages to memory nodes: 990
-Memory node to control node with data :990
-
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 1.0
-Write ratio: 0.0
-Write ratio: 0.1
-
-
-Invalidation Messages from switch: 12827
-Write messages to memory nodes: 101
-Data request messages to memory nodes: 920
-Memory node to control node with data :920
-
-
-Write ratio: 0.2
-Write ratio: 0.3
-Write ratio: 0.4
-Write ratio: 0.5
-Write ratio: 0.6
-Write ratio: 0.7
-Write ratio: 0.8
-Write ratio: 0.9
-
-
-Invalidation Messages from switch: 114427
-Write messages to memory nodes: 901
-Data request messages to memory nodes: 1580
-Memory node to control node with data :1580
-
-
-Write ratio: 1.0
-
-
-Invalidation Messages from switch: 127127
-Write messages to memory nodes: 1001
-Data request messages to memory nodes: 998
-Memory node to control node with data :998
-
-

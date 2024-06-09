@@ -16,7 +16,7 @@
 int main(int argc, char ** argv)
 {
 	if (argc < 4) {
-		//printf(ANSI_COLOR_RED "Usage: ./[exec] [packet input file] [memory input file] [packet log file]" ANSI_COLOR_RESET "\n");
+		printf(ANSI_COLOR_RED "Usage: ./[exec] [packet input file] [memory input file] [packet log file]" ANSI_COLOR_RESET "\n");
 		return EXIT_FAILURE;
 	}
 
@@ -84,7 +84,8 @@ int main(int argc, char ** argv)
 	//uint32_t switch_node_max_id = global_id - 1;
 
 	// Memory Node Initialization
-	MemoryNode memory_nodes[NUM_MEMORY_NODES];
+	// MemoryNode memory_nodes[NUM_MEMORY_NODES];
+	MemoryNode* memory_nodes = malloc(sizeof(MemoryNode) * NUM_MEMORY_NODES);
 	uint32_t memory_node_min_id = global_id;
 	for (int i = 0; i < NUM_MEMORY_NODES; i++) {
 		MemoryNode node;
@@ -98,6 +99,14 @@ int main(int argc, char ** argv)
 		memory_nodes[i] = node;
 	}
 	//uint32_t memory_node_max_id = global_id - 1;
+	// for (int i = 0; i < NUM_MEMORY_NODES; i++) {
+	// 	init_memnodes(&(memory_nodes[i]), NUM_COMPUTE_NODES);
+	// }
+
+	for (int i = 0; i < NUM_MEMORY_NODES; i++) {
+		printf("%d\n", memory_nodes[i].memory[0].nodeState[0]);
+	}
+
 
 	// Memory initialization
  	char line[255];
@@ -139,6 +148,7 @@ int main(int argc, char ** argv)
 
 	// Creating packets based off input trace
 	Packet packets[2000];
+	// Packet* packets = malloc(sizeof(Packet) * 2000);
 	FILE* cmd_inputs = fopen(argv[1], "r");
 	if (cmd_inputs == NULL) {
 		return EXIT_FAILURE;
@@ -183,26 +193,26 @@ int main(int argc, char ** argv)
 		// coherence logic
 		//printf("\n\n\n\n\nProcessing Packet at global time %d\n", global_time);
 		//printf("Global time: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, packets[pkt_iterator].time, stall);
-		if (global_time >= packets[pkt_iterator].time && !stall) {
-			//printf("Servicing packet %d.\n", pkt_iterator);
+		if (global_time >= packets[pkt_iterator].time && pkt_iterator <= pkt_cnt && !stall) {
+			printf("Servicing packet %d.\n", pkt_iterator);
 			if (packets[pkt_iterator].flag == WRITE) {
-				//printf("Write for packet with time %d!\n", packets[pkt_iterator].time);
+				printf("Write for packet with time %d!\n", packets[pkt_iterator].time);
 				int result = read_action(compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr);
 				if (result == 1) {
-					//printf("Waiting for response (node %d write). Stall is 1.\n", packets[pkt_iterator].src - compute_node_min_id);
+					printf("Waiting for response (node %d write).\n", packets[pkt_iterator].src - compute_node_min_id);
 					stall = 1;
 					Packet new_pkt = packets[pkt_iterator];
 					new_pkt.flag = READ;
-					//printf("Node %d sending data request for purpose of write.\n", packets[pkt_iterator].src - compute_node_min_id);
+					printf("Node %d sending data request for purpose of write.\n", packets[pkt_iterator].src - compute_node_min_id);
 					push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, new_pkt);
 					pkt_iterator--;
 				}
 				else {
-					stall = 1;
+					stall = 0;
 
 					write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 					push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
-					//pkt_iterator--;
+					// pkt_iterator--;
 				}
 				// place packet in queue
 			}
@@ -313,24 +323,27 @@ int main(int argc, char ** argv)
 					curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 					// place node into switch bottom output port corresponding to address
 					//printf("Data address: %x\n", curr_packet_rx.data.addr);
-					uint32_t correct_memory_node = (curr_packet_rx.data.addr >> 4) / 4096;//curr_packet_rx.data.addr / 4096;//((curr_packet_rx.data.addr >> 4) / 64);
+					//uint32_t correct_memory_node = (curr_packet_rx.data.addr >> 4) / 4096;//curr_packet_rx.data.addr / 4096;//((curr_packet_rx.data.addr >> 4) / 64);
+					// uint32_t correct_memory_node = (curr_packet_rx.data.addr >> 2) & 0xF;	
+					uint32_t correct_memory_node = curr_packet_rx.data.addr / (64 * 4);
+					// printf("Correct memory node for address: 0x%lx is node index: %d\n", curr_packet_rx.data.addr, correct_memory_node);
 					curr_packet_rx.dst = correct_memory_node + memory_node_min_id;
 					push_packet((&(switch_nodes[i].bot_ports[correct_memory_node])), TX, curr_packet_rx);
 					// invalidate on write packets to all other compute nodes
 					if (curr_packet_rx.flag == WRITE)
 					{
 						//printf("Due to write request from node %d, invalidating all other nodes.\n", curr_packet_rx.src);
-						for (int k = 0; k < NUM_COMPUTE_NODES; k++)
-						{
-							if (compute_nodes[k].id != curr_packet_rx.src)
-							{
-								Packet invalidate_packet = (Packet) {global_id++, global_time + 1, INVALIDATE, switch_nodes[i].id, compute_nodes[k].id, (DataNode) {curr_packet_rx.data.addr, 0xFFFFFFFF}};
-								//printf(ANSI_COLOR_YELLOW "Sending invalidate packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", invalidate_packet.id, switch_nodes[i].id);
-								stall = 1;
-								//pkt_iterator--;
-								push_packet((&(switch_nodes[i].top_ports[k])), TX, invalidate_packet);
-							}
-						}
+						// for (int k = 0; k < NUM_COMPUTE_NODES; k++)
+						// {
+						// 	if (compute_nodes[k].id != curr_packet_rx.src)
+						// 	{
+						// 		Packet invalidate_packet = (Packet) {global_id++, global_time + 1, INVALIDATE, switch_nodes[i].id, compute_nodes[k].id, (DataNode) {curr_packet_rx.data.addr, 0xFFFFFFFF}};
+						// 		//printf(ANSI_COLOR_YELLOW "Sending invalidate packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", invalidate_packet.id, switch_nodes[i].id);
+						// 		stall = 1;
+						// 		//pkt_iterator--;
+						// 		push_packet((&(switch_nodes[i].top_ports[k])), TX, invalidate_packet);
+						// 	}
+						// }
 					}
 					// remove packet from switch top input port
 					pop_packet((&(switch_nodes[i].top_ports[j])), RX, 1);
@@ -411,7 +424,7 @@ int main(int argc, char ** argv)
 					// need to act on this packet
 					//printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 					// handle return packet
-					Packet return_packet = process_packet(&memory_nodes[i], curr_packet_rx, global_id++, global_time, memory_node_min_id);
+					Packet return_packet = process_packet(&memory_nodes[i], curr_packet_rx, global_id++, global_time, memory_node_min_id, &(memory_nodes[i].top_ports[j]));
 					if (return_packet.flag != ERROR)
 					{
 						// place packet in outgoing buffer
@@ -436,7 +449,7 @@ int main(int argc, char ** argv)
 		}
 	} while (finished == 0);
 
-	//printf("Ended on global time: %d\n", global_time);
+	printf("Ended on global time: %d\n", global_time);
     for (uint32_t i = 0; i <= compute_node_max_id; i++) {
         // printf("Compute node %d\n----------------\n", i);
         // print_cache(&compute_nodes[i]);

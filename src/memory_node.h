@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "port.h"
 #include "packet.h"
+#include "stdlib.h"
 
 // definitions for memory node
 #define MEM_NUM_TOP_PORTS	1	// should not ever be changed
@@ -12,11 +13,11 @@
 #define MEM_LINE_SIZE		32	// in bits
 
 // enum defining various cache states for MSI protocol
-// typedef enum
-// {
-// 	MODIFIED, SHARED, INVALID
-// }
-// StatesMSI_t;
+typedef enum
+{
+	I, S, M
+}
+StatesMSI_t;
 
 // struct holding data inside a MemoryNode
 typedef struct MemoryLine
@@ -24,7 +25,8 @@ typedef struct MemoryLine
 	uint32_t address;
 	uint32_t value;
 	// status of all compute nodes
-	//StatesMSI_t state;
+	// StatesMSI_t* nodeState;
+	StatesMSI_t nodeState[128];
 }
 MemoryLine;
 
@@ -40,7 +42,9 @@ typedef struct MemoryNode
 }
 MemoryNode;
 
-Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
+void init_memnodes(MemoryNode* node, int node_cnt);
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id, Port* p);
+void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
 int get_memory_control_count();
 
 #endif

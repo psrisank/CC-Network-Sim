@@ -4,12 +4,13 @@ import math
 
 # variables for trace generation
 total_num_requests = 1000
-time_between_packets = 10
+time_between_packets = 200
 
 memory_min_addr = 0x00000000
-#memory_max_addr = 0x00080000
-memory_max_addr = 0x00200000
-
+memory_max_addr = 0x00008000
+# memory_max_addr = 0x00080000
+# memory_max_addr = 0x0
+# memory_max_addr = 0x7E00
 if (len(sys.argv) != 5):
 	print("Correct usage is 'python generator.py [write ratio] [sharing ratio] [num compute nodes] [output file name]'")
 	exit()
@@ -42,6 +43,7 @@ for curr_packet in range(num_compute_nodes, total_num_requests + num_compute_nod
     #while ((address >> 2) % 4 == 0):
     while (address == 0):
         address = random.randint(memory_min_addr, memory_max_addr)
+        address = address & (0xFFFFFF00)
     write = 0
     wdata = random.randint(0, 0xFFFFFFFF)
     packets.append([global_time, compute_node_id, address, write, wdata])
