@@ -15,13 +15,13 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.dst = pkt.src;
 	uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
 
-	control_message_memory_node_global_counter++;
 	if (pkt.flag == READ)
 	{
 		return_packet.flag = NORMAL;
 		// uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
 		DataNode return_data = { pkt.data.addr, node->memory[address_to_access].value };
 		return_packet.data = return_data;
+		control_message_memory_node_global_counter++;
 	}
 	else if (pkt.flag == WRITE)
 	{

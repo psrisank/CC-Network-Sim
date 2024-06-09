@@ -1,0 +1,15 @@
+rm -f bin/*.o bin/sim
+rm -f *.csv
+gcc -std=c99 -Wall -Wextra -g  -c src/compute_node.c -o bin/compute_node.o
+gcc -std=c99 -Wall -Wextra -g  -c src/memory_node.c -o bin/memory_node.o
+gcc -std=c99 -Wall -Wextra -g  -c src/port.c -o bin/port.o
+gcc -std=c99 -Wall -Wextra -g  -c src/updated_main.c -o bin/updated_main.o
+gcc -std=c99 -Wall -Wextra -g  bin/compute_node.o bin/memory_node.o bin/port.o bin/updated_main.o -o bin/sim
+
+
+Invalidation Messages from switch: 127000
+Write messages to memory nodes: 1000
+Data request messages to memory nodes: 993
+Memory node to control node with data :993
+
+

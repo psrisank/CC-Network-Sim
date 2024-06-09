@@ -5,7 +5,7 @@
 
 #include "packet.h"
 
-#define QUEUE_SIZE	256
+#define QUEUE_SIZE 256
 
 
 typedef enum

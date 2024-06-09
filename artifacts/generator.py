@@ -2,7 +2,7 @@ import sys
 import random
 
 # put variables here for trace generation
-total_num_requests = 1000
+total_num_requests = 5
 time_between_packets = 10
 
 memory_min_addr = 0x00000000
@@ -60,9 +60,6 @@ while (num_shared < (total_num_requests * sharing_ratio)):
 		packets[rand_num][2] = 0x00000000
 		num_shared += 1
 
-# shuffle packets to produce variance
-for i in range(5):
-	random.shuffle(packets)
 
 # write packet list to output file
 with open(sys.argv[4], 'w') as output_file:
