@@ -46,5 +46,6 @@ void init_memnodes(MemoryNode* node, int node_cnt);
 Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id, Port* p);
 void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
 int get_memory_control_count();
+int get_memory_to_compute_requests();
 
 #endif

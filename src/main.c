@@ -103,9 +103,9 @@ int main(int argc, char ** argv)
 	// 	init_memnodes(&(memory_nodes[i]), NUM_COMPUTE_NODES);
 	// }
 
-	for (int i = 0; i < NUM_MEMORY_NODES; i++) {
-		printf("%d\n", memory_nodes[i].memory[0].nodeState[0]);
-	}
+	// for (int i = 0; i < NUM_MEMORY_NODES; i++) {
+	// 	printf("%d\n", memory_nodes[i].memory[0].nodeState[0]);
+	// }
 
 
 	// Memory initialization
@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
 		token = strtok(NULL, ",");
 		pkt_addr = (uint32_t) strtol(token, NULL, 16);
 		token = strtok(NULL, ",");
-		pkt_flag = strtol(token, NULL, 2) ? WRITE : READ;
+		pkt_flag = strtol(token, NULL, 2) ? INST_WRITE : INST_READ;
 		token = strtok(NULL, ",");
 		pkt_data = (uint32_t) strtol(token, NULL, 16);
 		packets[pkt_iterator++] = (Packet) {global_id++, pkt_time, pkt_flag, pkt_src, 0, (DataNode) {pkt_addr, pkt_data}};
@@ -187,61 +187,127 @@ int main(int argc, char ** argv)
 	int stall = 0;
 	//int last_stall = 0;
 	char finished = 0;
+	int cooldown = 3;
 	do {
 		//printf("\n--- GLOBAL TIME = %d\n", global_time);
 
 		// coherence logic
-		//printf("\n\n\n\n\nProcessing Packet at global time %d\n", global_time);
-		//printf("Global time: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, packets[pkt_iterator].time, stall);
-		if (global_time >= packets[pkt_iterator].time && pkt_iterator <= pkt_cnt && !stall) {
-			printf("Servicing packet %d.\n", pkt_iterator);
-			if (packets[pkt_iterator].flag == WRITE) {
-				printf("Write for packet with time %d!\n", packets[pkt_iterator].time);
-				int result = read_action(compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr);
-				if (result == 1) {
-					printf("Waiting for response (node %d write).\n", packets[pkt_iterator].src - compute_node_min_id);
-					stall = 1;
-					Packet new_pkt = packets[pkt_iterator];
-					new_pkt.flag = READ;
-					printf("Node %d sending data request for purpose of write.\n", packets[pkt_iterator].src - compute_node_min_id);
-					push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, new_pkt);
-					pkt_iterator--;
-				}
-				else {
-					stall = 0;
-
-					write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
-					push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
-					// pkt_iterator--;
-				}
-				// place packet in queue
-			}
-			else if (packets[pkt_iterator].flag == READ) {
-				int result = read_action(compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr);
-
-				switch (result)
-				{
-					case 0:
-					{
-						// nothing happens
-						break;
-					}
-
+		// printf("\n\n\n\nGlobal time: %d, pkt_iterator: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, pkt_iterator, packets[pkt_iterator].time, stall);
+		if (global_time >= packets[pkt_iterator].time && pkt_iterator < pkt_cnt && !stall) {
+			int state_action = check_state(compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr);
+			if (packets[pkt_iterator].flag == INST_READ) {
+				switch(state_action) {
 					case 1:
-					{
-						// cache miss without writeback
-						// request from memory
-						// place packet in queue
+						if (packets[pkt_iterator].time == 54800) {
+							// printf("Global time: %d.\n", global_time);
+							// printf("repeated.\n");
+						}
+						packets[pkt_iterator].flag = READ;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						packets[pkt_iterator].flag = INST_READ;
+						// pkt_iterator++;
+						log_cdatareq();
+						// stall = 1;
 						break;
-					}
+					case 5:
+						packets[pkt_iterator].flag = READ;
+						// printf("Address did not match, but in shared.\n");
+						// printf("Requesting address 0x%lx.\n", packets[pkt_iterator].data.addr);
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						packets[pkt_iterator].flag = INST_READ;
+						pkt_iterator++;
+						log_cdatareq();
+						// stall = 1;
+						break;
+					case 6: // request data
+						packets[pkt_iterator].flag = READ;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						packets[pkt_iterator].flag = INST_READ;
+						// pkt_iterator++;
+						log_cdatareq();
+						// stall = 1;
+						break;
+					case 4: // writeback data
+						Packet dat_req_pkt;
+						dat_req_pkt.id = global_id++;
+						dat_req_pkt.time = global_time;
+						dat_req_pkt.flag = WR_DATA;
+						dat_req_pkt.src = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].id;
+						dat_req_pkt.dst = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].address;
+						dat_req_pkt.data.addr = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].address;
+						dat_req_pkt.data.data = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].value;
+						compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].state = SHARED;
+						compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].dirty = 0;
+						// compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].address = packets[pkt_iterator].data.addr;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, dat_req_pkt);
+						// stall = 1;
+						log_cwritedata();
+						// printf("Returning data for a read.\n");
+						break;
+					default: pkt_iterator++; // do nothing since up to date data is in the cache
+						break;
 				}
 			}
-			//printf("Pkt iterator incremented.\n");
-			pkt_iterator++;
+			else if (packets[pkt_iterator].flag == INST_WRITE) {
+				// printf("Write detected! for packet time %d.\n", packets[pkt_iterator].time);
+				// printf("Action is: %d.\n", state_action);
+				switch(state_action) {
+					case 1: // send write req
+						write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data); 
+						packets[pkt_iterator].flag = WR_SIGNAL;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						pkt_iterator++;
+						log_cwritereq();
+						break;
+					case 2: // update the cache but no need to invalidate other caches
+						write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data); 
+						pkt_iterator++;
+						break;
+					case 3: // send write req
+						write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data); 
+						packets[pkt_iterator].flag = WR_SIGNAL;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						pkt_iterator++;
+						log_cwritereq();
+						break;
+					case 4: // writeback
+						// printf("Writing back for packet time %d.\n", packets[pkt_iterator].time);
+						Packet dat_req_pkt;
+						dat_req_pkt.id = global_id++;
+						dat_req_pkt.time = global_time;
+						dat_req_pkt.flag = WR_DATA;
+						dat_req_pkt.src = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].id;
+						dat_req_pkt.dst = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].address;
+						dat_req_pkt.data.addr = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].address;
+						dat_req_pkt.data.data = compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].value;
+						compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].state = SHARED;
+						compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].dirty = 0;
+						compute_nodes[packets[pkt_iterator].src - compute_node_min_id].cache[(packets[pkt_iterator].data.addr >> 2) % 4].address = packets[pkt_iterator].data.addr;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, dat_req_pkt);
+						log_cwritedata();
+						break;
+					case 5: // send write req
+						write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data); 
+						packets[pkt_iterator].flag = WR_SIGNAL;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						pkt_iterator++;
+						log_cwritereq();
+						break;
+					case 6: // send write req
+						write_action(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data); 
+						packets[pkt_iterator].flag = WR_SIGNAL;
+						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						pkt_iterator++;
+						log_cwritereq();
+						break;
+					default: 
+						pkt_iterator++;
+						break;
+				}
+			}
 		}
 
-		// outgoing from compute 
+		// incoming/outgoing from compute 
 		for (int i = 0; i < NUM_COMPUTE_NODES; i++)
 		{
 			//printf("* Compute node with ID %d at time %d\n", compute_nodes[i].id, global_time);
@@ -267,7 +333,15 @@ int main(int argc, char ** argv)
 					{
 						//printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at compute node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, compute_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 						// TODO act on this
-						cnode_process_packet(&compute_nodes[i], curr_packet_rx, &stall);	
+						Packet ret_pkt = cnode_process_packet(&compute_nodes[i], curr_packet_rx, &stall);
+						if (ret_pkt.flag == RESEND) {
+							pkt_iterator--;
+						}
+						if (ret_pkt.flag != ERROR) {
+							// printf("Data is being returned.\n");
+							push_packet((&(switch_nodes[0].top_ports[i])), RX, ret_pkt);
+						}
+
 						//printf("Stall is now: %d\n", stall);
 						//printf("Validity of index in node %d cache: %d\n", i, compute_nodes[i].cache[(curr_packet_rx.data.addr >> 2) % 4].valid);				
 					}
@@ -282,7 +356,7 @@ int main(int argc, char ** argv)
 		}
 
 
-		// outgoing from switch nodes
+		// incoming/outgoing from switch nodes
 		for (int i = 0; i < NUM_SWITCH_NODES; i++)
 		{
 			// loop through outgoing ports to memory nodes
@@ -319,6 +393,7 @@ int main(int argc, char ** argv)
 
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
+					// printf("Sending data back to memory node.\n");
 					//printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
 					curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
 					// place node into switch bottom output port corresponding to address
@@ -329,22 +404,6 @@ int main(int argc, char ** argv)
 					// printf("Correct memory node for address: 0x%lx is node index: %d\n", curr_packet_rx.data.addr, correct_memory_node);
 					curr_packet_rx.dst = correct_memory_node + memory_node_min_id;
 					push_packet((&(switch_nodes[i].bot_ports[correct_memory_node])), TX, curr_packet_rx);
-					// invalidate on write packets to all other compute nodes
-					if (curr_packet_rx.flag == WRITE)
-					{
-						//printf("Due to write request from node %d, invalidating all other nodes.\n", curr_packet_rx.src);
-						// for (int k = 0; k < NUM_COMPUTE_NODES; k++)
-						// {
-						// 	if (compute_nodes[k].id != curr_packet_rx.src)
-						// 	{
-						// 		Packet invalidate_packet = (Packet) {global_id++, global_time + 1, INVALIDATE, switch_nodes[i].id, compute_nodes[k].id, (DataNode) {curr_packet_rx.data.addr, 0xFFFFFFFF}};
-						// 		//printf(ANSI_COLOR_YELLOW "Sending invalidate packet with ID %d to switch with ID %d" ANSI_COLOR_RESET "\n", invalidate_packet.id, switch_nodes[i].id);
-						// 		stall = 1;
-						// 		//pkt_iterator--;
-						// 		push_packet((&(switch_nodes[i].top_ports[k])), TX, invalidate_packet);
-						// 	}
-						// }
-					}
 					// remove packet from switch top input port
 					pop_packet((&(switch_nodes[i].top_ports[j])), RX, 1);
 				}
@@ -392,7 +451,7 @@ int main(int argc, char ** argv)
 			}
 		}
 
-		// outgoing from memory nodes
+		// incoming/outgoing from memory nodes
 		for (int i = 0; i < NUM_MEMORY_NODES; i++)
 		{
 			//printf("* Memory node with ID %d at time %d\n", memory_nodes[i].id, global_time);
@@ -444,7 +503,7 @@ int main(int argc, char ** argv)
 
 
 		global_time++;
-		if ((packets[pkt_cnt - 1].time + 1000000) == global_time) {
+		if ((packets[pkt_cnt - 1].time + 200) == global_time) {
 			finished = 1;
 		}
 	} while (finished == 0);
@@ -457,7 +516,7 @@ int main(int argc, char ** argv)
     }
 
 	get_compute_control_count();
-	printf("Memory node to control node with data :%d\n\n", get_memory_control_count() - 128);
+	printf("Memory node to control node with data :%d\n\n", get_memory_control_count());
 
 
 	fclose(output_file);

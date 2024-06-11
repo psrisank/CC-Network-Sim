@@ -2,286 +2,804 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Sharing Ratio: 0.0
 Write ratio: 0.0
+Ended on global time: 225600
 
 
 Invalidation Messages from switch: 0
-Write messages to memory nodes: 0
-Data request messages to memory nodes: 993
-Memory node to control node with data :993
+Write requests to memory nodes: 0
+Read requests to memory nodes: 1125
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :1125
 
 
 Write ratio: 0.1
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 12700
-Write messages to memory nodes: 100
-Data request messages to memory nodes: 995
-Memory node to control node with data :995
+Invalidation Messages from switch: 278
+Write requests to memory nodes: 100
+Read requests to memory nodes: 988
+Memory to compute node data requests: 46
+Data return/writebacks to memory nodes: 91
+Memory node to control node with data :988
 
 
 Write ratio: 0.2
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 25400
-Write messages to memory nodes: 200
-Data request messages to memory nodes: 999
-Memory node to control node with data :999
+Invalidation Messages from switch: 493
+Write requests to memory nodes: 200
+Read requests to memory nodes: 875
+Memory to compute node data requests: 78
+Data return/writebacks to memory nodes: 158
+Memory node to control node with data :875
 
 
 Write ratio: 0.3
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 38100
-Write messages to memory nodes: 300
-Data request messages to memory nodes: 1025
-Memory node to control node with data :1025
+Invalidation Messages from switch: 582
+Write requests to memory nodes: 300
+Read requests to memory nodes: 758
+Memory to compute node data requests: 107
+Data return/writebacks to memory nodes: 226
+Memory node to control node with data :758
 
 
 Write ratio: 0.4
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 50800
-Write messages to memory nodes: 400
-Data request messages to memory nodes: 1045
-Memory node to control node with data :1044
+Invalidation Messages from switch: 643
+Write requests to memory nodes: 400
+Read requests to memory nodes: 645
+Memory to compute node data requests: 130
+Data return/writebacks to memory nodes: 288
+Memory node to control node with data :645
 
 
 Write ratio: 0.5
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 63500
-Write messages to memory nodes: 500
-Data request messages to memory nodes: 1071
-Memory node to control node with data :1071
+Invalidation Messages from switch: 671
+Write requests to memory nodes: 500
+Read requests to memory nodes: 539
+Memory to compute node data requests: 153
+Data return/writebacks to memory nodes: 336
+Memory node to control node with data :539
 
 
 Write ratio: 0.6
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 76200
-Write messages to memory nodes: 600
-Data request messages to memory nodes: 1116
-Memory node to control node with data :1116
+Invalidation Messages from switch: 721
+Write requests to memory nodes: 600
+Read requests to memory nodes: 449
+Memory to compute node data requests: 142
+Data return/writebacks to memory nodes: 368
+Memory node to control node with data :449
 
 
 Write ratio: 0.7
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 88900
-Write messages to memory nodes: 700
-Data request messages to memory nodes: 1246
-Memory node to control node with data :1246
+Invalidation Messages from switch: 757
+Write requests to memory nodes: 699
+Read requests to memory nodes: 368
+Memory to compute node data requests: 117
+Data return/writebacks to memory nodes: 379
+Memory node to control node with data :368
 
 
 Write ratio: 0.8
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 101600
-Write messages to memory nodes: 800
-Data request messages to memory nodes: 1400
-Memory node to control node with data :1400
+Invalidation Messages from switch: 798
+Write requests to memory nodes: 799
+Read requests to memory nodes: 283
+Memory to compute node data requests: 79
+Data return/writebacks to memory nodes: 377
+Memory node to control node with data :283
 
 
 Write ratio: 0.9
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 114300
-Write messages to memory nodes: 900
-Data request messages to memory nodes: 1638
-Memory node to control node with data :1638
+Invalidation Messages from switch: 827
+Write requests to memory nodes: 898
+Read requests to memory nodes: 202
+Memory to compute node data requests: 54
+Data return/writebacks to memory nodes: 378
+Memory node to control node with data :202
 
 
 Write ratio: 1.0
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 127000
-Write messages to memory nodes: 1000
-Data request messages to memory nodes: 994
-Memory node to control node with data :994
+Invalidation Messages from switch: 864
+Write requests to memory nodes: 997
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 361
+Memory node to control node with data :128
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Sharing Ratio: 0.2
 Write ratio: 0.0
+Ended on global time: 225600
 
 
 Invalidation Messages from switch: 0
-Write messages to memory nodes: 0
-Data request messages to memory nodes: 937
-Memory node to control node with data :937
+Write requests to memory nodes: 0
+Read requests to memory nodes: 1061
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :1061
 
 
 Write ratio: 0.1
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 12700
-Write messages to memory nodes: 100
-Data request messages to memory nodes: 967
-Memory node to control node with data :967
+Invalidation Messages from switch: 497
+Write requests to memory nodes: 100
+Read requests to memory nodes: 973
+Memory to compute node data requests: 52
+Data return/writebacks to memory nodes: 86
+Memory node to control node with data :973
 
 
 Write ratio: 0.2
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 25400
-Write messages to memory nodes: 200
-Data request messages to memory nodes: 976
-Memory node to control node with data :976
+Invalidation Messages from switch: 615
+Write requests to memory nodes: 200
+Read requests to memory nodes: 869
+Memory to compute node data requests: 93
+Data return/writebacks to memory nodes: 159
+Memory node to control node with data :869
 
 
 Write ratio: 0.3
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 38100
-Write messages to memory nodes: 300
-Data request messages to memory nodes: 1007
-Memory node to control node with data :1007
+Invalidation Messages from switch: 693
+Write requests to memory nodes: 300
+Read requests to memory nodes: 769
+Memory to compute node data requests: 116
+Data return/writebacks to memory nodes: 229
+Memory node to control node with data :769
 
 
 Write ratio: 0.4
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 50800
-Write messages to memory nodes: 400
-Data request messages to memory nodes: 1019
-Memory node to control node with data :1019
+Invalidation Messages from switch: 761
+Write requests to memory nodes: 399
+Read requests to memory nodes: 658
+Memory to compute node data requests: 132
+Data return/writebacks to memory nodes: 271
+Memory node to control node with data :658
 
 
 Write ratio: 0.5
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 63500
-Write messages to memory nodes: 500
-Data request messages to memory nodes: 1070
-Memory node to control node with data :1070
+Invalidation Messages from switch: 817
+Write requests to memory nodes: 498
+Read requests to memory nodes: 561
+Memory to compute node data requests: 139
+Data return/writebacks to memory nodes: 310
+Memory node to control node with data :561
 
 
 Write ratio: 0.6
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 76200
-Write messages to memory nodes: 600
-Data request messages to memory nodes: 1131
-Memory node to control node with data :1131
+Invalidation Messages from switch: 872
+Write requests to memory nodes: 598
+Read requests to memory nodes: 466
+Memory to compute node data requests: 140
+Data return/writebacks to memory nodes: 348
+Memory node to control node with data :466
 
 
 Write ratio: 0.7
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 88900
-Write messages to memory nodes: 700
-Data request messages to memory nodes: 1231
-Memory node to control node with data :1231
+Invalidation Messages from switch: 906
+Write requests to memory nodes: 699
+Read requests to memory nodes: 373
+Memory to compute node data requests: 129
+Data return/writebacks to memory nodes: 373
+Memory node to control node with data :373
 
 
 Write ratio: 0.8
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 101600
-Write messages to memory nodes: 800
-Data request messages to memory nodes: 1387
-Memory node to control node with data :1387
+Invalidation Messages from switch: 926
+Write requests to memory nodes: 800
+Read requests to memory nodes: 285
+Memory to compute node data requests: 99
+Data return/writebacks to memory nodes: 368
+Memory node to control node with data :285
 
 
 Write ratio: 0.9
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 114300
-Write messages to memory nodes: 900
-Data request messages to memory nodes: 1629
-Memory node to control node with data :1629
+Invalidation Messages from switch: 967
+Write requests to memory nodes: 898
+Read requests to memory nodes: 212
+Memory to compute node data requests: 46
+Data return/writebacks to memory nodes: 361
+Memory node to control node with data :212
 
 
 Write ratio: 1.0
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 127000
-Write messages to memory nodes: 1000
-Data request messages to memory nodes: 995
-Memory node to control node with data :995
+Invalidation Messages from switch: 994
+Write requests to memory nodes: 998
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 333
+Memory node to control node with data :128
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Sharing Ratio: 0.4
 Write ratio: 0.0
+Ended on global time: 225600
 
 
 Invalidation Messages from switch: 0
-Write messages to memory nodes: 0
-Data request messages to memory nodes: 810
-Memory node to control node with data :810
+Write requests to memory nodes: 0
+Read requests to memory nodes: 923
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :923
 
 
 Write ratio: 0.1
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 12700
-Write messages to memory nodes: 100
-Data request messages to memory nodes: 969
-Memory node to control node with data :969
+Invalidation Messages from switch: 584
+Write requests to memory nodes: 100
+Read requests to memory nodes: 987
+Memory to compute node data requests: 59
+Data return/writebacks to memory nodes: 89
+Memory node to control node with data :987
 
 
 Write ratio: 0.2
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 25400
-Write messages to memory nodes: 200
-Data request messages to memory nodes: 986
-Memory node to control node with data :986
+Invalidation Messages from switch: 682
+Write requests to memory nodes: 200
+Read requests to memory nodes: 862
+Memory to compute node data requests: 95
+Data return/writebacks to memory nodes: 156
+Memory node to control node with data :862
 
 
 Write ratio: 0.3
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 38100
-Write messages to memory nodes: 300
-Data request messages to memory nodes: 997
-Memory node to control node with data :997
+Invalidation Messages from switch: 784
+Write requests to memory nodes: 299
+Read requests to memory nodes: 766
+Memory to compute node data requests: 143
+Data return/writebacks to memory nodes: 216
+Memory node to control node with data :766
 
 
 Write ratio: 0.4
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 50800
-Write messages to memory nodes: 400
-Data request messages to memory nodes: 1038
-Memory node to control node with data :1038
+Invalidation Messages from switch: 819
+Write requests to memory nodes: 400
+Read requests to memory nodes: 669
+Memory to compute node data requests: 143
+Data return/writebacks to memory nodes: 258
+Memory node to control node with data :669
 
 
 Write ratio: 0.5
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 63500
-Write messages to memory nodes: 500
-Data request messages to memory nodes: 1065
-Memory node to control node with data :1065
+Invalidation Messages from switch: 831
+Write requests to memory nodes: 500
+Read requests to memory nodes: 561
+Memory to compute node data requests: 166
+Data return/writebacks to memory nodes: 305
+Memory node to control node with data :561
 
 
 Write ratio: 0.6
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 76200
-Write messages to memory nodes: 600
-Data request messages to memory nodes: 1123
-Memory node to control node with data :1123
+Invalidation Messages from switch: 872
+Write requests to memory nodes: 598
+Read requests to memory nodes: 472
+Memory to compute node data requests: 158
+Data return/writebacks to memory nodes: 338
+Memory node to control node with data :472
 
 
 Write ratio: 0.7
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 88900
-Write messages to memory nodes: 700
-Data request messages to memory nodes: 1242
-Memory node to control node with data :1242
+Invalidation Messages from switch: 908
+Write requests to memory nodes: 700
+Read requests to memory nodes: 380
+Memory to compute node data requests: 138
+Data return/writebacks to memory nodes: 357
+Memory node to control node with data :380
 
 
 Write ratio: 0.8
+Ended on global time: 225600
 
 
-Invalidation Messages from switch: 101600
-Write messages to memory nodes: 800
-Data request messages to memory nodes: 1394
-Memory node to control node with data :1394
+Invalidation Messages from switch: 938
+Write requests to memory nodes: 797
+Read requests to memory nodes: 301
+Memory to compute node data requests: 93
+Data return/writebacks to memory nodes: 329
+Memory node to control node with data :301
 
 
 Write ratio: 0.9
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 969
+Write requests to memory nodes: 896
+Read requests to memory nodes: 218
+Memory to compute node data requests: 62
+Data return/writebacks to memory nodes: 329
+Memory node to control node with data :218
+
+
+Write ratio: 1.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 998
+Write requests to memory nodes: 998
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 286
+Memory node to control node with data :128
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sharing Ratio: 0.6
+Write ratio: 0.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 0
+Write requests to memory nodes: 0
+Read requests to memory nodes: 745
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :745
+
+
+Write ratio: 0.1
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 691
+Write requests to memory nodes: 100
+Read requests to memory nodes: 954
+Memory to compute node data requests: 69
+Data return/writebacks to memory nodes: 87
+Memory node to control node with data :954
+
+
+Write ratio: 0.2
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 762
+Write requests to memory nodes: 199
+Read requests to memory nodes: 861
+Memory to compute node data requests: 121
+Data return/writebacks to memory nodes: 163
+Memory node to control node with data :861
+
+
+Write ratio: 0.3
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 791
+Write requests to memory nodes: 300
+Read requests to memory nodes: 767
+Memory to compute node data requests: 144
+Data return/writebacks to memory nodes: 212
+Memory node to control node with data :767
+
+
+Write ratio: 0.4
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 823
+Write requests to memory nodes: 397
+Read requests to memory nodes: 668
+Memory to compute node data requests: 176
+Data return/writebacks to memory nodes: 266
+Memory node to control node with data :668
+
+
+Write ratio: 0.5
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 880
+Write requests to memory nodes: 499
+Read requests to memory nodes: 587
+Memory to compute node data requests: 167
+Data return/writebacks to memory nodes: 302
+Memory node to control node with data :587
+
+
+Write ratio: 0.6
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 884
+Write requests to memory nodes: 594
+Read requests to memory nodes: 469
+Memory to compute node data requests: 181
+Data return/writebacks to memory nodes: 328
+Memory node to control node with data :469
+
+
+Write ratio: 0.7
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 897
+Write requests to memory nodes: 696
+Read requests to memory nodes: 377
+Memory to compute node data requests: 161
+Data return/writebacks to memory nodes: 317
+Memory node to control node with data :377
+
+
+Write ratio: 0.8
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 948
+Write requests to memory nodes: 798
+Read requests to memory nodes: 295
+Memory to compute node data requests: 124
+Data return/writebacks to memory nodes: 316
+Memory node to control node with data :295
+
+
+Write ratio: 0.9
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 976
+Write requests to memory nodes: 895
+Read requests to memory nodes: 214
+Memory to compute node data requests: 67
+Data return/writebacks to memory nodes: 274
+Memory node to control node with data :214
+
+
+Write ratio: 1.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 994
+Write requests to memory nodes: 995
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 220
+Memory node to control node with data :128
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sharing Ratio: 0.8
+Write ratio: 0.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 0
+Write requests to memory nodes: 0
+Read requests to memory nodes: 466
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :466
+
+
+Write ratio: 0.1
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 847
+Write requests to memory nodes: 100
+Read requests to memory nodes: 965
+Memory to compute node data requests: 78
+Data return/writebacks to memory nodes: 91
+Memory node to control node with data :965
+
+
+Write ratio: 0.2
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 884
+Write requests to memory nodes: 200
+Read requests to memory nodes: 868
+Memory to compute node data requests: 128
+Data return/writebacks to memory nodes: 158
+Memory node to control node with data :868
+
+
+Write ratio: 0.3
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 917
+Write requests to memory nodes: 299
+Read requests to memory nodes: 786
+Memory to compute node data requests: 173
+Data return/writebacks to memory nodes: 215
+Memory node to control node with data :786
+
+
+Write ratio: 0.4
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 917
+Write requests to memory nodes: 399
+Read requests to memory nodes: 679
+Memory to compute node data requests: 193
+Data return/writebacks to memory nodes: 252
+Memory node to control node with data :679
+
+
+Write ratio: 0.5
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 952
+Write requests to memory nodes: 498
+Read requests to memory nodes: 587
+Memory to compute node data requests: 202
+Data return/writebacks to memory nodes: 284
+Memory node to control node with data :587
+
+
+Write ratio: 0.6
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 950
+Write requests to memory nodes: 595
+Read requests to memory nodes: 487
+Memory to compute node data requests: 201
+Data return/writebacks to memory nodes: 281
+Memory node to control node with data :487
+
+
+Write ratio: 0.7
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 970
+Write requests to memory nodes: 697
+Read requests to memory nodes: 391
+Memory to compute node data requests: 186
+Data return/writebacks to memory nodes: 282
+Memory node to control node with data :391
+
+
+Write ratio: 0.8
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 993
+Write requests to memory nodes: 797
+Read requests to memory nodes: 309
+Memory to compute node data requests: 125
+Data return/writebacks to memory nodes: 229
+Memory node to control node with data :309
+
+
+Write ratio: 0.9
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 991
+Write requests to memory nodes: 899
+Read requests to memory nodes: 209
+Memory to compute node data requests: 72
+Data return/writebacks to memory nodes: 206
+Memory node to control node with data :209
+
+
+Write ratio: 1.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1014
+Write requests to memory nodes: 995
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 146
+Memory node to control node with data :128
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sharing Ratio: 1.0
+Write ratio: 0.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 0
+Write requests to memory nodes: 0
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :128
+
+
+Write ratio: 0.1
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1053
+Write requests to memory nodes: 100
+Read requests to memory nodes: 964
+Memory to compute node data requests: 93
+Data return/writebacks to memory nodes: 93
+Memory node to control node with data :964
+
+
+Write ratio: 0.2
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1078
+Write requests to memory nodes: 200
+Read requests to memory nodes: 899
+Memory to compute node data requests: 166
+Data return/writebacks to memory nodes: 166
+Memory node to control node with data :899
+
+
+Write ratio: 0.3
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1085
+Write requests to memory nodes: 300
+Read requests to memory nodes: 808
+Memory to compute node data requests: 204
+Data return/writebacks to memory nodes: 204
+Memory node to control node with data :808
+
+
+Write ratio: 0.4
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1098
+Write requests to memory nodes: 398
+Read requests to memory nodes: 708
+Memory to compute node data requests: 247
+Data return/writebacks to memory nodes: 247
+Memory node to control node with data :708
+
+
+Write ratio: 0.5
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1107
+Write requests to memory nodes: 497
+Read requests to memory nodes: 622
+Memory to compute node data requests: 241
+Data return/writebacks to memory nodes: 241
+Memory node to control node with data :622
+
+
+Write ratio: 0.6
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1108
+Write requests to memory nodes: 600
+Read requests to memory nodes: 521
+Memory to compute node data requests: 239
+Data return/writebacks to memory nodes: 239
+Memory node to control node with data :521
+
+
+Write ratio: 0.7
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1116
+Write requests to memory nodes: 696
+Read requests to memory nodes: 423
+Memory to compute node data requests: 210
+Data return/writebacks to memory nodes: 210
+Memory node to control node with data :423
+
+
+Write ratio: 0.8
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1117
+Write requests to memory nodes: 797
+Read requests to memory nodes: 327
+Memory to compute node data requests: 153
+Data return/writebacks to memory nodes: 153
+Memory node to control node with data :327
+
+
+Write ratio: 0.9
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1119
+Write requests to memory nodes: 893
+Read requests to memory nodes: 228
+Memory to compute node data requests: 91
+Data return/writebacks to memory nodes: 91
+Memory node to control node with data :228
+
+
+Write ratio: 1.0
+Ended on global time: 225600
+
+
+Invalidation Messages from switch: 1118
+Write requests to memory nodes: 992
+Read requests to memory nodes: 128
+Memory to compute node data requests: 0
+Data return/writebacks to memory nodes: 0
+Memory node to control node with data :128
+
+

@@ -6,7 +6,7 @@
 // enum defining various cache states for MSI protocol
 typedef enum
 {
-	NORMAL, READ, WRITE, ERROR, INVALIDATE
+	NORMAL, READ, WR_DATA, ERROR, INVALIDATE, WR_SIGNAL, INST_WRITE, INST_READ, RESEND
 }
 flag_t;
 

@@ -49,9 +49,14 @@ ComputeNode;
 void updateNodeState(ComputeNode* node);
 int read_action(ComputeNode node, uint32_t address);
 void write_action(ComputeNode* node, uint32_t address, uint32_t wdata);
-void cnode_process_packet(ComputeNode* node, Packet pkt, int* stall);
+Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall);
 void print_cache(ComputeNode* node);
 void get_compute_control_count();
+void log_cdatareq();
+void log_cwritereq();
+void log_cwritedata();
+void unlog_cdatareq();
+int check_state(ComputeNode node, uint32_t address);
 
 
 #endif

@@ -17,7 +17,9 @@ if (len(sys.argv) != 5):
 
 # test parameters
 write_percentage = float(sys.argv[1])
+print(write_percentage)
 sharing_ratio = float(sys.argv[2])
+print(sharing_ratio)
 num_compute_nodes = int(sys.argv[3])
 
 #print("Sharing ratio: " + sharing_ratio + " Write percentage: " + write_percentage)
@@ -58,12 +60,14 @@ for i in range(0, math.floor(total_num_requests * sharing_ratio)):
     while entry in sharing_list:
         entry = random.randint(0, total_num_requests - 1)
     sharing_list.append(entry)
+print(len(sharing_list))
 
 for i in range(len(sharing_list)):
     packets[sharing_list[i]][2] = 0x00000000
 
 # resolve read/write ratio
 write_list = list()
+print(math.floor(total_num_requests * write_percentage))
 for i in range(0, math.floor(total_num_requests * write_percentage)):
     entry = random.randint(0, total_num_requests - 1)
     while entry in write_list:
@@ -81,6 +85,8 @@ for i in range(128):
 for i in range(total_num_requests):
     packets[i][0] = (i * time_between_packets) + (num_compute_nodes * time_between_packets)
 
+
+print(len(packets))
 
 with open(sys.argv[4], 'w') as output_file:
 	for packet in init_packets:
