@@ -55,3 +55,8 @@ dkms.conf
 # csv files
 output_trace.csv
 switchlog.csv
+
+# trace generation
+trace/**
+trace/*
+trace/

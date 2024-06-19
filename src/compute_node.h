@@ -18,6 +18,8 @@ typedef enum {
 	INVALID,
 	SHARED,
 	MODIFIED,
+	OWNED,
+	EXCLUSIVE,
 } state_t;
 
 // struct holding data inside a ComputeNode

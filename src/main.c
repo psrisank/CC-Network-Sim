@@ -168,7 +168,7 @@ int main(int argc, char ** argv)
 		pkt_flag = strtol(token, NULL, 2) ? INST_WRITE : INST_READ;
 		token = strtok(NULL, ",");
 		pkt_data = (uint32_t) strtol(token, NULL, 16);
-		packets[pkt_iterator++] = (Packet) {global_id++, pkt_time, pkt_flag, pkt_src, 0, (DataNode) {pkt_addr, pkt_data}};
+		packets[pkt_iterator++] = (Packet) {global_id++, pkt_time, pkt_flag, pkt_src, pkt_addr / (64 * 4), (DataNode) {pkt_addr, pkt_data}};
 	}
 	int pkt_cnt = pkt_iterator;
 	// //printf("PACKET CNT: %d\n", pkt_cnt);
@@ -198,10 +198,6 @@ int main(int argc, char ** argv)
 			if (packets[pkt_iterator].flag == INST_READ) {
 				switch(state_action) {
 					case 1:
-						if (packets[pkt_iterator].time == 54800) {
-							// printf("Global time: %d.\n", global_time);
-							// printf("repeated.\n");
-						}
 						packets[pkt_iterator].flag = READ;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
 						packets[pkt_iterator].flag = INST_READ;
@@ -344,10 +340,6 @@ int main(int argc, char ** argv)
 
 						//printf("Stall is now: %d\n", stall);
 						//printf("Validity of index in node %d cache: %d\n", i, compute_nodes[i].cache[(curr_packet_rx.data.addr >> 2) % 4].valid);				
-					}
-					else
-					{
-						//printf(ANSI_COLOR_RED "Packet with ID %d has invalid destination" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
 					}
 					// remove packet from compute node
 					pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 1);
