@@ -4,6 +4,7 @@
 long invalidation_msg = 0;
 long control_node_write_requests = 0;
 long control_node_data_requests = 0;
+long control_node_data_returns_to_cnodes = 0;
 long control_node_data_returns = 0;
 
 void updateNodeState(ComputeNode* node) {
@@ -20,39 +21,69 @@ void updateNodeState(ComputeNode* node) {
 	}
 }
 
-int check_state(ComputeNode node, uint32_t address) {
-	int index = (address >> 2) % 4;
-	if (node.cache[index].address == address) {
-		if (!node.cache[index].valid) {
-			return 1; // addr matches, invalid
-		}
-		else {
-			if (node.cache[index].dirty) {
-				return 2; // addr matches, modified
-			}
-			else {
-				return 3; // addr matches, shared
-			}
+int check_state(ComputeNode* node, uint32_t address, int* recheck) {
+	int index; // = (address >> 2) % 4;
+	int addr_present = 0;
+	for (int i = 0; i < CACHE_LINES; i++) {
+		if (node->cache[i].address == address && node->cache[i].valid) {
+			addr_present = 1;
+			index = i;
+			break;
 		}
 	}
-	else {
 
-		if (node.cache[index].valid) {
-			// printf("Cache conflict!!!! for address 0x%lx\n", (long unsigned int) address);
-			// printf("Conflicts with address 0x%lx\n", (long unsigned int) node.cache[index].address);
-			if (node.cache[index].dirty) {
-				return 4; // addr doesn't match, modified
-			}
-			else {
-				// printf("Conflicts with address 0x%lx\n", (long unsigned int) node.cache[index].address);
-				// printf("Requesting new data.\n");
-				return 5; // addr doesn't match, shared
+	if (!addr_present) {
+		if (*recheck != 0) {
+			node->last_used = node->last_used - 1;
+			if (node->last_used < 0) {
+				node->last_used = CACHE_LINES - 1;
 			}
 		}
-		else {
-			return 6; // addr doesn't match, invalid
+		index = node->last_used;
+		// printf("address wasn't present, replacing index %d.\n", index);
+		node->last_used = node->last_used + 1;
+		if (node->last_used == CACHE_LINES) {
+			node->last_used = 0;
 		}
 	}
+
+	state_t cacheState = node->cache[index].state;
+	node->idx_to_modify = index;
+	if (node->cache[index].address == address) { // no need to evict
+		if (cacheState == MODIFIED) {
+			return 1;
+		}
+		else if (cacheState == OWNED) {
+			return 2;
+		}
+		else if (cacheState == EXCLUSIVE) {
+			return 3;
+		}
+		else if (cacheState == SHARED) {
+			return 4;
+		}
+		else if (cacheState == INVALID) {
+			return 5;
+		}
+	}
+	else { // eviction required 
+		if (cacheState == MODIFIED) {
+			return 6;
+		}
+		else if (cacheState == OWNED) {
+			return 7;
+		}
+		else if (cacheState == EXCLUSIVE) {
+			return 8;
+		}
+		else if (cacheState == SHARED) {
+			return 9;
+		}
+		else if (cacheState == INVALID) {
+			return 10;
+		}
+	}
+	return -1;
 }
 
 void log_cdatareq() {
@@ -73,55 +104,77 @@ void unlog_cdatareq() {
 
 
 void write_action(ComputeNode* node, uint32_t address, uint32_t wdata) {
-	int index = (address >> 2) % 4;
+	// int index = (address >> 2) % 4;
 	//control_message_compute_node_global_counter++;
     //printf("Told to write %x to address %x\n", wdata, address);
-	node->cache[index].value = wdata;
-	node->cache[index].address = address;
-    node->cache[index].valid = 1;
-	node->cache[index].dirty = 1;
-	node->cache[index].state = MODIFIED;
+	node->cache[node->idx_to_modify].value = wdata;
+	node->cache[node->idx_to_modify].address = address;
+    node->cache[node->idx_to_modify].valid = 1;
+	node->cache[node->idx_to_modify].dirty = 1;
+	node->cache[node->idx_to_modify].state = MODIFIED;
 }
 
 Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // packets external to the instruction queue
 	Packet ret_pkt;
 	ret_pkt.flag = ERROR;
-	if (pkt.flag == RESEND) {
-		ret_pkt.flag = RESEND;
-	}
-	else if (pkt.flag == INVALIDATE) {
+
+	if (pkt.flag == INVALIDATE) {
+		// printf("Node %d received invalidation. Now in invalid.\n", pkt.dst);
 		invalidation_msg++;
-		//printf("Invalidated.\n");
 		*stall = 0;
-		// if (pkt.data.addr == node->cache[(pkt.data.addr >> 2) % 4].address)
-		// {	
-			//printf("Invalidating address %d in node: %d\n", pkt.data.addr, node->id);
-			node->cache[(pkt.data.addr >> 2) % 4].state = INVALID;
-			node->cache[(pkt.data.addr >> 2) % 4].valid = 0;
-		// }
+		int i;
+		for (i = 0; i < CACHE_LINES; i++) {
+			if (node->cache[i].address == pkt.data.addr) {
+				break;
+			}
+		}
+		node->cache[i].state = INVALID;
+		node->cache[i].valid = 0;
 	}
-	else if (pkt.flag == NORMAL) {
-		// printf("Received packet with data in node: %d\n", node->id);
-		node->cache[(pkt.data.addr >> 2) % 4].value = pkt.data.data;
-		node->cache[(pkt.data.addr >> 2) % 4].address = pkt.data.addr;
-		node->cache[(pkt.data.addr >> 2) % 4].valid = 1;
-		node->cache[(pkt.data.addr >> 2) % 4].state = SHARED;
-		node->cache[(pkt.data.addr >> 2) % 4].dirty = 0;
-		// printf("Address 0x%lx is now valid in cache.\n", pkt.data.addr);
+	else if (pkt.flag == RESPONSE) {
+		// printf("Node %d received data from a memory node. Now in exclusive for index %d.\n", node->id, node->idx_to_modify);
+		node->cache[node->idx_to_modify].value = pkt.data.data;
+		node->cache[node->idx_to_modify].address = pkt.data.addr;
+		node->cache[node->idx_to_modify].valid = 1;
+		node->cache[node->idx_to_modify].state = EXCLUSIVE;
+		node->cache[node->idx_to_modify].dirty = 0;
 		*stall = 0;
 	}
-	else if (pkt.flag == READ) { // essentially a read from the memory
+	else if (pkt.flag == TRANSFER) { // essentially a read from the memory
 		// printf("Node %d returning data.\n", node->id);
+		// TODO: send the data to the source node
+		int idxWithData;
+		for (int i = 0; i < CACHE_LINES; i++) {
+			if (node->cache[i].address == pkt.data.addr) {
+				idxWithData = i;
+				break;
+			}
+		}
 		ret_pkt.id = 0;
 		ret_pkt.time = 0;
 		ret_pkt.flag = WR_DATA;
 		ret_pkt.src = node->id;
-		ret_pkt.dst = pkt.data.addr;
+		ret_pkt.dst = pkt.src;
 		ret_pkt.data.addr = pkt.data.addr;
-		ret_pkt.data.data = node->cache[(pkt.data.addr >> 2) % 4].value;
-		node->cache[(pkt.data.addr >> 2) % 4].state = SHARED;
-		node->cache[(pkt.data.addr >> 2) % 4].dirty = 0;
-		log_cwritedata();
+		ret_pkt.data.data = node->cache[idxWithData].value;
+		// TODO: state change depending on the current state
+		if (pkt.data.data == 0) {
+			// printf("Node %d told to transfer to node %d. Now in owned.\n", node->id, pkt.src);
+			node->cache[idxWithData].state = OWNED;
+		}
+		else if (pkt.data.data == 1) {
+			// printf("Node %d told to transfer to node %d. Now in shared.\n", node->id, pkt.src);
+			node->cache[idxWithData].state = SHARED;
+		}
+		control_node_data_returns_to_cnodes++;
+		// log_cwritedata();
+	}
+	else if (pkt.flag == WR_DATA) {
+		// printf("Node %d received data from node %d. Now in shared.\n", node->id, pkt.src);;
+		node->cache[node->idx_to_modify].valid = 1;
+		node->cache[node->idx_to_modify].state = SHARED;
+		node->cache[node->idx_to_modify].address = pkt.data.addr;
+		node->cache[node->idx_to_modify].value = pkt.data.data;
 	}
 	return ret_pkt;
 
@@ -129,7 +182,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // pack
 
 void print_cacheline(int index, ComputeNodeMemoryLine line) {
     char* state = line.state == MODIFIED ? "MODIFIED" : line.state == INVALID ? "INVALID" : "SHARED";
-    printf("index: %d | address: %08x | value: %08x | valid: %d | state: %s \n", index, line.address, line.value, line.valid, state);
+    printf("index: %d | address: %08lx | value: %08x | valid: %d | state: %s \n", index, line.address, line.value, line.valid, state);
 }
 
 void print_cache(ComputeNode* node) {
@@ -138,11 +191,13 @@ void print_cache(ComputeNode* node) {
     }
 }
 
-void get_compute_control_count()
+void get_statistics()
 {
 	printf("\n\nInvalidation Messages from switch: %ld\n", invalidation_msg);
+	printf("Read requests to memory nodes: %ld\n", control_node_data_requests - 128);
 	printf("Write requests to memory nodes: %ld\n", control_node_write_requests);
-	printf("Read requests to memory nodes: %ld\n", control_node_data_requests);
-	printf("Memory to compute node data requests: %ld\n", get_memory_to_compute_requests());
-	printf("Data return/writebacks to memory nodes: %ld\n", control_node_data_returns);
+	printf("Transfer requests from memory nodes: %ld\n", transfer_requests() - 127);
+	printf("Compute node to compute node data transfers: %ld\n", control_node_data_returns_to_cnodes - 127);
+	printf("Compute node to memory node data transfers: %ld\n", control_node_data_returns);
+	printf("Memory node to compute node data transfer: %ld\n", get_memory_control_count() - 1);
 }

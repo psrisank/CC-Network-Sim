@@ -5,6 +5,7 @@
 #include "port.h"
 #include "packet.h"
 #include "stdlib.h"
+#include "compute_node.h"
 
 // definitions for memory node
 #define MEM_NUM_TOP_PORTS	1	// should not ever be changed
@@ -26,7 +27,7 @@ typedef struct MemoryLine
 	uint32_t value;
 	// status of all compute nodes
 	// StatesMSI_t* nodeState;
-	StatesMSI_t nodeState[128];
+	state_t nodeState[128];
 }
 MemoryLine;
 
@@ -43,9 +44,10 @@ typedef struct MemoryNode
 MemoryNode;
 
 void init_memnodes(MemoryNode* node, int node_cnt);
-Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id, Port* p);
-void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time, uint32_t memory_node_min_id);
-int get_memory_control_count();
-int get_memory_to_compute_requests();
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, Port* p);
+void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time);
+long get_memory_control_count();
+long get_memory_to_compute_requests();
+long transfer_requests();
 
 #endif

@@ -25,7 +25,7 @@ typedef enum {
 // struct holding data inside a ComputeNode
 typedef struct ComputeNodeMemoryLine
 {
-	uint32_t address;
+	uint64_t address;
 	uint32_t value;
 	// status of all compute nodes
 	uint8_t valid;
@@ -45,6 +45,7 @@ typedef struct ComputeNode
 	ComputeNodeMemoryLine cache[CACHE_LINES];
 	// last used cache line (for LRU policy)
 	int last_used;
+	int idx_to_modify;
 }
 ComputeNode;
 
@@ -53,12 +54,12 @@ int read_action(ComputeNode node, uint32_t address);
 void write_action(ComputeNode* node, uint32_t address, uint32_t wdata);
 Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall);
 void print_cache(ComputeNode* node);
-void get_compute_control_count();
+void get_statistics();
 void log_cdatareq();
 void log_cwritereq();
 void log_cwritedata();
 void unlog_cdatareq();
-int check_state(ComputeNode node, uint32_t address);
+int check_state(ComputeNode* node, uint32_t address, int* recheck);
 
 
 #endif

@@ -4,17 +4,21 @@
 #include "stdint.h"
 
 // enum defining various cache states for MSI protocol
-typedef enum
-{
-	NORMAL, READ, WR_DATA, ERROR, INVALIDATE, WR_SIGNAL, INST_WRITE, INST_READ, RESEND
-}
-flag_t;
+// typedef enum
+// {
+// 	NORMAL, READ, WR_DATA, ERROR, INVALIDATE, WR_SIGNAL, INST_WRITE, INST_READ, RESEND
+// }
+// flag_t;
+
+typedef enum {
+	RESPONSE, READ_REQUEST, TRANSFER, STATECHANGE, WR_REQUEST, WR_DATA, INST_WRITE, INST_READ, ERROR, INVALIDATE
+} flag_t;
 
 // struct holding data inside a Packet
 typedef struct DataNode
 {
 	// fields
-	uint32_t addr;
+	uint64_t addr;
 	uint32_t data;
 }
 DataNode;
