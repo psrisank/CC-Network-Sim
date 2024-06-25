@@ -56,17 +56,17 @@ int main(int argc, char **argv)
 		}
 		for (int j = 0; j < CACHE_LINES; j++)
 		{
-			if (j == 0) {
-				compute_nodes[i].cache[j] = (ComputeNodeMemoryLine){0, 0, 1, 0, SHARED};
-				// printf("SHARED IN ADDR 0 INDEX 0\n");
-			}
-			else {
+			// if (j == 0) {
+			// 	compute_nodes[i].cache[j] = (ComputeNodeMemoryLine){0, 0, 1, 0, SHARED};
+			// 	// printf("SHARED IN ADDR 0 INDEX 0\n");
+			// }
+			// else {
 				compute_nodes[i].cache[j] = (ComputeNodeMemoryLine){0, 0, 0, 0, INVALID};
-			}
+			// }
 			// node.cache[j] = (ComputeNodeMemoryLine){0, 0, 0, 0, 0};
 		}
-		compute_nodes[i].last_used = 1;
-		compute_nodes[i].idx_to_modify = 1;
+		compute_nodes[i].last_used = 0;
+		compute_nodes[i].idx_to_modify = 0;
 	}
 	uint32_t compute_node_max_id = global_id - 1;
 
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 			node.bot_ports[j].tail_tx = 0;
 		}
 
-		switch_nodes[i] = node; // faulty line
+		switch_nodes[i] = node;
 	}
 
 	// uint32_t switch_node_max_id = global_id - 1;
@@ -116,14 +116,21 @@ int main(int argc, char **argv)
 			memory_nodes[i].top_ports[j].tail_rx = 0;
 			memory_nodes[i].top_ports[j].tail_tx = 0;
 		}
-		if (i == 0) {
-			// printf("Setting all addr 0 nodes to shared for mem node 0.\n");
-			for (int j = 0; j < 128; j++) {
-				// printf("Addr 0 in compute node %d shared.\n", j);
-				memory_nodes[i].memory[0].nodeState[j] = SHARED;
-			}
 
+		for (int k = 0; k < MEM_NUM_LINES; k++) {
+			memory_nodes[i].memory[k].address = 0xFFFFFFFFFFFFFFFF;
+			for (int j = 0; j < NUM_COMPUTE_NODES; j++) {
+				memory_nodes[i].memory[k].nodeState[j] = INVALID;
+			}
 		}
+		// if (i == 0) {
+		// 	// printf("Setting all addr 0 nodes to shared for mem node 0.\n");
+		// 	for (int j = 0; j < 128; j++) {
+		// 		// printf("Addr 0 in compute node %d shared.\n", j);
+		// 		memory_nodes[i].memory[0].nodeState[j] = SHARED;
+		// 	}
+
+		// }
 		// memory_nodes[i] = node;
 	}
 	uint32_t memory_node_max_id = global_id - 1;
@@ -131,50 +138,86 @@ int main(int argc, char **argv)
 	// Memory data/address initialization
 	char line[255];
 	char *token;
-	FILE *mem_input;
-	mem_input = fopen(argv[2], "r");
-	if (mem_input == NULL)
-	{
-		// printf(ANSI_COLOR_RED "Input file does not exist!" ANSI_COLOR_RESET "\n");
+	// FILE *mem_input;
+	// mem_input = fopen(argv[2], "r");
+	// if (mem_input == NULL)
+	// {
+	// 	// printf(ANSI_COLOR_RED "Input file does not exist!" ANSI_COLOR_RESET "\n");
+	// 	return EXIT_FAILURE;
+	// }
+
+	// while (fgets(line, 255, mem_input) != NULL)
+	// {
+	// 	MemoryLine data_line;
+	// 	int curr_field = 0;
+	// 	token = strtok(line, ",");
+	// 	while (token != NULL)
+	// 	{
+	// 		switch (curr_field)
+	// 		{
+	// 		// address
+	// 		case 0:
+	// 		{
+	// 			data_line.address = (uint32_t)strtol(token, NULL, 16);
+	// 			if (data_line.address == 0) {
+	// 				for (int i = 0; i < 128; i++) {
+	// 					data_line.nodeState[i] = SHARED;
+	// 				}
+	// 			}
+	// 			break;
+	// 		}
+
+	// 		// data value
+	// 		case 1:
+	// 		{
+	// 			data_line.value = (uint32_t)strtol(token, NULL, 16);
+	// 		}
+
+	// 		}
+	// 		token = strtok(NULL, ",");
+	// 		curr_field++;
+	// 	}
+	// 	uint8_t memory_node_num = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) / MEM_NUM_LINES;
+	// 	uint8_t memory_node_line = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) % MEM_NUM_LINES;
+	// 	memory_nodes[memory_node_num].memory[memory_node_line] = data_line;
+	// }
+	// fclose(mem_input);
+	FILE *mem_input = fopen(argv[2], "r");
+	if (mem_input == NULL) {
 		return EXIT_FAILURE;
 	}
 
-	while (fgets(line, 255, mem_input) != NULL)
-	{
-		MemoryLine data_line;
+	int mem_iterator = 0;
+	while (fgets(line, 255, mem_input) != NULL) {
+		uint64_t data_address;
+		uint32_t data_data;
 		int curr_field = 0;
 		token = strtok(line, ",");
-		while (token != NULL)
-		{
-			switch (curr_field)
-			{
-			// address
-			case 0:
-			{
-				data_line.address = (uint32_t)strtol(token, NULL, 16);
-				if (data_line.address == 0) {
-					for (int i = 0; i < 128; i++) {
-						data_line.nodeState[i] = SHARED;
-					}
-				}
-				break;
-			}
-
-			// data value
-			case 1:
-			{
-				data_line.value = (uint32_t)strtol(token, NULL, 16);
-			}
-
+		while (token != NULL) {
+			switch (curr_field) {
+				case 0: 
+					data_address = (uint64_t) strtol(token, NULL, 16);
+					break;
+				case 1:
+					data_data = (uint32_t) strtol(token, NULL, 16);
+					break;
 			}
 			token = strtok(NULL, ",");
 			curr_field++;
 		}
-		uint8_t memory_node_num = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) / MEM_NUM_LINES;
-		uint8_t memory_node_line = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) % MEM_NUM_LINES;
-		memory_nodes[memory_node_num].memory[memory_node_line] = data_line;
+
+		memory_nodes[0].memory[mem_iterator].value = data_data;
+		memory_nodes[0].memory[mem_iterator++].address = data_address;
 	}
-	fclose(mem_input);
+
+	// TODO: remove once done testing
+	// print existing addresses in memory node
+	for (int i = 0; i < MEM_NUM_LINES; i++) {
+		if (memory_nodes[0].memory[i].address != 0xFFFFFFFFFFFFFFFF) {
+			// printf("Address 0x%lx is present!\n", memory_nodes[0].memory[i].address);
+		}
+	}
+
 
 	// Creating packets based off input trace
 	// Packet packets[2000];
@@ -188,14 +231,15 @@ int main(int argc, char **argv)
 	while (fgets(line, sizeof(line), cmd_inputs))
 	{
 		uint8_t pkt_src;
-		uint32_t pkt_time, pkt_addr, pkt_data;
+		uint32_t pkt_time, pkt_data;
+		uint64_t pkt_addr;
 		flag_t pkt_flag;
 		token = strtok(line, ",");
 		pkt_time = (uint32_t)strtol(token, NULL, 10);
 		token = strtok(NULL, ",");
 		pkt_src = (uint8_t)strtol(token, NULL, 10);
 		token = strtok(NULL, ",");
-		pkt_addr = (uint32_t)strtol(token, NULL, 16);
+		pkt_addr = (uint64_t)strtol(token, NULL, 16);
 		token = strtok(NULL, ",");
 		pkt_flag = strtol(token, NULL, 2) ? INST_WRITE : INST_READ;
 		token = strtok(NULL, ",");
@@ -237,6 +281,7 @@ int main(int argc, char **argv)
 			// printf("Pkt number %d:\n", pkt_iterator);
 			// printf("Pkt time: %d\n\n", global_time);
 			int state_action = check_state(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, &recheck);
+			// printf("Doing operation on add")
 			// printf("State action is %d.\n", state_action);
 			if (packets[pkt_iterator].flag == INST_READ)
 			{

@@ -32,7 +32,21 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.src = node->id;
 	return_packet.dst = pkt.src;
 	// uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
-	uint32_t address_to_access = (pkt.data.addr / 4); // % 64;
+	uint64_t address_to_access = (pkt.data.addr / 4); // % 64;
+	int existsinmem = 0;
+	// printf("Searching for address 0x%llx\n", pkt.data.addr);
+	for (int i = 0; i < MEM_NUM_LINES; i++) {
+		// printf("Checking index %d.\n", i);
+		if (node->memory[i].address == pkt.data.addr) {
+			// printf("Address %lx exists in memory.\n", pkt.data.addr);
+			existsinmem = 1;
+			address_to_access = i;
+		}
+	}
+	// printf("Accessing index %d to determine address %llx.\n", address_to_access, pkt.data.addr);
+	if (!existsinmem) {
+		printf("nonpresent address");
+	}
 	// printf("Accessing index %d for address 0x%lx.\n", address_to_access, pkt.data.addr);
 	// printf("Trying to access address: 0x%lx in node: %d\n", pkt.data.addr, node->id - memory_node_min_id);
 	// printf("Resultant index: %d\n", address_to_access);

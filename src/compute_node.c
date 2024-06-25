@@ -21,7 +21,7 @@ void updateNodeState(ComputeNode* node) {
 	}
 }
 
-int check_state(ComputeNode* node, uint32_t address, int* recheck) {
+int check_state(ComputeNode* node, uint64_t address, int* recheck) {
 	int index; // = (address >> 2) % 4;
 	int addr_present = 0;
 	for (int i = 0; i < CACHE_LINES; i++) {
@@ -35,7 +35,7 @@ int check_state(ComputeNode* node, uint32_t address, int* recheck) {
 	if (!addr_present) {
 		if (*recheck != 0) {
 			node->last_used = node->last_used - 1;
-			if (node->last_used < 1) {
+			if (node->last_used < 0) {
 				node->last_used = CACHE_LINES - 1;
 			}
 		}
@@ -43,7 +43,7 @@ int check_state(ComputeNode* node, uint32_t address, int* recheck) {
 		// printf("address wasn't present, replacing index %d.\n", index);
 		node->last_used = node->last_used + 1;
 		if (node->last_used == CACHE_LINES) {
-			node->last_used = 1;
+			node->last_used = 0;
 		}
 	}
 
@@ -103,7 +103,7 @@ void unlog_cdatareq() {
 }
 
 
-void write_action(ComputeNode* node, uint32_t address, uint32_t wdata) {
+void write_action(ComputeNode* node, uint64_t address, uint32_t wdata) {
 	// int index = (address >> 2) % 4;
 	//control_message_compute_node_global_counter++;
     //printf("Told to write %x to address %x\n", wdata, address);
@@ -140,6 +140,10 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // pack
 		node->cache[node->idx_to_modify].valid = 1;
 		node->cache[node->idx_to_modify].state = EXCLUSIVE;
 		node->cache[node->idx_to_modify].dirty = 0;
+		// if (pkt.data.addr == 0) {
+		// 	printf("Received data for address 0.\n");
+		// 	printf("Has data 0x%x.\n", pkt.data.data);
+		// }
 		*stall = 0;
 	}
 	else if (pkt.flag == TRANSFER) { // essentially a read from the memory

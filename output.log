@@ -5,529 +5,847 @@ gcc -std=c99 -Wall -Wextra -g  -c src/main.c -o bin/main.o
 gcc -std=c99 -Wall -Wextra -g  -c src/memory_node.c -o bin/memory_node.o
 gcc -std=c99 -Wall -Wextra -g  -c src/port.c -o bin/port.o
 gcc -std=c99 -Wall -Wextra -g  bin/compute_node.o bin/main.o bin/memory_node.o bin/port.o -o bin/sim
-testSHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-SHARED IN ADDR 0 INDEX 0
-Setting all addr 0 nodes to shared for mem node 0.
-Addr 0 in compute node 0 shared.
-Addr 0 in compute node 1 shared.
-Addr 0 in compute node 2 shared.
-Addr 0 in compute node 3 shared.
-Addr 0 in compute node 4 shared.
-Addr 0 in compute node 5 shared.
-Addr 0 in compute node 6 shared.
-Addr 0 in compute node 7 shared.
-Addr 0 in compute node 8 shared.
-Addr 0 in compute node 9 shared.
-Addr 0 in compute node 10 shared.
-Addr 0 in compute node 11 shared.
-Addr 0 in compute node 12 shared.
-Addr 0 in compute node 13 shared.
-Addr 0 in compute node 14 shared.
-Addr 0 in compute node 15 shared.
-Addr 0 in compute node 16 shared.
-Addr 0 in compute node 17 shared.
-Addr 0 in compute node 18 shared.
-Addr 0 in compute node 19 shared.
-Addr 0 in compute node 20 shared.
-Addr 0 in compute node 21 shared.
-Addr 0 in compute node 22 shared.
-Addr 0 in compute node 23 shared.
-Addr 0 in compute node 24 shared.
-Addr 0 in compute node 25 shared.
-Addr 0 in compute node 26 shared.
-Addr 0 in compute node 27 shared.
-Addr 0 in compute node 28 shared.
-Addr 0 in compute node 29 shared.
-Addr 0 in compute node 30 shared.
-Addr 0 in compute node 31 shared.
-Addr 0 in compute node 32 shared.
-Addr 0 in compute node 33 shared.
-Addr 0 in compute node 34 shared.
-Addr 0 in compute node 35 shared.
-Addr 0 in compute node 36 shared.
-Addr 0 in compute node 37 shared.
-Addr 0 in compute node 38 shared.
-Addr 0 in compute node 39 shared.
-Addr 0 in compute node 40 shared.
-Addr 0 in compute node 41 shared.
-Addr 0 in compute node 42 shared.
-Addr 0 in compute node 43 shared.
-Addr 0 in compute node 44 shared.
-Addr 0 in compute node 45 shared.
-Addr 0 in compute node 46 shared.
-Addr 0 in compute node 47 shared.
-Addr 0 in compute node 48 shared.
-Addr 0 in compute node 49 shared.
-Addr 0 in compute node 50 shared.
-Addr 0 in compute node 51 shared.
-Addr 0 in compute node 52 shared.
-Addr 0 in compute node 53 shared.
-Addr 0 in compute node 54 shared.
-Addr 0 in compute node 55 shared.
-Addr 0 in compute node 56 shared.
-Addr 0 in compute node 57 shared.
-Addr 0 in compute node 58 shared.
-Addr 0 in compute node 59 shared.
-Addr 0 in compute node 60 shared.
-Addr 0 in compute node 61 shared.
-Addr 0 in compute node 62 shared.
-Addr 0 in compute node 63 shared.
-Addr 0 in compute node 64 shared.
-Addr 0 in compute node 65 shared.
-Addr 0 in compute node 66 shared.
-Addr 0 in compute node 67 shared.
-Addr 0 in compute node 68 shared.
-Addr 0 in compute node 69 shared.
-Addr 0 in compute node 70 shared.
-Addr 0 in compute node 71 shared.
-Addr 0 in compute node 72 shared.
-Addr 0 in compute node 73 shared.
-Addr 0 in compute node 74 shared.
-Addr 0 in compute node 75 shared.
-Addr 0 in compute node 76 shared.
-Addr 0 in compute node 77 shared.
-Addr 0 in compute node 78 shared.
-Addr 0 in compute node 79 shared.
-Addr 0 in compute node 80 shared.
-Addr 0 in compute node 81 shared.
-Addr 0 in compute node 82 shared.
-Addr 0 in compute node 83 shared.
-Addr 0 in compute node 84 shared.
-Addr 0 in compute node 85 shared.
-Addr 0 in compute node 86 shared.
-Addr 0 in compute node 87 shared.
-Addr 0 in compute node 88 shared.
-Addr 0 in compute node 89 shared.
-Addr 0 in compute node 90 shared.
-Addr 0 in compute node 91 shared.
-Addr 0 in compute node 92 shared.
-Addr 0 in compute node 93 shared.
-Addr 0 in compute node 94 shared.
-Addr 0 in compute node 95 shared.
-Addr 0 in compute node 96 shared.
-Addr 0 in compute node 97 shared.
-Addr 0 in compute node 98 shared.
-Addr 0 in compute node 99 shared.
-Addr 0 in compute node 100 shared.
-Addr 0 in compute node 101 shared.
-Addr 0 in compute node 102 shared.
-Addr 0 in compute node 103 shared.
-Addr 0 in compute node 104 shared.
-Addr 0 in compute node 105 shared.
-Addr 0 in compute node 106 shared.
-Addr 0 in compute node 107 shared.
-Addr 0 in compute node 108 shared.
-Addr 0 in compute node 109 shared.
-Addr 0 in compute node 110 shared.
-Addr 0 in compute node 111 shared.
-Addr 0 in compute node 112 shared.
-Addr 0 in compute node 113 shared.
-Addr 0 in compute node 114 shared.
-Addr 0 in compute node 115 shared.
-Addr 0 in compute node 116 shared.
-Addr 0 in compute node 117 shared.
-Addr 0 in compute node 118 shared.
-Addr 0 in compute node 119 shared.
-Addr 0 in compute node 120 shared.
-Addr 0 in compute node 121 shared.
-Addr 0 in compute node 122 shared.
-Addr 0 in compute node 123 shared.
-Addr 0 in compute node 124 shared.
-Addr 0 in compute node 125 shared.
-Addr 0 in compute node 126 shared.
-Addr 0 in compute node 127 shared.
-Determining which nodes are in shared in node 129.
-11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
-Setting invalidations for 1.
-Setting invalidations for 2.
-Setting invalidations for 3.
-Setting invalidations for 4.
-Setting invalidations for 5.
-Setting invalidations for 6.
-Setting invalidations for 7.
-Setting invalidations for 8.
-Setting invalidations for 9.
-Setting invalidations for 10.
-Setting invalidations for 11.
-Setting invalidations for 12.
-Setting invalidations for 13.
-Setting invalidations for 14.
-Setting invalidations for 15.
-Setting invalidations for 16.
-Setting invalidations for 17.
-Setting invalidations for 18.
-Setting invalidations for 19.
-Setting invalidations for 20.
-Setting invalidations for 21.
-Setting invalidations for 22.
-Setting invalidations for 23.
-Setting invalidations for 24.
-Setting invalidations for 25.
-Setting invalidations for 26.
-Setting invalidations for 27.
-Setting invalidations for 28.
-Setting invalidations for 29.
-Setting invalidations for 30.
-Setting invalidations for 31.
-Setting invalidations for 32.
-Setting invalidations for 33.
-Setting invalidations for 34.
-Setting invalidations for 35.
-Setting invalidations for 36.
-Setting invalidations for 37.
-Setting invalidations for 38.
-Setting invalidations for 39.
-Setting invalidations for 40.
-Setting invalidations for 41.
-Setting invalidations for 42.
-Setting invalidations for 43.
-Setting invalidations for 44.
-Setting invalidations for 45.
-Setting invalidations for 46.
-Setting invalidations for 47.
-Setting invalidations for 48.
-Setting invalidations for 49.
-Setting invalidations for 50.
-Setting invalidations for 51.
-Setting invalidations for 52.
-Setting invalidations for 53.
-Setting invalidations for 54.
-Setting invalidations for 55.
-Setting invalidations for 56.
-Setting invalidations for 57.
-Setting invalidations for 58.
-Setting invalidations for 59.
-Setting invalidations for 60.
-Setting invalidations for 61.
-Setting invalidations for 62.
-Setting invalidations for 63.
-Setting invalidations for 64.
-Setting invalidations for 65.
-Setting invalidations for 66.
-Setting invalidations for 67.
-Setting invalidations for 68.
-Setting invalidations for 69.
-Setting invalidations for 70.
-Setting invalidations for 71.
-Setting invalidations for 72.
-Setting invalidations for 73.
-Setting invalidations for 74.
-Setting invalidations for 75.
-Setting invalidations for 76.
-Setting invalidations for 77.
-Setting invalidations for 78.
-Setting invalidations for 79.
-Setting invalidations for 80.
-Setting invalidations for 81.
-Setting invalidations for 82.
-Setting invalidations for 83.
-Setting invalidations for 84.
-Setting invalidations for 85.
-Setting invalidations for 86.
-Setting invalidations for 87.
-Setting invalidations for 88.
-Setting invalidations for 89.
-Setting invalidations for 90.
-Setting invalidations for 91.
-Setting invalidations for 92.
-Setting invalidations for 93.
-Setting invalidations for 94.
-Setting invalidations for 95.
-Setting invalidations for 96.
-Setting invalidations for 97.
-Setting invalidations for 98.
-Setting invalidations for 99.
-Setting invalidations for 100.
-Setting invalidations for 101.
-Setting invalidations for 102.
-Setting invalidations for 103.
-Setting invalidations for 104.
-Setting invalidations for 105.
-Setting invalidations for 106.
-Setting invalidations for 107.
-Setting invalidations for 108.
-Setting invalidations for 109.
-Setting invalidations for 110.
-Setting invalidations for 111.
-Setting invalidations for 112.
-Setting invalidations for 113.
-Setting invalidations for 114.
-Setting invalidations for 115.
-Setting invalidations for 116.
-Setting invalidations for 117.
-Setting invalidations for 118.
-Setting invalidations for 119.
-Setting invalidations for 120.
-Setting invalidations for 121.
-Setting invalidations for 122.
-Setting invalidations for 123.
-Setting invalidations for 124.
-Setting invalidations for 125.
-Setting invalidations for 126.
-Setting invalidations for 127.
-generating invalidations.
-Sent invalidation to node 1.
-Sent invalidation to node 2.
-Sent invalidation to node 3.
-Sent invalidation to node 4.
-Sent invalidation to node 5.
-Sent invalidation to node 6.
-Sent invalidation to node 7.
-Sent invalidation to node 8.
-Sent invalidation to node 9.
-Sent invalidation to node 10.
-Sent invalidation to node 11.
-Sent invalidation to node 12.
-Sent invalidation to node 13.
-Sent invalidation to node 14.
-Sent invalidation to node 15.
-Sent invalidation to node 16.
-Sent invalidation to node 17.
-Sent invalidation to node 18.
-Sent invalidation to node 19.
-Sent invalidation to node 20.
-Sent invalidation to node 21.
-Sent invalidation to node 22.
-Sent invalidation to node 23.
-Sent invalidation to node 24.
-Sent invalidation to node 25.
-Sent invalidation to node 26.
-Sent invalidation to node 27.
-Sent invalidation to node 28.
-Sent invalidation to node 29.
-Sent invalidation to node 30.
-Sent invalidation to node 31.
-Sent invalidation to node 32.
-Sent invalidation to node 33.
-Sent invalidation to node 34.
-Sent invalidation to node 35.
-Sent invalidation to node 36.
-Sent invalidation to node 37.
-Sent invalidation to node 38.
-Sent invalidation to node 39.
-Sent invalidation to node 40.
-Sent invalidation to node 41.
-Sent invalidation to node 42.
-Sent invalidation to node 43.
-Sent invalidation to node 44.
-Sent invalidation to node 45.
-Sent invalidation to node 46.
-Sent invalidation to node 47.
-Sent invalidation to node 48.
-Sent invalidation to node 49.
-Sent invalidation to node 50.
-Sent invalidation to node 51.
-Sent invalidation to node 52.
-Sent invalidation to node 53.
-Sent invalidation to node 54.
-Sent invalidation to node 55.
-Sent invalidation to node 56.
-Sent invalidation to node 57.
-Sent invalidation to node 58.
-Sent invalidation to node 59.
-Sent invalidation to node 60.
-Sent invalidation to node 61.
-Sent invalidation to node 62.
-Sent invalidation to node 63.
-Sent invalidation to node 64.
-Sent invalidation to node 65.
-Sent invalidation to node 66.
-Sent invalidation to node 67.
-Sent invalidation to node 68.
-Sent invalidation to node 69.
-Sent invalidation to node 70.
-Sent invalidation to node 71.
-Sent invalidation to node 72.
-Sent invalidation to node 73.
-Sent invalidation to node 74.
-Sent invalidation to node 75.
-Sent invalidation to node 76.
-Sent invalidation to node 77.
-Sent invalidation to node 78.
-Sent invalidation to node 79.
-Sent invalidation to node 80.
-Sent invalidation to node 81.
-Sent invalidation to node 82.
-Sent invalidation to node 83.
-Sent invalidation to node 84.
-Sent invalidation to node 85.
-Sent invalidation to node 86.
-Sent invalidation to node 87.
-Sent invalidation to node 88.
-Sent invalidation to node 89.
-Sent invalidation to node 90.
-Sent invalidation to node 91.
-Sent invalidation to node 92.
-Sent invalidation to node 93.
-Sent invalidation to node 94.
-Sent invalidation to node 95.
-Sent invalidation to node 96.
-Sent invalidation to node 97.
-Sent invalidation to node 98.
-Sent invalidation to node 99.
-Sent invalidation to node 100.
-Sent invalidation to node 101.
-Sent invalidation to node 102.
-Sent invalidation to node 103.
-Sent invalidation to node 104.
-Sent invalidation to node 105.
-Sent invalidation to node 106.
-Sent invalidation to node 107.
-Sent invalidation to node 108.
-Sent invalidation to node 109.
-Sent invalidation to node 110.
-Sent invalidation to node 111.
-Sent invalidation to node 112.
-Sent invalidation to node 113.
-Sent invalidation to node 114.
-Sent invalidation to node 115.
-Sent invalidation to node 116.
-Sent invalidation to node 117.
-Sent invalidation to node 118.
-Sent invalidation to node 119.
-Sent invalidation to node 120.
-Sent invalidation to node 121.
-Sent invalidation to node 122.
-Sent invalidation to node 123.
-Sent invalidation to node 124.
-Sent invalidation to node 125.
-Sent invalidation to node 126.
-Sent invalidation to node 127.
-Ended on global time: 200
-
-
-Invalidation Messages from switch: 127
-Invalidations from memory to switch: 1
-Read requests to memory nodes: 0
-Write requests to memory nodes: 1
-Transfer requests from memory nodes: 0
-Compute node to compute node data transfers: 0
-Compute node to memory node data transfers: 0
-Memory node to compute node data transfer: 0
-
+Address 0x573807cdd7e5c63b is present!
+Address 0x7632ced6e2d5105c is present!
+Address 0x194279bbc20731f9 is present!
+Address 0x383d40c4ccf67c1a is present!
+Address 0x2cdcdc0dfc5d1141 is present!
+Address 0xde21504f16dc720 is present!
+Address 0x6ad26a20123ba583 is present!
+Address 0x4bd7a317074c5b62 is present!
+Address 0x5f61cf85806b7533 is present!
+Address 0x7e5c968e8b5abf54 is present!
+Address 0x216c41736a8ce0f1 is present!
+Address 0x4067087c757c2b12 is present!
+Address 0x24b3145653d76249 is present!
+Address 0x5b84d4d48e81828 is present!
+Address 0x62a8a26869b5f68b is present!
+Address 0x43addb5f5ec6ac6a is present!
+Address 0x678b973d28f1242b is present!
+Address 0x7979a1b9cc1f91b4 is present!
+Address 0x2996092b13128fe9 is present!
+Address 0x4890d0341e01da0a is present!
+Address 0x1c894c9eab51b351 is present!
+Address 0x2717a6a5f9d96d0 is present!
+Address 0x5a7edab0c1304793 is present!
+Address 0x3b8413a7b640fd72 is present!
+Address 0x6fb55ef4d176d323 is present!
+Address 0x714fda022399e2bc is present!
+Address 0x31bfd0e2bb983ee1 is present!
+Address 0x50ba97ebc6878902 is present!
+Address 0x145f84e702cc0459 is present!
+Address 0xa9b4222082345c8 is present!
+Address 0x525512f918aa989b is present!
+Address 0x335a4bf00dbb4e7a is present!
+Address 0x3690e8ef35cf0a5b is present!
+Address 0x558baff840be547c is present!
+Address 0x764a522e00f89e7 is present!
+Address 0x179621e62adfc03a is present!
+Address 0x4d83faec9e73cd21 is present!
+Address 0x2e8933e393848300 is present!
+Address 0x748677014bad9e9d is present!
+Address 0x6c7ec1f5a9631742 is present!
+Address 0x3ebab0a6de54b953 is present!
+Address 0x5db577afe9440374 is present!
+Address 0xc52294c8762511 is present!
+Address 0x1fbfe99dd3656f32 is present!
+Address 0x455a3334f5ee1e29 is present!
+Address 0x265f6c2beafed408 is present!
+Address 0x7cb03eb8f4334d95 is present!
+Address 0x6454fa3e00dd684a is present!
+Address 0x46e4785e86da684b is present!
+Address 0x65df3f6791c9b26c is present!
+Address 0x8eeea4c70fbd409 is present!
+Address 0x27e9b1557beb1e2a is present!
+Address 0x3d306b7d4d686f31 is present!
+Address 0x1e35a47442792510 is present!
+Address 0x7b25f98f63470373 is present!
+Address 0x5c2b32865857b952 is present!
+Address 0x4f0e40162f601743 is present!
+Address 0x6e09071f3a4f6164 is present!
+Address 0x1118b20419818301 is present!
+Address 0x3013790d2470cd22 is present!
+Address 0x3506a3c5a4e2c039 is present!
+Address 0x160bdcbc99f37618 is present!
+Address 0x72fc31d7bac1547b is present!
+Address 0x54016aceafd20a5a is present!
+Address 0x6779ba74e3ecc205 is present!
+Address 0x487ef36bd8fd77e4 is present!
+Address 0x5a90b7790634a9b9 is present!
+Address 0x798b7e821123f3da is present!
+Address 0x147161af47d0667f is present!
+Address 0x336c28b852bfb0a0 is present!
+Address 0x29842c62ce0e2dc3 is present!
+Address 0xa896559c31ee3a2 is present!
+Address 0x5f4ff2bd3b67130d is present!
+Address 0x40552bb43077c8ec is present!
+Address 0x62ba7f30aeba58b1 is present!
+Address 0x7e4ab9c646565d2e is present!
+Address 0x1c9b2966f0561577 is present!
+Address 0x3b95f06ffb455f98 is present!
+Address 0x215a64ab25887ecb is present!
+Address 0x25f9da21a9934aa is present!
+Address 0x57262b0592e16415 is present!
+Address 0x382b63fc87f219f4 is present!
+Address 0x6ae446e8574007a9 is present!
+Address 0x7620f20e9dd0ae36 is present!
+Address 0x24c4f11e98dbc46f is present!
+Address 0x43bfb827a3cb0e90 is present!
+Address 0x19309cf37d02cfd3 is present!
+Address 0x5ca2a158dec7a4e is present!
+Address 0x4efc634dea5bb51d is present!
+Address 0x30019c44df6c6afc is present!
+Address 0x730e0e9fffc5b6a1 is present!
+Address 0x6df72a56f54aff3e is present!
+Address 0x2ceeb8d641617367 is present!
+Address 0x4be97fdf4c50bd88 is present!
+Address 0x1106d53bd47d20db is present!
+Address 0xdf3f1cd36722946 is present!
+Address 0x77df26ac79fc821b is present!
+Address 0x6926124a7b1433c4 is present!
+Address 0x39e9989a641dedd9 is present!
+Address 0x58e45fa36f0d37fa is present!
+Address 0xc35bd2f5a465561 is present!
+Address 0x12c509d9b0a8f4c0 is present!
+Address 0x4a2b4b417024e9a3 is present!
+Address 0x2b30843865359f82 is present!
+Address 0x7ff7119bdd7dceed is present!
+Address 0x60fc4a92d28e84cc is present!
+Address 0x421360520ca39cd1 is present!
+Address 0x610e275b1792e6f2 is present!
+Address 0x40bf577b1c0a669 is present!
+Address 0x1aeed191592ea3b8 is present!
+Address 0x42018389c79f3aab is present!
+Address 0x2306bc80bcaff08a is present!
+Address 0x77cd49e434f81ff5 is present!
+Address 0x58d282db2a08d5d4 is present!
+Address 0x4a3d2809b5294bc9 is present!
+Address 0x6937ef12c01895ea is present!
+Address 0x41dd23ff6c5088f is present!
+Address 0x2318994901b452b0 is present!
+Address 0x39d7bbd21f198bb3 is present!
+Address 0x1adcf4c9142a4192 is present!
+Address 0x6fa3822c8c7270fd is present!
+Address 0x50a8bb23818326dc is present!
+Address 0x5266efc15daefac1 is present!
+Address 0x7161b6ca689e44e2 is present!
+Address 0xc4799f79f4ab787 is present!
+Address 0x2b426100aa3a01a8 is present!
+Address 0x31adf41a7693dcbb is present!
+Address 0x12b32d116ba4929a is present!
+Address 0x262b7cb79fbf4a45 is present!
+Address 0x730b5ae94d00024 is present!
+Address 0x64210ac9b59dde87 is present!
+Address 0x452643c0aaae9466 is present!
+Address 0x55bf9f6c8bfdde3f is present!
+Address 0x74ba667596ed2860 is present!
+Address 0x17ca115a761f49fd is present!
+Address 0x36c4d863810e941e is present!
+Address 0x1e01b4fff7399b4d is present!
+Address 0xf9120913b5aed4 is present!
+Address 0x5bf743120d182f8f is present!
+Address 0x3cfc7c090228e56e is present!
+Address 0x5de9672434838d37 is present!
+Address 0x7ce42e2d3f72d758 is present!
+Address 0x1ff3d9121ea4f8f5 is present!
+Address 0x3eeea01b29944316 is present!
+Address 0x15d7ed484eb3ec55 is present!
+Address 0x922d9c0bc3b5dcc is present!
+Address 0x53cd7b5a64928097 is present!
+Address 0x34d2b45159a33676 is present!
+Address 0x66132edbdd093c2f is present!
+Address 0x7af20a1b180779b0 is present!
+Address 0x281da0c9c72aa7ed is present!
+Address 0x471867d2d219f20e is present!
+Address 0xdae2590a62e3d5d is present!
+Address 0x114ca17864c10cc4 is present!
+Address 0x4ba3b3a2bc0cd19f is present!
+Address 0x2ca8ec99b11d877e is present!
+Address 0x6e3cf693858eeb27 is present!
+Address 0x72c842636f81cab8 is present!
+Address 0x304768816fb056e5 is present!
+Address 0x4f422f8a7a9fa106 is present!
+Address 0x46d29b9641d60625 is present!
+Address 0x27d7d48d36e6bc04 is present!
+Address 0x7b37d657a84b6599 is present!
+Address 0x65cd629f4cc55046 is present!
+Address 0x3518808de9e7225f is present!
+Address 0x54134796f4d66c80 is present!
+Address 0x8dd0d842bf771e3 is present!
+Address 0x161db984def7d83e is present!
+Address 0x3ea8d3de9950572d is present!
+Address 0x1fae0cd58e610d0c is present!
+Address 0x7c9e61f0af2eeb6f is present!
+Address 0x5da39ae7a43fa14e is present!
+Address 0x3d424845926cd157 is present!
+Address 0x5c3d0f4e9d5c1b78 is present!
+Address 0xb345cc8371c2eb is present!
+Address 0x1e47813c877d8736 is present!
+Address 0x367f0c26f0caa835 is present!
+Address 0x1784451de5db5e14 is present!
+Address 0x74749a3906a93c77 is present!
+Address 0x5579d32ffbb9f256 is present!
+Address 0x456c0ffd3af2804f is present!
+Address 0x6466d70645e1ca70 is present!
+Address 0x77681eb2513ec0d is present!
+Address 0x267148f43003362e is present!
+Address 0x2e55446f4844f93d is present!
+Address 0xf5a7d663d55af1c is present!
+Address 0x6c4ad2815e238d7f is present!
+Address 0x4d500b785334435e is present!
+Address 0x4d95d7b4e3782f47 is present!
+Address 0x6c909ebdee677968 is present!
+Address 0xfa049a2cd999b05 is present!
+Address 0x2e9b10abd888e526 is present!
+Address 0x1b22c105a46e2d7b is present!
+Address 0x3a1d880eaf5d779c is present!
+Address 0x22d2cd0c717066c7 is present!
+Address 0x3d8060366811ca6 is present!
+Address 0x68f222d62fd4aa01 is present!
+Address 0x49f75bcd24e55fe0 is present!
+Address 0x59184f17ba4cc1bd is present!
+Address 0x78131620c53c0bde is present!
+Address 0x234c88bd4cf3dc73 is present!
+Address 0x42474fc657e32694 is present!
+Address 0x1aa90554c8eab7cf is present!
+Address 0x451c1b442049252 is present!
+Address 0x60c85b1e874efb09 is present!
+Address 0x41cd94157c5fb0e8 is present!
+Address 0x614216cf62d270b5 is present!
+Address 0x7fc32227923e452a is present!
+Address 0x2b765074f5798b6b is present!
+Address 0x4a71177e0068d58c is present!
+Address 0x127f3d9d206508d7 is present!
+Address 0xc7b896bea8a414a is present!
+Address 0x589e9366dec94c11 is present!
+Address 0x39a3cc5dd3da01f0 is present!
+Address 0x696bde870b581fad is present!
+Address 0x77995a6fe9b89632 is present!
+Address 0x33a0182c9dff3a63 is present!
+Address 0x529adf35a8ee8484 is present!
+Address 0xa5575e577df59df is present!
+Address 0x14a55123930ff042 is present!
+Address 0x5074cbaf36439d19 is present!
+Address 0x317a04a62b5452f8 is present!
+Address 0x7195a63eb3ddcea5 is present!
+Address 0x6f6f92b84132e73a is present!
+Address 0x5845dd8fda88e65 is present!
+Address 0x197669300d46bbbc is present!
+Address 0x4379ebeb138722a7 is present!
+Address 0x247f24e20897d886 is present!
+Address 0x7666be4b2e149a1f is present!
+Address 0x6a9e7aabc6fc1bc0 is present!
+Address 0x38713039183605dd is present!
+Address 0x576bf74223254ffe is present!
+Address 0x2a569deaadd2093 is present!
+Address 0x21a030e7b5cc6ab4 is present!
+Address 0x3b5024336b0173af is present!
+Address 0x1c555d2a6012298e is present!
+Address 0x7e908602d69a4917 is present!
+Address 0x6274b2f41e766cc8 is present!
+Address 0x409af7f0c0bbb4d5 is present!
+Address 0x5f95bef9cbaafef6 is present!
+Address 0xacf31965362cf8b is present!
+Address 0x29c9f89f5e5219ac is present!
+Address 0x33265c7bc27bc4b7 is present!
+Address 0x142b9572b78c7a96 is present!
+Address 0x7945b24580e007f1 is present!
+Address 0x5a4aeb3c75f0bdd0 is present!
+Address 0x48c4bfa8694163cd is present!
+Address 0x67bf86b17430adee is present!
+Address 0x12f8f94dfbe87e83 is present!
+Address 0x31f3c05706d7c8a4 is present!
+Address 0x2afc94c419f615bf is present!
+Address 0xc01cdbb0f06cb9e is present!
+Address 0x711bea8dd85a58f9 is present!
+Address 0x52212384cd6b0ed8 is present!
+Address 0x50ee876011c712c5 is present!
+Address 0x6fe94e691cb65ce6 is present!
+Address 0x1c8a835829b99916 is present!
+Address 0x4f1facb36efec27f is present!
+Address 0x216b0ab9ec24fb2c is present!
+Address 0x72eac53a7b22a93f is present!
+Address 0x678a6083aa893e66 is present!
+Address 0x2ccb6f70bcbe6605 is present!
+Address 0x5a80116a3f982d58 is present!
+Address 0x112a1ea159202e3d is present!
+Address 0x24b44b0fd23f480e is present!
+Address 0x46f5e4fbc6791387 is present!
+Address 0x19414302439f4c34 is present!
+Address 0x7b148cf223a85837 is present!
+Address 0x5f6098cc02038f6e is present!
+Address 0x34f53728654414fd is present!
+Address 0x62a9d921e81ddc50 is present!
+Address 0x90056e9b09a7f45 is present!
+Address 0x2cde12c77ac4f706 is present!
+Address 0x3ecc1d441df3648f is present!
+Address 0x11177b4a9b199d3c is present!
+Address 0x7cc1ab5633d1f8d1 is present!
+Address 0x5736d114597de076 is present!
+Address 0x3d1efee00dc9c3f5 is present!
+Address 0x6ad3a0d990a38b48 is present!
+Address 0xd68f320814d04d is present!
+Address 0x3507da7f234aa5fe is present!
+Address 0x36a2558c756db597 is present!
+Address 0x8edb392f293ee44 is present!
+Address 0x7497e39e8b4c49d9 is present!
+Address 0x4f0d095cb0f8317e is present!
+Address 0x4548c697b64f72ed is present!
+Address 0x72fd689139293a40 is present!
+Address 0x7533885a070deab is present!
+Address 0x41c9b86785d22ca is present!
+Address 0x6fc6cb9211157e5f is present!
+Address 0x421229988e3bb70c is present!
+Address 0x5243a65bd90bed5f is present!
+Address 0x77ce809db36005ba is present!
+Address 0xc2450921aa7aa25 is present!
+Address 0x39d8f28b9d817178 is present!
+Address 0x31d13d7ffb36ea1d is present!
+Address 0x40d2c3130288c2e is present!
+Address 0x679d03da688fcf67 is present!
+Address 0x39e861e0e5b60814 is present!
+Address 0x5a6d6e1381919c57 is present!
+Address 0x7ff848555be5b4b2 is present!
+Address 0x144e1849c32d591d is present!
+Address 0x4202ba4346072070 is present!
+Address 0x29a775c852b13b25 is present!
+Address 0xc36f3e8d8ae3b26 is present!
+Address 0x5f733c22c00a206f is present!
+Address 0x31be9a293d30591c is present!
+Address 0x629735cb2a174b4f is present!
+Address 0x77ddeff2fb949c56 is present!
+Address 0x1c77e0016bb30815 is present!
+Address 0x4a2c81faee8ccf68 is present!
+Address 0x217dae10aa2b8c2d is present!
+Address 0x1460bba08133ea1e is present!
+Address 0x5749746b17847177 is present!
+Address 0x2994d27194aaaa24 is present!
+Address 0x6ac0fd82d29cfa47 is present!
+Address 0x6fb4283b530eed5e is present!
+Address 0x24a1a7b91438b70d is present!
+Address 0x525649b297127e60 is present!
+Address 0x1953e65901a5dd35 is present!
+Address 0x5dd8c1156de710d6 is present!
+Address 0xdd16ef62ad14abf is present!
+Address 0x1fe3330358087c94 is present!
+Address 0x4bc6fd0840afdf01 is present!
+Address 0x263c22c6665bc6a6 is present!
+Address 0x6e19ad2e00ebddc5 is present!
+Address 0x6431b0d87c3a5ae8 is present!
+Address 0x30241f1beb0d4983 is present!
+Address 0x660288cd166cbfce is present!
+Address 0x5a7a73e824b9bc7 is present!
+Address 0x280cfabb008e2b8c is present!
+Address 0x439d3550982a3009 is present!
+Address 0x1e125b0ebdd617ae is present!
+Address 0x764374e5a9718cbd is present!
+Address 0x5c07e920d3b4abf0 is present!
+Address 0x384de6d39392f87b is present!
+Address 0x6e2c5084bef26ec6 is present!
+Address 0x2822079263a1331 is present!
+Address 0x3036c272a913da84 is present!
+Address 0x3b736d98efa48111 is present!
+Address 0x15e89357155068b6 is present!
+Address 0x7e6d3c9d51f73bb5 is present!
+Address 0x53de21692b2efcf8 is present!
+Address 0x4077ae8b3c18a773 is present!
+Address 0x7656183c67781dbe is present!
+Address 0xaabe830cebfc229 is present!
+Address 0x38608a2a5199897c is present!
+Address 0x3349a5e1471ed219 is present!
+Address 0xdbecb9f6ccab9be is present!
+Address 0x7968fbab05831553 is present!
+Address 0x4bb459b182a94e00 is present!
+Address 0x48a17642e49e566b is present!
+Address 0x3d31a236cbd054f6 is present!
+Address 0x2e788dd4cce8069f is present!
+Address 0xc3ebdb4a0e3f4c is present!
+Address 0x6c6e1be6e2c69ae1 is present!
+Address 0x46e341a508728286 is present!
+Address 0x4d728e4f5ed521e5 is present!
+Address 0x7b273048e1aee938 is present!
+Address 0xf7d003d48f68da3 is present!
+Address 0x455b69ee745603ee is present!
+Address 0x264ec61d246257a7 is present!
+Address 0x765dbdc5e776fac is present!
+Address 0x6444542f3a40ebe9 is present!
+Address 0x3eb979ed5fecd38e is present!
+Address 0x559c5607075ad0dd is present!
+Address 0x7caf07ff75cb67d0 is present!
+Address 0x17a6c7f4f17c3c9b is present!
+Address 0x4d8531a61cdbb2e6 is present!
+Address 0x1e24fe657bdca8af is present!
+Address 0xf8fa39406fd1ea4 is present!
+Address 0x5c1a8c7791bb3cf1 is present!
+Address 0x368fb235b7672496 is present!
+Address 0x5dc61dbeafe07fd5 is present!
+Address 0x74854047cd45b8d8 is present!
+Address 0x1fd08fac9a01eb93 is present!
+Address 0x55aef95dc56161de is present!
+Address 0x15fb36add356f9b7 is present!
+Address 0x17b96b4baf82cd9c is present!
+Address 0x53f0c4bfe9358df9 is present!
+Address 0x2e65ea7e0ee1759e is present!
+Address 0x65efe57658662ecd is present!
+Address 0x6c5b789024c009e0 is present!
+Address 0x27fa576442879a8b is present!
+Address 0x60d9012d4deb776a is present!
+Address 0x337ccec7195c2d01 is present!
+Address 0x613170c09c35f454 is present!
+Address 0xa78bf4afc826741 is present!
+Address 0x1b121af6ddd1b11a is present!
+Address 0x50981514bae6aa7b is present!
+Address 0x22e3731b380ce328 is present!
+Address 0x71725cd92f3ac143 is present!
+Address 0x58af3975a565c872 is present!
+Address 0x3ba6967ec1e1dbf9 is present!
+Address 0x695b387844bba34c is present!
+Address 0x24ef79353fcb849 is present!
+Address 0x233be2ae86576012 is present!
+Address 0x486e4d5d1260fb83 is present!
+Address 0x1ab9ab638f873430 is present!
+Address 0x799c2490d7c0703b is present!
+Address 0x508571bdfce0197a is present!
+Address 0x43d05e366a678af1 is present!
+Address 0x7185002fed415244 is present!
+Address 0x5dad0245488f6af is present!
+Address 0x2b65aa662edd0f0a is present!
+Address 0x404485a569db4c8b is present!
+Address 0x128fe3abe7018538 is present!
+Address 0x7e3a13b77fb9e0cd is present!
+Address 0x485baa06545a6a82 is present!
+Address 0x4bfa25ee12ed39e9 is present!
+Address 0x79aec7e795c7013c is present!
+Address 0xe0497dbfd0ea5a7 is present!
+Address 0x338f721dd762be02 is present!
+Address 0x381abdedc1559d93 is present!
+Address 0xa661bf43e7bd640 is present!
+Address 0x76104bffd73431d5 is present!
+Address 0x7e7fdff40ffdccb6 is present!
+Address 0x12d5afe877457121 is present!
+Address 0x408a51e1fa1f3874 is present!
+Address 0x2b1fde299e992321 is present!
+Address 0x59503e7c4450ac6 is present!
+Address 0x713f33f35cfd665b is present!
+Address 0x438a91f9da239f08 is present!
+Address 0x50cb3dfa8d240563 is present!
+Address 0x79565854477c8452 is present!
+Address 0x1aff77a01fcb2019 is present!
+Address 0x48b41999a2a4e76c is present!
+Address 0x22f61671f6137429 is present!
+Address 0x294c3cfe440a432 is present!
+Address 0x69156c3bb477b763 is present!
+Address 0x3b60ca42319df010 is present!
+Address 0x58f505b235a9b45b is present!
+Address 0x712c909c9ef6d55a is present!
+Address 0x23293f57c850cf11 is present!
+Address 0x50dde1514b2a9664 is present!
+Address 0x1acc4eba4d8dc531 is present!
+Address 0xabe8b878cc6532a is present!
+Address 0x60eba4840bf2086b is present!
+Address 0x3337028a89184118 is present!
+Address 0x611ecd69de2f6353 is present!
+Address 0x6902c8e4f6712662 is present!
+Address 0x2b53070f70d67e09 is present!
+Address 0x5907a908f3b0455c is present!
+Address 0x12a28702a5081639 is present!
+Address 0x12e8533f354c0222 is present!
+Address 0x58c1dccc636c5973 is present!
+Address 0x2b0d3ad2e0929220 is present!
+Address 0x6948952186b5124b is present!
+Address 0x1f8ac37009bdffaa is present!
+Address 0x74cb0c845d89a4c1 is present!
+Address 0x5d8051821f9c93ec is present!
+Address 0x36d57e7247ab107f is present!
+Address 0x5c6058b421ff28da is present!
+Address 0xf49d75776b932bb is present!
+Address 0x1e6acaa20c209498 is present!
+Address 0x4d3f65698c97c6fd is present!
+Address 0x1760fbb8613850b2 is present!
+Address 0x7cf4d43c060f53b9 is present!
+Address 0x555689ca7716e4f4 is present!
+Address 0x3eff4629f030bf77 is present!
+Address 0x648a206bca84d7d2 is present!
+Address 0x7200f9fce3383c3 is present!
+Address 0x26949259b4a64390 is present!
+Address 0x45159db1e4121805 is present!
+Address 0xf373400b8b2a1ba is present!
+Address 0x7ae1640c516afd4f is present!
+Address 0x4d2cc212ce9135fc is present!
+Address 0x47290de198b66e6f is present!
+Address 0x6cb3e823730a86ca is present!
+Address 0x109b817da522b35 is present!
+Address 0x2ebe5a115d2bf288 is present!
+Address 0x3cebd5fa3b8c690d is present!
+Address 0x70d6c49102cf2c2 is present!
+Address 0x72b79c54a8e54e57 is present!
+Address 0x4502fa5b260b8704 is present!
+Address 0x4f52d599413c1d67 is present!
+Address 0x74ddafdb1b9035c2 is present!
+Address 0x9337fcf82d7da2d is present!
+Address 0x36e821c905b1a180 is present!
+Address 0x34c20e429306ba15 is present!
+Address 0x4031e24eabd4bb8a is present!
+Address 0x5423eda5bb72e8e1 is present!
+Address 0x7e277060c1b34fcc is present!
+Address 0x162e5f93a594549f is present!
+Address 0x3bb939d57fe86cfa is present!
+Address 0x2ff0f63618cfee9b is present!
+Address 0x23c543c95f62748 is present!
+Address 0x6de684482eae82dd is present!
+Address 0x38081a97034f0c92 is present!
+Address 0x5c4db55d63f897d9 is present!
+Address 0x75fda8a9192da0d4 is present!
+Address 0x1e58274b4e1a0397 is present!
+Address 0x43e3018d286e1bf2 is present!
+Address 0x27c72e7e704a3fa3 is present!
+Address 0x5ed737b128f87b0 is present!
+Address 0x65bcbc908628d3e5 is present!
+Address 0x2fde52df5ac95d9a is present!
+Address 0x64777d150c7e46d1 is present!
+Address 0x6dd3e0f170a7f1dc is present!
+Address 0x2681ef02f69fb28f is present!
+Address 0x4c0cc944d0f3caea is present!
+Address 0x1f9d66c6c7c490ab is present!
+Address 0xe173b32bb1536a8 is present!
+Address 0x5d92f4d8dda324ed is present!
+Address 0x27b48b27b243aea2 is present!
+Address 0x6ca144ccb503f5c9 is present!
+Address 0x65aa1939c82242e4 is present!
+Address 0x2eabb6ba9f256187 is present!
+Address 0x543690fc797979e2 is present!
+Address 0x17739f0f1f3ee1b3 is present!
+Address 0x164102ea639ae5a0 is present!
+Address 0x55692d21351d75f5 is present!
+Address 0x1e23011d8472940f is present!
+Address 0x1472283dc0d2955a is present!
+Address 0x71627d58e1a073bd is present!
+Address 0x3d1dc8268f61de30 is present!
+Address 0x5dc81b06a74a9475 is present!
+Address 0x6778f3e66aea932a is present!
+Address 0xa889ecb4a1cb4c7 is present!
+Address 0x3ecd53fd9c5b4a54 is present!
+Address 0x15f93965dbece517 is present!
+Address 0xc486086184ce662 is present!
+Address 0x6938b5a1391ac4c5 is present!
+Address 0x34f4006ee6dc2f38 is present!
+Address 0x65f1e2be4fd0436d is present!
+Address 0x6fa2bb9e13704222 is present!
+Address 0x12b26682f2a263bf is present!
+Address 0x46f71bb544e0f94c is present!
+Address 0xdcf71ae3367361f is present!
+Address 0x41e98ce6fc7376a is present!
+Address 0x610eede9909515cd is present!
+Address 0x2cca38b73e568040 is present!
+Address 0x6e1baa75f855f265 is present!
+Address 0x77cc8355bbf5f11a is present!
+Address 0x1adc2e3a9b2812b7 is present!
+Address 0x4f20e36ced66a844 is present!
+Address 0x5a5a9f68ae18727 is present!
+Address 0x40b2ee938be778e is present!
+Address 0x58e52631e80f66d5 is present!
+Address 0x24a070ff95d0d148 is present!
+Address 0x7645722da0dba15d is present!
+Address 0x7ff64b0d647ba012 is present!
+Address 0x2305f5f243adc1af is present!
+Address 0x574aab2495ec573c is present!
+Address 0x3eca1ffc26894fef is present!
+Address 0x3519471c62e9513a is present!
+Address 0x6df663c87c48d063 is present!
+Address 0x5dc4e70531789a10 is present!
+Address 0x3d20fc280533d895 is present!
+Address 0x46d1d507c8d3d74a is present!
+Address 0x161e801357fa0719 is present!
+Address 0x1e26351efa448e74 is present!
+Address 0x36a058447e03a0f7 is present!
+Address 0x2cef7f64ba63a242 is present!
+Address 0x76202b8024ce7f5b is present!
+Address 0x559b1f4d88f2eb18 is present!
+Address 0x454ac3dfadb9878d is present!
+Address 0x4efb9cbf71598642 is present!
+Address 0xdf4b85baf745821 is present!
+Address 0x264ffcd6a2ca3d6c is present!
+Address 0x2e76908cd57df1ff is present!
+Address 0x24c5b7ad11ddf34a is present!
+Address 0x7e49f337cd542e53 is present!
+Address 0x4d715795e06d3c20 is present!
+Address 0x4d748b97563f3685 is present!
+Address 0x5725647719df353a is present!
+Address 0x5caf0a406eea929 is present!
+Address 0x2e79c48e4b4fec64 is present!
+Address 0x264cc8d52cf84307 is present!
+Address 0x1c9beff569584452 is present!
+Address 0x798c45108a2622b5 is present!
+Address 0x45478fde37e78d28 is present!
+Address 0x559e534efec4e57d is present!
+Address 0x5f4f2c2ec264e432 is present!
+Address 0x25ed713a19705cf is present!
+Address 0x36a38c45f3d59b5c is present!
+Address 0x232b3c9fbfbae3b1 is present!
+Address 0x2cdc157f835ae266 is present!
+Address 0x30143f9b9d72fbfd is present!
+Address 0x4307596b4cb9990 is present!
+Address 0x60e9a73c1487f3cb is present!
+Address 0x5738ce5c50e7f516 is present!
+Address 0x4bd6dc888e4a2c87 is present!
+Address 0x7fe46e451f773dec is present!
+Address 0x2b550457684092a9 is present!
+Address 0x3505dd372be0915e is present!
+Address 0x27ea77e3f4ed4d05 is present!
+Address 0xc5a3d4e5d514888 is present!
+Address 0x58bfdf846c0244d3 is present!
+Address 0x4f0f06a4a862461e is present!
+Address 0x5400a44036cfdb7f is present!
+Address 0x77baa68d76f18ef4 is present!
+Address 0x337ecc0f10c641a1 is present!
+Address 0x3d2fa4eed4664056 is present!
+Address 0x1fc0b02c4c679e0d is present!
+Address 0x1484050605d6f780 is present!
+Address 0x509617ccc37c95db is present!
+Address 0x46e53eecffdc9726 is present!
+Address 0x5c2a6bf7df558a77 is present!
+Address 0x6f90ded5ce6bdffc is present!
+Address 0x3ba893c6b94bf099 is present!
+Address 0x45596ca67cebef4e is present!
+Address 0x1796e874a3e1ef15 is present!
+Address 0x1cadccbdae5ca678 is present!
+Address 0x486c50151af6e6e3 is present!
+Address 0x3ebb77355756e82e is present!
+Address 0x645433af87db396f is present!
+Address 0x6767171e25e63104 is present!
+Address 0x2841dc11da427d1 is present!
+Address 0xc34f6a0e1442686 is present!
+Address 0x50bb5e7a3f89b7dd is present!
+Address 0x1c76a947ed4b2250 is present!
+Address 0x7e6f39e549615055 is present!
+Address 0x77dfed3af2feb0f6 is present!
+Address 0x2b2fbda9ec3370a7 is present!
+Address 0x5f7472dc3e720634 is present!
+Address 0xaade578c629d6c9 is present!
+Address 0x145ebe5889c9d57e is present!
+Address 0x489196c2970408e5 is present!
+Address 0x144ce19044c57358 is present!
+Address 0x7966fe630e1900b3 is present!
+Address 0x6fb625834a7901fe is present!
+Address 0x3359856194b91f9f is present!
+Address 0x679e3a93e6f7b52c is present!
+Address 0x12d7ad306eaf85c1 is present!
+Address 0x1c888610324f8476 is present!
+Address 0x4067cf0aee7e59ed is present!
+Address 0xc2319d89c3fc460 is present!
+Address 0x713d36ab659351bb is present!
+Address 0x678c5dcba1f35306 is present!
+Address 0x3b834d193d3ece97 is present!
+Address 0x6fc8024b8f7d6424 is present!
+Address 0x1b0174e8173534b9 is present!
+Address 0x24b24dc7dad5336e is present!
+Address 0x383e075345f8aaf5 is present!
+Address 0x3f95220f3ba1568 is present!
+Address 0x69136ef3bd0da2c3 is present!
+Address 0x5f629613f96da40e is present!
+Address 0x43ad14d0e5c47d8f is present!
+Address 0x77f1ca033803131c is present!
+Address 0x64797a5d03e85b71 is present!
+Address 0x6e2a533cc7885a26 is present!
+Address 0x1139fe21a6ba7bc3 is present!
+Address 0x457eb353f8f91150 is present!
+Address 0x1f9b697ed05a7c0b is present!
+Address 0x15ea909f0cba7d56 is present!
+Address 0x72dae5ba2d885bb9 is present!
+Address 0x3e963087db49c62c is present!
+Address 0x6ca34214ac6e0a69 is present!
+Address 0x76541af4700e091e is present!
+Address 0x1963c5d94f402abb is present!
+Address 0x4da87b0ba17ec048 is present!
+Address 0x1771a1c727d4cd13 is present!
+Address 0xdc0c8e76434ce5e is present!
+Address 0x6ab11e028502acc1 is present!
+Address 0x366c68d032c41734 is present!
+Address 0x74cd09cc54f3b961 is present!
+Address 0x7e7de2ac1893b816 is present!
+Address 0x218d8d90f7c5d9b3 is present!
+Address 0x55d242c34a046f40 is present!
+Address 0xf47da0f7f4f1e1b is present!
+Address 0x597012fbbaf1f66 is present!
+Address 0x6287564adc7cfdc9 is present!
+Address 0x2e42a1188a3e683c is present!
+Address 0x7cf6d183fd796859 is present!
+Address 0x7958559c3ee698f2 is present!
+Address 0x29b75548a04b88ab is present!
+Address 0x5dfc0a7af28a1e38 is present!
+Address 0x71e1257d6c96f23 is present!
+Address 0x292c687ecd68f92 is present!
+Address 0x5a5d8e9333f74ed1 is present!
+Address 0x2618d960e1b8b944 is present!
+Address 0x43d25b7e61d19f91 is present!
+Address 0x4d83345e25719e46 is present!
+Address 0xf6d20bcfb5c401d is present!
+Address 0x24d7947556e25570 is present!
+Address 0x4042885d727137eb is present!
+Address 0x3691af7daed13936 is present!
+Address 0x6c7dfb673060e867 is present!
+Address 0x5f3d4f667d60820c is present!
+Address 0x4bfc23360a574e89 is present!
+Address 0x55acfc15cdf74d3e is present!
+Address 0x743590552d69125 is present!
+Address 0x2d015c2cff680468 is present!
+Address 0x3818c0a5c9eb88f3 is present!
+Address 0x2e67e7c6064b8a3e is present!
+Address 0x74a7c31ed8e6975f is present!
+Address 0x571387aed4dad314 is present!
+Address 0x5425eaedb2dcfd81 is present!
+Address 0x5dd6c3cd767cfc36 is present!
+Address 0xe66eb255af1dd3 is present!
+Address 0x352b23e4a7edb360 is present!
+Address 0x2feef8ee2165d9fb is present!
+Address 0x263e200e5dc5db46 is present!
+Address 0x7cd18ad6816c4657 is present!
+Address 0x4ee9bff72c55241c is present!
+Address 0x5c4fb2a55b62ac79 is present!
+Address 0x66008b851f02ab2e is present!
+Address 0x9103669fe34cccb is present!
+Address 0x3d54eb9c50736258 is present!
+Address 0x27c5313678e02b03 is present!
+Address 0x1e145856b5402c4e is present!
+Address 0x7b04ad71d60e0ab1 is present!
+Address 0x46bff83f83cf7524 is present!
+Address 0x5a3847e5b7ea2ccf is present!
+Address 0x50876f05f44a2e1a is present!
+Address 0x52883bdeeae7f383 is present!
+Address 0x79330eeec2d976f0 is present!
+Address 0x21b2d43e73d2fbb5 is present!
+Address 0x2b63ad1e3772fa6a is present!
+Address 0x318ca7fce95ae3f9 is present!
+Address 0x2b80d3568e3b194 is present!
+Address 0x520e802e0f647dd7 is present!
+Address 0x485da74e4bc47f22 is present!
+Address 0x5ab20396936da27b is present!
+Address 0x710947371a53c7f8 is present!
+Address 0x29dc9bf61c58aaad is present!
+Address 0x338d74d5dff8a962 is present!
+Address 0x2962e04540d53501 is present!
+Address 0xae1d4ed1169608c is present!
+Address 0x49e4b87666decedf is present!
+Address 0x4033df96a33ed02a is present!
+Address 0x62dbcb4e3bf35173 is present!
+Address 0x68df7f7f71ce1900 is present!
+Address 0x320663adc4de59a5 is present!
+Address 0x3bb73c8d887e585a is present!
+Address 0x2139188d984f8609 is present!
+Address 0x130b9ca4b9ef0f84 is present!
+Address 0x41baf0bebe591fe7 is present!
+Address 0x380a17defab92132 is present!
+Address 0x6b059305e479006b is present!
+Address 0x60b5b7c7c9486a08 is present!
+Address 0x3a302b656d64089d is present!
+Address 0x43e1044531040752 is present!
+Address 0x190f50d5efc9d711 is present!
+Address 0x1b35645c6274be7c is present!
+Address 0x7adf66c45a00e8af is present!
+Address 0x712e8de49660e9fa is present!
+Address 0x31e11d0048d137a3 is present!
+Address 0x6625d2329b0fcd30 is present!
+Address 0x10bb55fd1bc3fd5 is present!
+Address 0xabc8e3f955c3e8a is present!
+Address 0x5233c6db8b719fd9 is present!
+Address 0x1def11a939330a4c is present!
+Address 0x72b59f0cb17b39b7 is present!
+Address 0x6904c62ceddb3b02 is present!
+Address 0x3a0ae4b7f156e69b is present!
+Address 0x6e4f99ea43957c28 is present!
+Address 0x9357d177a41eecd is present!
+Address 0x12e655f73de1ed82 is present!
+Address 0x4a09ff23e2ebf0e1 is present!
+Address 0x15c549f190ad5b54 is present!
+Address 0x6a8bd75508f58abf is present!
+Address 0x60dafe7545558c0a is present!
+Address 0x4234ac6f99dc9593 is present!
+Address 0x767961a1ec1b2b20 is present!
+Address 0x115f44cf22c79dc5 is present!
+Address 0x1b101daee6679c7a is present!
+Address 0x41e0376c3a6641e9 is present!
+Address 0xd9b8239e827ac5c is present!
+Address 0x62620f9d606fdbc7 is present!
+Address 0x58b136bd9ccfdd12 is present!
+Address 0x4a5e74274262448b is present!
+Address 0x7ea3295994a0da18 is present!
+Address 0x19890c86cb4d4cbd is present!
+Address 0x2339e5668eed4b72 is present!
+Address 0x39b66fb491e092f1 is present!
+Address 0x571ba823fa1fd64 is present!
+Address 0x58d08593329ec134 is present!
+Address 0x263b5c37ed5997cb is present!
+Address 0x53effe3170335f1e is present!
+Address 0x27043b0e135b10b is present!
+Address 0x231a9690f91e6750 is present!
+Address 0x5dd987a3e6e93fb1 is present!
+Address 0x3024e5aa640f785e is present!
+Address 0x797ad8734a877779 is present!
+Address 0x50a6bddb8a19123c is present!
+Address 0x2e6523ef95df46c3 is present!
+Address 0x5c19c5e918b90e16 is present!
+Address 0x5b98406c74ffded is present!
+Address 0x2b445e48a1a41648 is present!
+Address 0x55afbfec3e6390b9 is present!
+Address 0x27fb1df2bb89c966 is present!
+Address 0x7e5b5fd50cf2d98f is present!
+Address 0x487cf623e1936344 is present!
+Address 0x368eeba73e64f5bb is present!
+Address 0x64438da0c13ebd0e is present!
+Address 0xde34bbe6fd5ace5 is present!
+Address 0x336e26004a29c540 is present!
+Address 0x4d85f83495dde1c1 is present!
+Address 0x1fd1563b13041a6e is present!
+Address 0x7631981d646d2a97 is present!
+Address 0x40532e6c390db44c is present!
+Address 0x3eb8b35ee6eaa4b3 is present!
+Address 0x6c6d555869c46c06 is present!
+Address 0x160d1376185b5bdd is present!
+Address 0x3b97edb7f2af7438 is present!
+Address 0x455c307ced5832c9 is present!
+Address 0x17a78e836a7e6b76 is present!
+Address 0x6e07d065bbe77b9f is present!
+Address 0x7977a471d4b57d14 is present!
+Address 0x5943d594b42dbeb is present!
+Address 0x3348df52ce1ca33e is present!
+Address 0x2317628f834c6ceb is present!
+Address 0x27377b25707ab70 is present!
+Address 0x7e80a68288fffb91 is present!
+Address 0x50cc04890626343e is present!
+Address 0x58d3b994a870bb99 is present!
+Address 0x714ddcba2c2fce1c is present!
+Address 0xdbe0510f3c88ae3 is present!
+Address 0x3b72a70a76a25236 is present!
+Address 0x1aed9ad7dac6bdf3 is present!
+Address 0xa9d3f69ff8d5a68 is present!
+Address 0x7656decae07a4c99 is present!
+Address 0x48a23cd15da08546 is present!
+Address 0x60fd814c50f66a91 is present!
+Address 0x6924150283aa1f24 is present!
+Address 0x15e7ccc89c4e39db is present!
+Address 0x439c6ec21f28012e is present!
+Address 0x12c3d32032410efb is present!
+Address 0x12c70721a8130960 is present!
+Address 0x6e2d171337f49da1 is present!
+Address 0x40787519b51ad64e is present!
+Address 0x69274903f97c1989 is present!
+Address 0x60fa4d4adb24702c is present!
+Address 0x1e11948044d3e8d3 is present!
+Address 0x4bc63679c7adb026 is present!
+Address 0xa9a0b6889bb6003 is present!
+Address 0x1af0ced95098b858 is present!
+Address 0x66034f5b8f6eeea9 is present!
+Address 0x384ead620c952756 is present!
+Address 0x715110bba201c881 is present!
+Address 0x178247d5ee714974 is present!
+Address 0x678999f531870f8b is present!
+Address 0x6ac1c4114b9f2922 is present!
+Address 0x3eddfa0c62f7c6b5 is present!
+Address 0x6468d44e3d4bdf10 is present!
+Address 0x1c8b49e6a2bbc7f1 is present!
+Address 0x11295812e01dff62 is present!
+Address 0x4536e9cf714b10c7 is present!
+Address 0xf58801e45eb9a7c is present!
+Address 0x6fb361acda0cbe83 is present!
+Address 0x6297fc59a3197a2a is present!
+Addr

@@ -10,7 +10,7 @@
 // definitions for memory node
 #define MEM_NUM_TOP_PORTS	1	// should not ever be changed
 #define MEM_QUEUE_SIZE		256	// in packets
-#define MEM_NUM_LINES		8192
+#define MEM_NUM_LINES		1000 // 8192 originally for 64 addresses 128 nodes
 #define MEM_LINE_SIZE		32	// in bits
 
 // enum defining various cache states for MSI protocol
@@ -23,7 +23,7 @@ StatesMSI_t;
 // struct holding data inside a MemoryNode
 typedef struct MemoryLine
 {
-	uint32_t address;
+	uint64_t address;
 	uint32_t value;
 	// status of all compute nodes
 	// StatesMSI_t* nodeState;
