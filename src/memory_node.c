@@ -118,19 +118,24 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	else if (pkt.flag == WR_REQUEST) { // write request from a compute node
 		node->memory[address_to_access].nodeState[pkt.src] = MODIFIED;
 		// printf("Memory is generating invalidations.\n");
-		return_packet.flag = INVALIDATE;
 		return_packet.dst = 0;
 		return_packet.invalidates = malloc(sizeof(uint8_t) * 128);
-		mem_to_switch_invalidations++;
+		
+		int sendInvalidations = 0;
 		for (int i = 0; i < 128; i++) {
 			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
 				return_packet.invalidates[i] = 1;
 				node->memory[address_to_access].nodeState[i] = INVALID;
+				sendInvalidations = 1;
 				// printf("Setting invalidations for %d.\n", i);
 			}
 			else {
 				return_packet.invalidates[i] = 0;
 			}
+		}
+		if (sendInvalidations) {
+			mem_to_switch_invalidations++;
+			return_packet.flag = INVALIDATE;
 		}
 		// generate_invalidations(node, pkt, p, global_id, global_time);
 	}

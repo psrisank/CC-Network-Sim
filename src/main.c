@@ -386,7 +386,7 @@ int main(int argc, char **argv)
 						wb_pkt.time= global_time;
 						wb_pkt.flag = WR_DATA;
 						wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-						wb_pkt.dst = memory_nodes;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+						wb_pkt.dst = memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
 						wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
 						wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
 						push_packet(&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0]), TX, wb_pkt);
