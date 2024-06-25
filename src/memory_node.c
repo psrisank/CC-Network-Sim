@@ -33,7 +33,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.dst = pkt.src;
 	// uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
 	uint32_t address_to_access = (pkt.data.addr / 4); // % 64;
-	printf("Accessing index %d for address 0x%lx.\n", address_to_access, pkt.data.addr);
+	// printf("Accessing index %d for address 0x%lx.\n", address_to_access, pkt.data.addr);
 	// printf("Trying to access address: 0x%lx in node: %d\n", pkt.data.addr, node->id - memory_node_min_id);
 	// printf("Resultant index: %d\n", address_to_access);
 	if (pkt.flag == READ_REQUEST)
