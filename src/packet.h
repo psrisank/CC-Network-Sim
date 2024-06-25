@@ -33,6 +33,8 @@ typedef struct Packet
 	uint8_t src;
 	uint8_t dst;
 	DataNode data;
+	// uint8_t invalidates[128];
+	uint8_t* invalidates;
 }
 Packet;
 

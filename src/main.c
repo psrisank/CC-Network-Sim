@@ -14,7 +14,7 @@
 //#define DEBUG
 
 int main(int argc, char **argv)
-{
+{	
 	if (argc < 4)
 	{
 		printf(ANSI_COLOR_RED "Usage: ./[exec] [packet input file] [memory input file] [packet log file]" ANSI_COLOR_RESET "\n");
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
 	// Initialization of all compute nodes and their caches
 	// ComputeNode compute_nodes[NUM_COMPUTE_NODES];
-	ComputeNode* compute_nodes = malloc(sizeof(ComputeNode) * NUM_COMPUTE_NODES);
+	ComputeNode* compute_nodes = (ComputeNode*) malloc(sizeof(ComputeNode) * NUM_COMPUTE_NODES);
 	uint32_t compute_node_min_id = global_id;
 	for (int i = 0; i < NUM_COMPUTE_NODES; i++)
 	{
@@ -56,13 +56,17 @@ int main(int argc, char **argv)
 		}
 		for (int j = 0; j < CACHE_LINES; j++)
 		{
-			compute_nodes[i].cache[j] = (ComputeNodeMemoryLine){0, 0, 0, 0, 0};
+			if (j == 0) {
+				compute_nodes[i].cache[j] = (ComputeNodeMemoryLine){0, 0, 1, 0, SHARED};
+				// printf("SHARED IN ADDR 0 INDEX 0\n");
+			}
+			else {
+				compute_nodes[i].cache[j] = (ComputeNodeMemoryLine){0, 0, 0, 0, INVALID};
+			}
 			// node.cache[j] = (ComputeNodeMemoryLine){0, 0, 0, 0, 0};
 		}
-		compute_nodes[i].last_used = 0;
-		compute_nodes[i].idx_to_modify = 0;
-		updateNodeState(&compute_nodes[i]);
-		// compute_nodes[i] = node;
+		compute_nodes[i].last_used = 1;
+		compute_nodes[i].idx_to_modify = 1;
 	}
 	uint32_t compute_node_max_id = global_id - 1;
 
@@ -74,7 +78,7 @@ int main(int argc, char **argv)
 
 	// Switch Node Initialization
 	// SwitchNode switch_nodes[NUM_SWITCH_NODES];
-	SwitchNode* switch_nodes = malloc(sizeof(SwitchNode) * NUM_SWITCH_NODES);
+	SwitchNode* switch_nodes = (SwitchNode*) malloc(sizeof(SwitchNode) * NUM_SWITCH_NODES);
 	
 	// uint32_t switch_node_min_id = global_id;
 	for (int i = 0; i < NUM_SWITCH_NODES; i++)
@@ -104,28 +108,27 @@ int main(int argc, char **argv)
 	uint32_t memory_node_min_id = global_id;
 	for (int i = 0; i < NUM_MEMORY_NODES; i++)
 	{
-		MemoryNode node;
-		node.id = global_id;
+		memory_nodes[i].id = global_id;
 		global_id++;
-		node.time = global_time;
+		memory_nodes[i].time = global_time;
 		for (int j = 0; j < MEM_NUM_TOP_PORTS; j++)
 		{
-			node.top_ports[j].tail_rx = 0;
-			node.top_ports[j].tail_tx = 0;
+			memory_nodes[i].top_ports[j].tail_rx = 0;
+			memory_nodes[i].top_ports[j].tail_tx = 0;
 		}
-		memory_nodes[i] = node;
+		if (i == 0) {
+			// printf("Setting all addr 0 nodes to shared for mem node 0.\n");
+			for (int j = 0; j < 128; j++) {
+				// printf("Addr 0 in compute node %d shared.\n", j);
+				memory_nodes[i].memory[0].nodeState[j] = SHARED;
+			}
+
+		}
+		// memory_nodes[i] = node;
 	}
 	uint32_t memory_node_max_id = global_id - 1;
 
-	//  for (int i = 0; i < NUM_MEMORY_NODES; i++) {
-	//  	init_memnodes(&(memory_nodes[i]), NUM_COMPUTE_NODES);
-	//  }
-
-	// for (int i = 0; i < NUM_MEMORY_NODES; i++) {
-	// 	printf("%d\n", memory_nodes[i].memory[0].nodeState[0]);
-	// }
-
-	// Memory initialization
+	// Memory data/address initialization
 	char line[255];
 	char *token;
 	FILE *mem_input;
@@ -149,6 +152,11 @@ int main(int argc, char **argv)
 			case 0:
 			{
 				data_line.address = (uint32_t)strtol(token, NULL, 16);
+				if (data_line.address == 0) {
+					for (int i = 0; i < 128; i++) {
+						data_line.nodeState[i] = SHARED;
+					}
+				}
 				break;
 			}
 
@@ -158,7 +166,6 @@ int main(int argc, char **argv)
 				data_line.value = (uint32_t)strtol(token, NULL, 16);
 			}
 
-				// Future work: have memory keep track of the state of the address in each cache
 			}
 			token = strtok(NULL, ",");
 			curr_field++;
@@ -193,7 +200,7 @@ int main(int argc, char **argv)
 		pkt_flag = strtol(token, NULL, 2) ? INST_WRITE : INST_READ;
 		token = strtok(NULL, ",");
 		pkt_data = (uint32_t)strtol(token, NULL, 16);
-		packets[pkt_iterator++] = (Packet){global_id++, pkt_time, pkt_flag, pkt_src, pkt_addr / (64 * 4) + memory_node_min_id, (DataNode){pkt_addr, pkt_data}};
+		packets[pkt_iterator++] = (Packet){global_id++, pkt_time, pkt_flag, pkt_src, /*pkt_addr / (64 * 4) + */memory_node_min_id, (DataNode){pkt_addr, pkt_data}, NULL};
 	}
 	int pkt_cnt = pkt_iterator;
 	// //printf("PACKET CNT: %d\n", pkt_cnt);
@@ -258,32 +265,32 @@ int main(int argc, char **argv)
 					log_cdatareq();
 					break;
 				case 6:		// writeback
-					// printf("Node %d sending writeback packet.\n", packets[pkt_iterator].src);
+					// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 					wb_pkt.id = global_id++;
 					wb_pkt.time= global_time;
 					wb_pkt.flag = WR_DATA;
 					wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-					wb_pkt.dst = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+					wb_pkt.dst = memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
 					// TODO: remove
-					wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
-					wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+					wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+					wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0]), TX, wb_pkt);
-					compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = SHARED;
+					compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = INVALID;
 					recheck = 1;
 					log_cwritedata();
 					break;
 				case 7:		// writeback
-					// printf("Node %d sending writeback packet.\n", packets[pkt_iterator].src);
+					// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 					wb_pkt.id = global_id++;
 					wb_pkt.time= global_time;
 					wb_pkt.flag = WR_DATA;
 					wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-					wb_pkt.dst = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+					wb_pkt.dst = memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
 					// TODO: remove
-					wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
-					wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+					wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+					wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0]), TX, wb_pkt);
-					compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = SHARED;
+					compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = INVALID;
 					recheck = 1;
 					log_cwritedata();
 					break;
@@ -360,30 +367,30 @@ int main(int argc, char **argv)
 						break;
 					// Address mismatch
 					case 6: // Writeback
-						// printf("Node %d sending writeback packet.\n", packets[pkt_iterator].src);
+						// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 						wb_pkt.id = global_id++;
 						wb_pkt.time= global_time;
 						wb_pkt.flag = WR_DATA;
 						wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-						wb_pkt.dst = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
-						wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
-						wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+						wb_pkt.dst = memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+						wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+						wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
 						push_packet(&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0]), TX, wb_pkt);
-						compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = SHARED;
+						compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = INVALID;
 						recheck = 1;
 						log_cwritedata();
 						break;
 					case 7: // Writeback
-						// printf("Node %d sending writeback packet.\n", packets[pkt_iterator].src);
+						// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 						wb_pkt.id = global_id++;
 						wb_pkt.time= global_time;
 						wb_pkt.flag = WR_DATA;
 						wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-						wb_pkt.dst = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
-						wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
-						wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+						wb_pkt.dst = memory_nodes;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+						wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
+						wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
 						push_packet(&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0]), TX, wb_pkt);
-						compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = SHARED;
+						compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].state = INVALID;
 						recheck = 1;
 						log_cwritedata();
 						break;
@@ -524,11 +531,24 @@ int main(int argc, char **argv)
 					// need to act on this packet
 					if ((curr_packet_rx.dst >= compute_node_min_id) && (curr_packet_rx.dst <= compute_node_max_id))
 					{
-						// printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
-						curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
-						// place packet into switch top output port
-						uint32_t correct_compute_node = curr_packet_rx.dst - compute_node_min_id;
-						push_packet((&(switch_nodes[i].top_ports[correct_compute_node])), TX, curr_packet_rx);
+						if (curr_packet_rx.flag == INVALIDATE) {
+							// printf("generating invalidations.\n");
+							for (int k = 0; k < 128; k++) {
+								if (curr_packet_rx.invalidates[k] == 1) {
+									// printf("Sent invalidation to node %d.\n", k);
+									curr_packet_rx.dst = i;
+									push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+								}
+							}
+						}
+						else {
+							// printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
+							curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
+							// place packet into switch top output port
+							uint32_t correct_compute_node = curr_packet_rx.dst - compute_node_min_id;
+							push_packet((&(switch_nodes[i].top_ports[correct_compute_node])), TX, curr_packet_rx);
+						}
+
 					}
 					else
 					{
@@ -556,12 +576,13 @@ int main(int argc, char **argv)
 					// need to act on this packet
 					// printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 					// handle return packet
-					Packet return_packet = process_packet(&memory_nodes[i], curr_packet_rx, global_id++, global_time, &(memory_nodes[i].top_ports[j]));
+					Packet return_packet = process_packet(&memory_nodes[i], curr_packet_rx, global_id++, global_time);
 					if (return_packet.flag != ERROR)
 					{
 						// place packet in outgoing buffer
 						push_packet((&(memory_nodes[i].top_ports[j])), TX, return_packet);
 					}
+
 					// remove packet from memory node
 					pop_packet((&(memory_nodes[i].top_ports[j])), RX, 1);
 				}

@@ -32,13 +32,13 @@ init_packets = list()
 packets = list()
 
 # prepare sharing ratio
-for i in range(num_compute_nodes):
-    global_time = (i * time_between_packets)
-    init_packets.append([global_time, i, 0x00000000, 0, 0x00000000])
+# for i in range(num_compute_nodes):
+#     global_time = (i * time_between_packets)
+#     init_packets.append([global_time, i, 0x00000000, 0, 0x00000000])
 
 
 # create a bunch of reads from random addresses
-for curr_packet in range(num_compute_nodes, total_num_requests + num_compute_nodes):
+for curr_packet in range(total_num_requests):
     global_time = 0
     compute_node_id = random.randint(0, num_compute_nodes - 1)
     address = 0
@@ -83,7 +83,7 @@ for i in range(128):
 
 # assign global times to packets
 for i in range(total_num_requests):
-    packets[i][0] = (i * time_between_packets) + (num_compute_nodes * time_between_packets)
+    packets[i][0] = (i * time_between_packets)# + (num_compute_nodes * time_between_packets)
 
 
 print(len(packets))

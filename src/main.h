@@ -5,7 +5,7 @@
 
 #define NUM_COMPUTE_NODES	128
 #define NUM_SWITCH_NODES	1	// should not ever be changed
-#define NUM_MEMORY_NODES	128
+#define NUM_MEMORY_NODES	1
 
 // console color codes
 #define ANSI_COLOR_RED		"\x1b[31m"

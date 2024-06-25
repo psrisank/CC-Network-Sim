@@ -1,0 +1,65 @@
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sharing Ratio: 0.0
+Write ratio: 0.0
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 0
+Invalidations from memory to switch: 0
+Read requests to memory nodes: 988
+Write requests to memory nodes: 0
+Transfer requests from memory nodes: 862
+Compute node to compute node data transfers: 862
+Compute node to memory node data transfers: 0
+Memory node to compute node data transfer: 126
+
+Write ratio: 0.1
+Write ratio: 0.2
+Write ratio: 0.3
+Write ratio: 0.4
+Write ratio: 0.5
+Write ratio: 0.6
+Write ratio: 0.7
+Write ratio: 0.8
+Write ratio: 0.9
+Write ratio: 1.0
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sharing Ratio: 0.2
+Write ratio: 0.0
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 0
+Invalidations from memory to switch: 0
+Read requests to memory nodes: 792
+Write requests to memory nodes: 0
+Transfer requests from memory nodes: 665
+Compute node to compute node data transfers: 665
+Compute node to memory node data transfers: 0
+Memory node to compute node data transfer: 127
+
+Write ratio: 0.1
+Write ratio: 0.2
+Write ratio: 0.3
+Write ratio: 0.4
+Write ratio: 0.5
+Write ratio: 0.6
+Write ratio: 0.7
+Write ratio: 0.8
+Write ratio: 0.9
+Write ratio: 1.0
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sharing Ratio: 0.4
+Write ratio: 0.0
+Write ratio: 0.1
+Write ratio: 0.2
+Write ratio: 0.3
+Write ratio: 0.4
+Write ratio: 0.5
+Write ratio: 0.6
+Write ratio: 0.8
+Write ratio: 1.0
+Write ratio: 0.2
+Write ratio: 0.6
+Write ratio: 0.7

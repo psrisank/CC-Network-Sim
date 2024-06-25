@@ -7,6 +7,7 @@
 
 long control_message_memory_node_global_counter = 0;
 long transfer_command_messages = 0;
+long mem_to_switch_invalidations = 0;
 long memory_data_requests = 0;
 int data_requested;
 long last_sent_node = -1;
@@ -22,7 +23,7 @@ void init_memnodes(MemoryNode* node, int node_cnt) {
 	}
 }
 
-Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, Port* p)
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time)
 {
 	Packet return_packet;
 	return_packet.id = global_id;
@@ -31,7 +32,8 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.src = node->id;
 	return_packet.dst = pkt.src;
 	// uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
-	uint32_t address_to_access = (pkt.data.addr / 4) % 64;
+	uint32_t address_to_access = (pkt.data.addr / 4); // % 64;
+	printf("Accessing index %d for address 0x%lx.\n", address_to_access, pkt.data.addr);
 	// printf("Trying to access address: 0x%lx in node: %d\n", pkt.data.addr, node->id - memory_node_min_id);
 	// printf("Resultant index: %d\n", address_to_access);
 	if (pkt.flag == READ_REQUEST)
@@ -116,11 +118,25 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	else if (pkt.flag == WR_REQUEST) { // write request from a compute node
 		node->memory[address_to_access].nodeState[pkt.src] = MODIFIED;
 		// printf("Memory is generating invalidations.\n");
-		generate_invalidations(node, pkt, p, global_id, global_time);
+		return_packet.flag = INVALIDATE;
+		return_packet.dst = 0;
+		return_packet.invalidates = malloc(sizeof(uint8_t) * 128);
+		mem_to_switch_invalidations++;
+		for (int i = 0; i < 128; i++) {
+			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
+				return_packet.invalidates[i] = 1;
+				node->memory[address_to_access].nodeState[i] = INVALID;
+				// printf("Setting invalidations for %d.\n", i);
+			}
+			else {
+				return_packet.invalidates[i] = 0;
+			}
+		}
+		// generate_invalidations(node, pkt, p, global_id, global_time);
 	}
 	else if (pkt.flag == WR_DATA) { 
 		// printf("Received a writeback packet from Node %d.\n", pkt.src);
-		node->memory[address_to_access].nodeState[pkt.src] = SHARED;
+		node->memory[address_to_access].nodeState[pkt.src] = INVALID;
 		node->memory[address_to_access].value = pkt.data.data;
 
 	}
@@ -128,7 +144,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 }
 
 void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time) {
-	uint32_t idx_to_access = (pkt.data.addr / 4) % 64;
+	uint32_t idx_to_access = (pkt.data.addr / 4);// % 64;
 	for (int i = 0; i < 128; i++) {
 		// send an invalidation to ever non modified node
 		if (node->memory[idx_to_access].nodeState[i] != INVALID && i != pkt.src) {
@@ -140,7 +156,7 @@ void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t glob
 			// new_packet.flag = INVALIDATE; 
 			// new_packet.src = node->id;
 			// new_packet.dst = i;
-			Packet invalidate_packet = (Packet) {global_id, global_time, INVALIDATE, node->id, i, (DataNode) {pkt.data.addr, 0xFFFFFFFF}};
+			Packet invalidate_packet = (Packet) {global_id, global_time, INVALIDATE, node->id, i, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
 			push_packet(p, TX, invalidate_packet);
 			node->memory[idx_to_access].nodeState[i] = INVALID;
 		}
@@ -158,4 +174,8 @@ long transfer_requests() {
 
 long get_memory_to_compute_requests() {
 	return memory_data_requests;
+}
+
+long get_memory_to_switch_invalidations() {
+	return mem_to_switch_invalidations;
 }

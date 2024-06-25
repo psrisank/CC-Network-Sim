@@ -10,7 +10,7 @@
 // definitions for memory node
 #define MEM_NUM_TOP_PORTS	1	// should not ever be changed
 #define MEM_QUEUE_SIZE		256	// in packets
-#define MEM_NUM_LINES		64
+#define MEM_NUM_LINES		8192
 #define MEM_LINE_SIZE		32	// in bits
 
 // enum defining various cache states for MSI protocol
@@ -44,10 +44,11 @@ typedef struct MemoryNode
 MemoryNode;
 
 void init_memnodes(MemoryNode* node, int node_cnt);
-Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, Port* p);
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time);
 void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time);
 long get_memory_control_count();
 long get_memory_to_compute_requests();
 long transfer_requests();
+long get_memory_to_switch_invalidations();
 
 #endif
