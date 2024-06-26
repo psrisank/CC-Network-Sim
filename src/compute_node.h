@@ -50,8 +50,8 @@ typedef struct ComputeNode
 ComputeNode;
 
 void updateNodeState(ComputeNode* node);
-int read_action(ComputeNode node, uint32_t address);
-void write_action(ComputeNode* node, uint32_t address, uint32_t wdata);
+int read_action(ComputeNode node, uint64_t address);
+void write_action(ComputeNode* node, uint64_t address, uint32_t wdata);
 Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log_file, int global_time);
 // void print_cache(ComputeNode* node);
 void get_statistics();

@@ -146,7 +146,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		// 	printf("Has data 0x%x.\n", pkt.data.data);
 		// }
 		*stall = 0;
-		fprintf(log_file, "Node %d received response for address 0x%lx read at time %d\n\n\n", node->id, pkt.data.addr, global_time);
+		fprintf(log_file, "Node %d received response for address 0x%lx at time %d\n\n\n", node->id, pkt.data.addr, global_time);
 	}
 	else if (pkt.flag == TRANSFER) { // essentially a read from the memory
 		// printf("Node %d returning data.\n", node->id);
@@ -183,7 +183,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		node->cache[node->idx_to_modify].state = SHARED;
 		node->cache[node->idx_to_modify].address = pkt.data.addr;
 		node->cache[node->idx_to_modify].value = pkt.data.data;
-		fprintf(log_file, "Node %d received response for address 0x%lx read at time %d\n\n\n", node->id, pkt.data.addr, global_time);
+		fprintf(log_file, "Node %d received response for address 0x%lx at time %d\n\n\n", node->id, pkt.data.addr, global_time);
 	}
 	return ret_pkt;
 

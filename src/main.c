@@ -291,15 +291,19 @@ int main(int argc, char **argv)
 				{
 				// Address matches
 				case 1:	   // modified
+					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 2:	   // owned
+					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 3:	   // exclusive
+					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 4:	   // shared
+					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 5:	   // invalid
