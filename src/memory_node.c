@@ -120,7 +120,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 		// printf("Memory is generating invalidations.\n");
 		return_packet.dst = 0;
 		return_packet.invalidates = malloc(sizeof(uint8_t) * 128);
-		
+		return_packet.data.addr = pkt.data.addr;
 		int sendInvalidations = 0;
 		for (int i = 0; i < 128; i++) {
 			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
