@@ -116,6 +116,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 		}
 	}
 	else if (pkt.flag == WR_REQUEST) { // write request from a compute node
+		// printf("received write request from %d.\n", pkt.src);
 		node->memory[address_to_access].nodeState[pkt.src] = MODIFIED;
 		// printf("Memory is generating invalidations.\n");
 		return_packet.dst = 0;

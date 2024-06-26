@@ -240,6 +240,7 @@ int main(int argc, char **argv)
 			// printf("State action is %d.\n", state_action);
 			if (packets[pkt_iterator].flag == INST_READ)
 			{
+				// printf("Node state for the node %d read: %d.\n", packets[pkt_iterator].src, state_action);
 				Packet wb_pkt; 
 				switch (state_action)
 				{
@@ -258,6 +259,7 @@ int main(int argc, char **argv)
 					break; // do nothing
 				case 5:	   // invalid
 					// Request the data from memory
+					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
 					pkt_iterator++;
@@ -295,6 +297,7 @@ int main(int argc, char **argv)
 					log_cwritedata();
 					break;
 				case 8: 	// replace
+					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
 					pkt_iterator++;
@@ -302,6 +305,7 @@ int main(int argc, char **argv)
 					log_cdatareq();
 					break;
 				case 9:		// replace
+					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
 					pkt_iterator++;
@@ -309,6 +313,7 @@ int main(int argc, char **argv)
 					log_cdatareq();
 					break;
 				case 10: 	// replace.
+					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
 					pkt_iterator++;
@@ -447,7 +452,7 @@ int main(int argc, char **argv)
 					{
 						// printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at compute node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, compute_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 						//  process packet destined for the compute node
-						Packet resp = cnode_process_packet(&compute_nodes[i], curr_packet_rx, &stall);
+						Packet resp = cnode_process_packet(&compute_nodes[i], curr_packet_rx, &stall, output_file, global_time);
 						// TODO: send packet to other nodes if necessary
 						if (resp.flag != ERROR) {
 							push_packet(&(compute_nodes[i].bot_ports[0]), TX, resp);
@@ -536,7 +541,7 @@ int main(int argc, char **argv)
 							for (int k = 0; k < 128; k++) {
 								if (curr_packet_rx.invalidates[k] == 1) {
 									// printf("Sent invalidation to node %d.\n", k);
-									curr_packet_rx.dst = i;
+									curr_packet_rx.dst = k;
 									push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
 								}
 							}
