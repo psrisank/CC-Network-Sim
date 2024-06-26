@@ -1,65 +1,143 @@
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 0.0
 Write ratio: 0.0
 Ended on global time: 200000
 
 
 Invalidation Messages from switch: 0
 Invalidations from memory to switch: 0
-Read requests to memory nodes: 988
+Read requests to memory nodes: 591
 Write requests to memory nodes: 0
-Transfer requests from memory nodes: 862
-Compute node to compute node data transfers: 862
+Transfer requests from memory nodes: 465
+Compute node to compute node data transfers: 465
 Compute node to memory node data transfers: 0
 Memory node to compute node data transfer: 126
 
 Write ratio: 0.1
-Write ratio: 0.2
-Write ratio: 0.3
-Write ratio: 0.4
-Write ratio: 0.5
-Write ratio: 0.6
-Write ratio: 0.7
-Write ratio: 0.8
-Write ratio: 0.9
-Write ratio: 1.0
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 0.2
-Write ratio: 0.0
 Ended on global time: 200000
 
 
-Invalidation Messages from switch: 0
-Invalidations from memory to switch: 0
-Read requests to memory nodes: 792
-Write requests to memory nodes: 0
-Transfer requests from memory nodes: 665
-Compute node to compute node data transfers: 665
-Compute node to memory node data transfers: 0
-Memory node to compute node data transfer: 127
+Invalidation Messages from switch: 275
+Invalidations from memory to switch: 80
+Read requests to memory nodes: 527
+Write requests to memory nodes: 100
+Transfer requests from memory nodes: 417
+Compute node to compute node data transfers: 417
+Compute node to memory node data transfers: 23
+Memory node to compute node data transfer: 110
 
-Write ratio: 0.1
 Write ratio: 0.2
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 397
+Invalidations from memory to switch: 182
+Read requests to memory nodes: 476
+Write requests to memory nodes: 200
+Transfer requests from memory nodes: 363
+Compute node to compute node data transfers: 363
+Compute node to memory node data transfers: 52
+Memory node to compute node data transfer: 113
+
 Write ratio: 0.3
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 499
+Invalidations from memory to switch: 251
+Read requests to memory nodes: 411
+Write requests to memory nodes: 300
+Transfer requests from memory nodes: 322
+Compute node to compute node data transfers: 322
+Compute node to memory node data transfers: 68
+Memory node to compute node data transfer: 89
+
 Write ratio: 0.4
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 617
+Invalidations from memory to switch: 349
+Read requests to memory nodes: 344
+Write requests to memory nodes: 400
+Transfer requests from memory nodes: 257
+Compute node to compute node data transfers: 257
+Compute node to memory node data transfers: 91
+Memory node to compute node data transfer: 87
+
 Write ratio: 0.5
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 662
+Invalidations from memory to switch: 416
+Read requests to memory nodes: 285
+Write requests to memory nodes: 500
+Transfer requests from memory nodes: 218
+Compute node to compute node data transfers: 218
+Compute node to memory node data transfers: 137
+Memory node to compute node data transfer: 67
+
 Write ratio: 0.6
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 720
+Invalidations from memory to switch: 500
+Read requests to memory nodes: 235
+Write requests to memory nodes: 600
+Transfer requests from memory nodes: 178
+Compute node to compute node data transfers: 178
+Compute node to memory node data transfers: 173
+Memory node to compute node data transfer: 57
+
 Write ratio: 0.7
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 814
+Invalidations from memory to switch: 593
+Read requests to memory nodes: 184
+Write requests to memory nodes: 700
+Transfer requests from memory nodes: 142
+Compute node to compute node data transfers: 142
+Compute node to memory node data transfers: 153
+Memory node to compute node data transfer: 42
+
 Write ratio: 0.8
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 848
+Invalidations from memory to switch: 674
+Read requests to memory nodes: 118
+Write requests to memory nodes: 800
+Transfer requests from memory nodes: 86
+Compute node to compute node data transfers: 86
+Compute node to memory node data transfers: 195
+Memory node to compute node data transfer: 32
+
 Write ratio: 0.9
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 907
+Invalidations from memory to switch: 751
+Read requests to memory nodes: 61
+Write requests to memory nodes: 900
+Transfer requests from memory nodes: 45
+Compute node to compute node data transfers: 45
+Compute node to memory node data transfers: 209
+Memory node to compute node data transfer: 16
+
 Write ratio: 1.0
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Sharing Ratio: 0.4
-Write ratio: 0.0
-Write ratio: 0.1
-Write ratio: 0.2
-Write ratio: 0.3
-Write ratio: 0.4
-Write ratio: 0.5
-Write ratio: 0.6
-Write ratio: 0.8
-Write ratio: 1.0
-Write ratio: 0.2
-Write ratio: 0.6
-Write ratio: 0.7
+Ended on global time: 200000
+
+
+Invalidation Messages from switch: 954
+Invalidations from memory to switch: 828
+Read requests to memory nodes: 0
+Write requests to memory nodes: 1000
+Transfer requests from memory nodes: 0
+Compute node to compute node data transfers: 0
+Compute node to memory node data transfers: 232
+Memory node to compute node data transfer: 0
+
