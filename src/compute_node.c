@@ -115,7 +115,7 @@ void write_action(ComputeNode* node, uint64_t address, uint32_t wdata) {
 	node->cache[node->idx_to_modify].state = MODIFIED;
 }
 
-Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // packets external to the instruction queue
+Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log_file, int global_time) { // packets external to the instruction queue
 	Packet ret_pkt;
 	ret_pkt.flag = ERROR;
 
@@ -126,6 +126,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // pack
 		int i;
 		for (i = 0; i < CACHE_LINES; i++) {
 			if (node->cache[i].address == pkt.data.addr) {
+				// printf("Node %d received invalidation.\n", node->id);
 				break;
 			}
 		}
@@ -145,6 +146,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // pack
 		// 	printf("Has data 0x%x.\n", pkt.data.data);
 		// }
 		*stall = 0;
+		fprintf(log_file, "Node %d received response for address 0x%lx read at time %d\n\n\n", node->id, pkt.data.addr, global_time);
 	}
 	else if (pkt.flag == TRANSFER) { // essentially a read from the memory
 		// printf("Node %d returning data.\n", node->id);
@@ -181,6 +183,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall) { // pack
 		node->cache[node->idx_to_modify].state = SHARED;
 		node->cache[node->idx_to_modify].address = pkt.data.addr;
 		node->cache[node->idx_to_modify].value = pkt.data.data;
+		fprintf(log_file, "Node %d received response for address 0x%lx read at time %d\n\n\n", node->id, pkt.data.addr, global_time);
 	}
 	return ret_pkt;
 
