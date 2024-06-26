@@ -65,8 +65,8 @@ int main(int argc, char **argv)
 			}
 			// node.cache[j] = (ComputeNodeMemoryLine){0, 0, 0, 0, 0};
 		}
-		compute_nodes[i].last_used = 1;
-		compute_nodes[i].idx_to_modify = 1;
+		compute_nodes[i].last_used = 0;
+		compute_nodes[i].idx_to_modify = 0;
 	}
 	uint32_t compute_node_max_id = global_id - 1;
 
