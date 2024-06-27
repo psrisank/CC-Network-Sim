@@ -205,10 +205,11 @@ int main(int argc, char **argv)
 			token = strtok(NULL, ",");
 			curr_field++;
 		}
-
+		
 		memory_nodes[0].memory[mem_iterator].value = data_data;
 		memory_nodes[0].memory[mem_iterator++].address = data_address;
 	}
+	printf("number of objects in memory node: %d.\n", mem_iterator);
 
 	// TODO: remove once done testing
 	// print existing addresses in memory node
@@ -221,7 +222,7 @@ int main(int argc, char **argv)
 
 	// Creating packets based off input trace
 	// Packet packets[2000];
-	Packet* packets = malloc(sizeof(Packet) * 2000);
+	Packet* packets = malloc(sizeof(Packet) * 40000);
 	FILE *cmd_inputs = fopen(argv[1], "r");
 	if (cmd_inputs == NULL)
 	{
@@ -286,6 +287,7 @@ int main(int argc, char **argv)
 			if (packets[pkt_iterator].flag == INST_READ)
 			{
 				// printf("Node state for the node %d read: %d.\n", packets[pkt_iterator].src, state_action);
+				// printf("Attempting to read addr: 0x%lx\n", packets[pkt_iterator].data.addr);
 				Packet wb_pkt; 
 				switch (state_action)
 				{
@@ -316,6 +318,7 @@ int main(int argc, char **argv)
 					log_cdatareq();
 					break;
 				case 6:		// writeback
+					// printf("Eviction!\n");
 					// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 					wb_pkt.id = global_id++;
 					wb_pkt.time= global_time;
@@ -330,7 +333,8 @@ int main(int argc, char **argv)
 					recheck = 1;
 					log_cwritedata();
 					break;
-				case 7:		// writeback
+				case 7:		// writeback;
+					// printf("Eviction!\n");
 					// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 					wb_pkt.id = global_id++;
 					wb_pkt.time= global_time;
@@ -375,6 +379,7 @@ int main(int argc, char **argv)
 			}
 			else if (packets[pkt_iterator].flag == INST_WRITE)
 			{
+				// printf("Attempting to write addr: 0x%lx\n", packets[pkt_iterator].data.addr);
 				Packet wb_pkt; 
 				// TODO: Implement writes
 				switch (state_action) {
@@ -421,6 +426,7 @@ int main(int argc, char **argv)
 						break;
 					// Address mismatch
 					case 6: // Writeback
+						// printf("Eviction!\n");
 						// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 						wb_pkt.id = global_id++;
 						wb_pkt.time= global_time;
@@ -435,6 +441,7 @@ int main(int argc, char **argv)
 						log_cwritedata();
 						break;
 					case 7: // Writeback
+						// printf("Eviction!\n");
 						// printf("Node %d sending writeback packet for index %d.\n", packets[pkt_iterator].src, compute_nodes[packets[pkt_iterator].src].idx_to_modify);
 						wb_pkt.id = global_id++;
 						wb_pkt.time= global_time;

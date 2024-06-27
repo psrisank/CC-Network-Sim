@@ -1,0 +1,30 @@
+Workload A Run 1:
+Invalidation Messages from switch: 5325
+Invalidations from memory to switch: 3483
+Read requests to memory nodes: 9902
+Write requests to memory nodes: 10072
+Transfer requests from memory nodes: 3386
+Compute node to compute node data transfers: 3386
+Compute node to memory node data transfers: 7882
+Memory node to compute node data transfer: 6516
+
+
+Workload A Run 2:
+Invalidation Messages from switch: 5352
+Invalidations from memory to switch: 3486
+Read requests to memory nodes: 9908
+Write requests to memory nodes: 10072
+Transfer requests from memory nodes: 3404
+Compute node to compute node data transfers: 3404
+Compute node to memory node data transfers: 7916
+Memory node to compute node data transfer: 6504
+
+Workload A Run 3:
+Invalidation Messages from switch: 5302
+Invalidations from memory to switch: 3446
+Read requests to memory nodes: 9910
+Write requests to memory nodes: 10072
+Transfer requests from memory nodes: 3458
+Compute node to compute node data transfers: 3458
+Compute node to memory node data transfers: 7973
+Memory node to compute node data transfer: 6452

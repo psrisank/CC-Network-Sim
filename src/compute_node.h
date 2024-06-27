@@ -12,7 +12,7 @@
 #define CMP_QUEUE_SIZE		256	// in packets
 #define BLOCK_SIZE			1
 #define WORD_SIZE			32
-#define CACHE_LINES			4
+#define CACHE_LINES			10
 
 typedef enum {
 	INVALID,

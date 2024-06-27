@@ -10,7 +10,7 @@
 // definitions for memory node
 #define MEM_NUM_TOP_PORTS	1	// should not ever be changed
 #define MEM_QUEUE_SIZE		256	// in packets
-#define MEM_NUM_LINES		1000 // 8192 originally for 64 addresses 128 nodes
+#define MEM_NUM_LINES		20000 // 8192 originally for 64 addresses 128 nodes
 #define MEM_LINE_SIZE		32	// in bits
 
 // enum defining various cache states for MSI protocol

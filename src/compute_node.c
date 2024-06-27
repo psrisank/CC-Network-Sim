@@ -6,6 +6,7 @@ long control_node_write_requests = 0;
 long control_node_data_requests = 0;
 long control_node_data_returns_to_cnodes = 0;
 long control_node_data_returns = 0;
+long state_change_ctrls = 0;
 
 void updateNodeState(ComputeNode* node) {
 	for (int i = 0; i < CACHE_LINES; i++) {
@@ -146,6 +147,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		// 	printf("Has data 0x%x.\n", pkt.data.data);
 		// }
 		*stall = 0;
+		state_change_ctrls++;
 		fprintf(log_file, "Node %d received response for address 0x%lx at time %d\n\n\n", node->id, pkt.data.addr, global_time);
 	}
 	else if (pkt.flag == TRANSFER) { // essentially a read from the memory
@@ -168,11 +170,18 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		// TODO: state change depending on the current state
 		if (pkt.data.data == 0) {
 			// printf("Node %d told to transfer to node %d. Now in owned.\n", node->id, pkt.src);
+			if (node->cache[idxWithData].state != EXCLUSIVE) {
+				state_change_ctrls++;
+			}
 			node->cache[idxWithData].state = OWNED;
 		}
 		else if (pkt.data.data == 1) {
 			// printf("Node %d told to transfer to node %d. Now in shared.\n", node->id, pkt.src);
+			if (node->cache[idxWithData].state != SHARED) {
+				state_change_ctrls++;
+			}
 			node->cache[idxWithData].state = SHARED;
+			state_change_ctrls++;
 		}
 		control_node_data_returns_to_cnodes++;
 		// log_cwritedata();
@@ -181,6 +190,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		// printf("Node %d received data from node %d. Now in shared.\n", node->id, pkt.src);;
 		node->cache[node->idx_to_modify].valid = 1;
 		node->cache[node->idx_to_modify].state = SHARED;
+		state_change_ctrls++;
 		node->cache[node->idx_to_modify].address = pkt.data.addr;
 		node->cache[node->idx_to_modify].value = pkt.data.data;
 		fprintf(log_file, "Node %d received response for address 0x%lx at time %d\n\n\n", node->id, pkt.data.addr, global_time);
@@ -207,6 +217,7 @@ void get_statistics()
 	printf("Read requests to memory nodes: %ld\n", control_node_data_requests);
 	printf("Write requests to memory nodes: %ld\n", control_node_write_requests);
 	printf("Transfer requests from memory nodes: %ld\n", transfer_requests());
+	printf("State change requests from memory node: %ld\n", state_change_ctrls);
 	printf("Compute node to compute node data transfers: %ld\n", control_node_data_returns_to_cnodes);
 	printf("Compute node to memory node data transfers: %ld\n", control_node_data_returns);
 	printf("Memory node to compute node data transfer: %ld\n", get_memory_control_count());
