@@ -57,7 +57,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	if (pkt.flag == READ_REQUEST)
 	{
 		// Check if any other node should be sending data to the requestor
-		// printf("Received read request.\n");
+		// printf("Received read request from node %d.\n", pkt.src);
 		int modifiedElsewhere = 0;
 		int exclusiveElsewhere = 0;
 		int ownedElsewhere = 0;
@@ -72,14 +72,15 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 				exclusiveElsewhere = 1;
 				elseNode = i;
 			}
-			if (node->memory[address_to_access].nodeState[i] == OWNED) {
-				ownedElsewhere = 1;
-				elseNode = i;
-			}
 			if (node->memory[address_to_access].nodeState[i] == SHARED) {
 				sharedElsewhere = 1;
 				elseNode = i;
 			}
+			if (node->memory[address_to_access].nodeState[i] == OWNED) {
+				ownedElsewhere = 1;
+				elseNode = i;
+			}
+
 		}
 
 		if (modifiedElsewhere) { // send a transfer packet
@@ -91,6 +92,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			node->memory[address_to_access].nodeState[elseNode] = OWNED;
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
 			transfer_command_messages++;
+			// printf("Modified in node %d\n", elseNode);
 			// TODO: send a state change packet to OWNED
 		}
 		else if (exclusiveElsewhere) {
@@ -102,6 +104,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			node->memory[address_to_access].nodeState[elseNode] = SHARED;
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
 			transfer_command_messages++;
+			// printf("Exclusive in node %d\n", elseNode);
 			// TODO: send a state change packet to SHARED
 		}
 		else if (ownedElsewhere) {
@@ -112,6 +115,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			return_packet.data.data = 0; // means stay in owned
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
 			transfer_command_messages++;
+			// printf("Owned in node %d\n");
 		}
 		else if (sharedElsewhere) {
 			return_packet.flag = TRANSFER;
@@ -143,6 +147,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 		int sendInvalidations = 0;
 		for (int i = 0; i < 128; i++) {
 			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
+				// printf("Node %i not in invalid.\n", i);
 				return_packet.invalidates[i] = 1;
 				node->memory[address_to_access].nodeState[i] = INVALID;
 				sendInvalidations = 1;

@@ -26,9 +26,10 @@ int check_state(ComputeNode* node, uint64_t address, int* recheck) {
 	int index; // = (address >> 2) % 4;
 	int addr_present = 0;
 	for (int i = 0; i < CACHE_LINES; i++) {
-		if (node->cache[i].address == address && node->cache[i].state != INVALID) {
+		if (node->cache[i].address == address) {
 			addr_present = 1;
 			index = i;
+			// printf("Address present in cache of %d at index %d\n", node->id, i);
 			break;
 		}
 	}
@@ -121,21 +122,22 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 	ret_pkt.flag = ERROR;
 
 	if (pkt.flag == INVALIDATE) {
-		// printf("Node %d received invalidation. Now in invalid.\n", pkt.dst);
+		printf("Node %d received invalidation. Now in invalid.\n", pkt.dst);
 		invalidation_msg++;
 		*stall = 0;
 		int i;
 		for (i = 0; i < CACHE_LINES; i++) {
 			if (node->cache[i].address == pkt.data.addr) {
-				// printf("Node %d received invalidation.\n", node->id);
+				// printf("Node %d received invalidation, invalidating index %d.\n", node->id, i);
 				break;
 			}
 		}
+		// printf("I = %i\n", i);
 		node->cache[i].state = INVALID;
 		node->cache[i].valid = 0;
 	}
 	else if (pkt.flag == RESPONSE) {
-		// printf("Node %d received data from a memory node. Now in exclusive for index %d.\n", node->id, node->idx_to_modify);
+		printf("Node %d received data from a memory node. Now in exclusive for index %d.\n", node->id, node->idx_to_modify);
 		// printf("Now modifying index %d for a read.\n", node->idx_to_modify);
 		node->cache[node->idx_to_modify].value = pkt.data.data;
 		node->cache[node->idx_to_modify].address = pkt.data.addr;
@@ -187,7 +189,8 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		// log_cwritedata();
 	}
 	else if (pkt.flag == WR_DATA) {
-		// printf("Node %d received data from node %d. Now in shared.\n", node->id, pkt.src);;
+		// if (node->id == 127) {}
+		printf("Node %d received data from node %d. Now in shared.\n", node->id, pkt.src);;
 		node->cache[node->idx_to_modify].valid = 1;
 		node->cache[node->idx_to_modify].state = SHARED;
 		state_change_ctrls++;

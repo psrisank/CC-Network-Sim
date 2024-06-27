@@ -286,6 +286,7 @@ int main(int argc, char **argv)
 			// printf("State action is %d.\n", state_action);
 			if (packets[pkt_iterator].flag == INST_READ)
 			{
+				// printf("Requesting data.\n");
 				// printf("Node state for the node %d read: %d.\n", packets[pkt_iterator].src, state_action);
 				// printf("Attempting to read addr: 0x%lx\n", packets[pkt_iterator].data.addr);
 				Packet wb_pkt; 
@@ -312,6 +313,7 @@ int main(int argc, char **argv)
 					// Request the data from memory
 					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
+					// printf("Requesting data.\n");
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
 					pkt_iterator++;
 					recheck = 0;
@@ -366,6 +368,7 @@ int main(int argc, char **argv)
 					log_cdatareq();
 					break;
 				case 10: 	// replace.
+					// printf("Requesting data.\n");
 					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
