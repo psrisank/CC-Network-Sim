@@ -182,6 +182,7 @@ int main(int argc, char **argv)
 	// 	memory_nodes[memory_node_num].memory[memory_node_line] = data_line;
 	// }
 	// fclose(mem_input);
+	// TODO: change to multiple memory nodes, with data distributed
 	FILE *mem_input = fopen(argv[2], "r");
 	if (mem_input == NULL) {
 		return EXIT_FAILURE;
@@ -265,6 +266,7 @@ int main(int argc, char **argv)
 	// int last_stall = 0;
 	char finished = 0;
 	int recheck = 0;
+	int invalidation_num = 0;
 	// printf("Node numbers:\n");
 	// printf("Compute Node Min ID: %d\t| Compute Node Max ID: %d\n", compute_node_min_id, compute_node_max_id);
 	// printf("Switch Node ID: %d\n", switch_node_min_id);
@@ -597,13 +599,60 @@ int main(int argc, char **argv)
 					{
 						if (curr_packet_rx.flag == INVALIDATE) {
 							// printf("generating invalidations.\n");
-							for (int k = 0; k < 128; k++) {
-								if (curr_packet_rx.invalidates[k] == 1) {
-									// printf("Sent invalidation to node %d.\n", k);
-									curr_packet_rx.dst = k;
-									push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+							if (invalidation_num == 0) {
+								for (int k = 0; k < 46; k++) {
+									if (curr_packet_rx.invalidates[k] == 1) {
+										curr_packet_rx.dst = k;
+										push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+									}
 								}
 							}
+							else if (invalidation_num == 1) {
+								for (int k = 0; k < 46; k++) {
+									if (curr_packet_rx.invalidates[k] == 1) {
+										curr_packet_rx.dst = k + 46;
+										push_packet((&(switch_nodes[i].top_ports[k+46])), TX, curr_packet_rx);
+									}
+								}
+							}
+							else if (invalidation_num == 2) {
+								for (int k = 0; k < 46; k++) {
+									if (curr_packet_rx.invalidates[k] == 1) {
+										curr_packet_rx.dst = k + 92;
+										push_packet((&(switch_nodes[i].top_ports[k+92])), TX, curr_packet_rx);
+									}
+								}
+							}
+							// else if (invalidation_num == 3) {
+							// 	for (int k = 0; k < 27; k++) {
+							// 		if (curr_packet_rx.invalidates[k] == 1) {
+							// 			curr_packet_rx.dst = k + 81;
+							// 			push_packet((&(switch_nodes[i].top_ports[k+81])), TX, curr_packet_rx);
+							// 		}
+							// 	}
+							// }
+							// else if (invalidation_num == 4) {
+							// 	for (int k = 0; k < 19; k++) {
+							// 		if (curr_packet_rx.invalidates[k] == 1) {
+							// 			curr_packet_rx.dst = k + 108;
+							// 			push_packet((&(switch_nodes[i].top_ports[k+108])), TX, curr_packet_rx);
+							// 		}
+							// 	}
+							// }
+
+							invalidation_num++;
+							if (invalidation_num == 3) {
+								invalidation_num = 0;
+							}
+
+
+							// for (int k = 0; k < 128; k++) {
+							// 	if (curr_packet_rx.invalidates[k] == 1) {
+							// 		// printf("Sent invalidation to node %d.\n", k);
+							// 		curr_packet_rx.dst = k;
+							// 		push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+							// 	}
+							// }
 						}
 						else {
 							// printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
@@ -640,7 +689,7 @@ int main(int argc, char **argv)
 					// need to act on this packet
 					// printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 					// handle return packet
-					Packet return_packet = process_packet(&memory_nodes[i], curr_packet_rx, global_id++, global_time);
+					Packet return_packet = process_packet(&memory_nodes[i], curr_packet_rx, global_id++, global_time, &(memory_nodes[i].top_ports[j]));
 					if (return_packet.flag != ERROR)
 					{
 						// place packet in outgoing buffer

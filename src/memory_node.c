@@ -23,7 +23,7 @@ void init_memnodes(MemoryNode* node, int node_cnt) {
 	}
 }
 
-Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time)
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, Port* p)
 {
 	Packet return_packet;
 	return_packet.id = global_id;
@@ -145,21 +145,81 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 		return_packet.invalidates = malloc(sizeof(uint8_t) * 128);
 		return_packet.data.addr = pkt.data.addr;
 		int sendInvalidations = 0;
+		int invalidation_num = 0;
+
+		// For 128 nodes, we need 5 invalidation packets to make sure we don't go over IPG packet size
+		Packet invalidate_packet_0 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
+		invalidate_packet_0.invalidates = malloc(sizeof(uint8_t) * 46);
+		Packet invalidate_packet_1 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
+		invalidate_packet_1.invalidates = malloc(sizeof(uint8_t) * 46);
+		Packet invalidate_packet_2 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
+		invalidate_packet_2.invalidates = malloc(sizeof(uint8_t) * 46);
+		// Packet invalidate_packet_3 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
+		// invalidate_packet_3.invalidates = malloc(sizeof(uint8_t) * 27);
+		// Packet invalidate_packet_4 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
+		// invalidate_packet_4.invalidates = malloc(sizeof(uint8_t) * 27);
+
 		for (int i = 0; i < 128; i++) {
+			// Split packet into 5 packets
+			if (i >= 0 && i <= 45) {
+				invalidation_num = 0;
+			}
+			if (i >= 46 && i <= 91) {
+				invalidation_num = 1;
+			}
+			if (i >= 92 && i <= 127) {
+				invalidation_num = 2;
+			}
+			// if (i >= 81 && i <= 107) {
+			// 	invalidation_num = 3;
+			// }
+			// if (i >= 108 && i <= 127) {
+			// 	invalidation_num = 4;
+			// }
+
+
+			int invalidate_i = 0;
 			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
 				// printf("Node %i not in invalid.\n", i);
-				return_packet.invalidates[i] = 1;
+				// return_packet.invalidates[i] = 1;
+				invalidate_i = 1;
 				node->memory[address_to_access].nodeState[i] = INVALID;
 				sendInvalidations = 1;
 				// printf("Setting invalidations for %d.\n", i);
 			}
-			else {
-				return_packet.invalidates[i] = 0;
+
+			
+			if (invalidate_i) {
+				switch (invalidation_num) {
+					case 0:
+						invalidate_packet_0.invalidates[i] = 1;
+						break;
+					case 1:
+						invalidate_packet_1.invalidates[i - 46] = 1;
+						break;
+					case 2:
+						invalidate_packet_2.invalidates[i - 92] = 1;
+						break;
+					// case 3:
+					// 	invalidate_packet_3.invalidates[i - 81] = 1;
+					// 	break;
+					// case 4: 
+					// 	invalidate_packet_4.invalidates[i - 108] = 1;
+					// 	break;
+				}
 			}
+			// else {
+			// 	return_packet.invalidates[i] = 0;
+			// }
 		}
 		if (sendInvalidations) {
-			mem_to_switch_invalidations++;
-			return_packet.flag = INVALIDATE;
+			mem_to_switch_invalidations += 3; // 5 Packets in order to limit to 6 byte packets
+			push_packet(p, TX, invalidate_packet_0);
+			push_packet(p, TX, invalidate_packet_1);
+			push_packet(p, TX, invalidate_packet_2);
+			// push_packet(p, TX, invalidate_packet_3);
+			// push_packet(p, TX, invalidate_packet_4);
+			return_packet.flag = ERROR; // we don't want the returned packet to be put anywhere, so let main discard it for us
 		}
 		// generate_invalidations(node, pkt, p, global_id, global_time);
 	}

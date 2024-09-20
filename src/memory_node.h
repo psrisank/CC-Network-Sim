@@ -44,7 +44,7 @@ typedef struct MemoryNode
 MemoryNode;
 
 void init_memnodes(MemoryNode* node, int node_cnt);
-Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time);
+Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t global_time, Port* p);
 void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t global_id, uint32_t global_time);
 long get_memory_control_count();
 long get_memory_to_compute_requests();
