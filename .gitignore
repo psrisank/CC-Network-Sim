@@ -51,16 +51,3 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-
-# csv files
-output_trace.csv
-switchlog.csv
-artifacts/**
-artifacts/*
-artifacts/
-
-
-# trace generation
-trace/**
-trace/*
-trace/
