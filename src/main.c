@@ -103,7 +103,6 @@ int main(int argc, char **argv)
 	// uint32_t switch_node_max_id = global_id - 1;
 
 	// Memory Node Initialization
-	// MemoryNode memory_nodes[NUM_MEMORY_NODES];
 	MemoryNode *memory_nodes = malloc(sizeof(MemoryNode) * NUM_MEMORY_NODES);
 	uint32_t memory_node_min_id = global_id;
 	for (int i = 0; i < NUM_MEMORY_NODES; i++)
@@ -598,61 +597,54 @@ int main(int argc, char **argv)
 					if ((curr_packet_rx.dst >= compute_node_min_id) && (curr_packet_rx.dst <= compute_node_max_id))
 					{
 						if (curr_packet_rx.flag == INVALIDATE) {
-							// printf("generating invalidations.\n");
-							if (invalidation_num == 0) {
-								for (int k = 0; k < 46; k++) {
-									if (curr_packet_rx.invalidates[k] == 1) {
-										curr_packet_rx.dst = k;
-										push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+							if (MULTICAST) {
+								if (calculate_packet_size(INVALIDATE) > MAX_PKT_SIZE) { // packet splitting
+									if (invalidation_num == 0) {
+										for (int k = 0; k < 46; k++) {
+											if (curr_packet_rx.invalidates[k] == 1) {
+												curr_packet_rx.dst = k;
+												push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+											}
+										}
+									}
+									else if (invalidation_num == 1) {
+										for (int k = 0; k < 46; k++) {
+											if (curr_packet_rx.invalidates[k] == 1) {
+												curr_packet_rx.dst = k + 46;
+												push_packet((&(switch_nodes[i].top_ports[k+46])), TX, curr_packet_rx);
+											}
+										}
+									}
+									else if (invalidation_num == 2) {
+										for (int k = 0; k < 46; k++) {
+											if (curr_packet_rx.invalidates[k] == 1) {
+												curr_packet_rx.dst = k + 92;
+												push_packet((&(switch_nodes[i].top_ports[k+92])), TX, curr_packet_rx);
+											}
+										}
+									}
+
+									invalidation_num++;
+									if (invalidation_num == 3) {
+										invalidation_num = 0;
+									}
+								}
+								else { // packet non splitting
+									for (int k = 0; k < 128; k++) {
+										if (curr_packet_rx.invalidates[k] == 1) {
+											// printf("Sent invalidation to node %d.\n", k);
+											curr_packet_rx.dst = k;
+											push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+										}
 									}
 								}
 							}
-							else if (invalidation_num == 1) {
-								for (int k = 0; k < 46; k++) {
-									if (curr_packet_rx.invalidates[k] == 1) {
-										curr_packet_rx.dst = k + 46;
-										push_packet((&(switch_nodes[i].top_ports[k+46])), TX, curr_packet_rx);
-									}
-								}
+							else {
+								curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
+								// place packet into switch top output port
+								uint32_t correct_compute_node = curr_packet_rx.dst - compute_node_min_id;
+								push_packet((&(switch_nodes[i].top_ports[correct_compute_node])), TX, curr_packet_rx);
 							}
-							else if (invalidation_num == 2) {
-								for (int k = 0; k < 46; k++) {
-									if (curr_packet_rx.invalidates[k] == 1) {
-										curr_packet_rx.dst = k + 92;
-										push_packet((&(switch_nodes[i].top_ports[k+92])), TX, curr_packet_rx);
-									}
-								}
-							}
-							// else if (invalidation_num == 3) {
-							// 	for (int k = 0; k < 27; k++) {
-							// 		if (curr_packet_rx.invalidates[k] == 1) {
-							// 			curr_packet_rx.dst = k + 81;
-							// 			push_packet((&(switch_nodes[i].top_ports[k+81])), TX, curr_packet_rx);
-							// 		}
-							// 	}
-							// }
-							// else if (invalidation_num == 4) {
-							// 	for (int k = 0; k < 19; k++) {
-							// 		if (curr_packet_rx.invalidates[k] == 1) {
-							// 			curr_packet_rx.dst = k + 108;
-							// 			push_packet((&(switch_nodes[i].top_ports[k+108])), TX, curr_packet_rx);
-							// 		}
-							// 	}
-							// }
-
-							invalidation_num++;
-							if (invalidation_num == 3) {
-								invalidation_num = 0;
-							}
-
-
-							// for (int k = 0; k < 128; k++) {
-							// 	if (curr_packet_rx.invalidates[k] == 1) {
-							// 		// printf("Sent invalidation to node %d.\n", k);
-							// 		curr_packet_rx.dst = k;
-							// 		push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
-							// 	}
-							// }
 						}
 						else {
 							// printf(ANSI_COLOR_BLUE "Moving packet with ID %d to output queue" ANSI_COLOR_RESET "\n", curr_packet_rx.id);
@@ -661,7 +653,6 @@ int main(int argc, char **argv)
 							uint32_t correct_compute_node = curr_packet_rx.dst - compute_node_min_id;
 							push_packet((&(switch_nodes[i].top_ports[correct_compute_node])), TX, curr_packet_rx);
 						}
-
 					}
 					else
 					{

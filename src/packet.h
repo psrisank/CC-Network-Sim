@@ -3,6 +3,11 @@
 
 #include "stdint.h"
 
+#define MAX_PKT_SIZE 8 // RDMA: 72 bytes | EDC: 8 bytes
+#define MULTICAST 0 // Whether to multicast or not
+#define OBJ_SIZE 4 // Bytes
+#define ADDR_SIZE 8 // Bytes
+
 // enum defining various cache states for MSI protocol
 // typedef enum
 // {
@@ -37,5 +42,7 @@ typedef struct Packet
 	uint8_t* invalidates;
 }
 Packet;
+
+double calculate_packet_size(flag_t type);
 
 #endif

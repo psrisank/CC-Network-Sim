@@ -1,5 +1,9 @@
 #include "compute_node.h"
 #include "memory_node.h"
+// #define CEIL(x) ((x) == (int)(x) ? (x) : (x) > 0 ? (int)((x) + 1) : (int)(x))
+#define CEILING_POS(X) ((X-(int)(X)) > 0 ? (int)(X+1) : (int)(X))
+#define CEILING_NEG(X) (int)(X)
+#define CEIL(X) ( ((X) > 0) ? CEILING_POS(X) : CEILING_NEG(X) )
 
 long invalidation_msg = 0;
 long control_node_write_requests = 0;
@@ -122,7 +126,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 	ret_pkt.flag = ERROR;
 
 	if (pkt.flag == INVALIDATE) {
-		printf("Node %d received invalidation. Now in invalid.\n", pkt.dst);
+		// printf("Node %d received invalidation. Now in invalid.\n", pkt.dst);
 		invalidation_msg++;
 		*stall = 0;
 		int i;
@@ -137,7 +141,7 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		node->cache[i].valid = 0;
 	}
 	else if (pkt.flag == RESPONSE) {
-		printf("Node %d received data from a memory node. Now in exclusive for index %d.\n", node->id, node->idx_to_modify);
+		// printf("Node %d received data from a memory node. Now in exclusive for index %d.\n", node->id, node->idx_to_modify);
 		// printf("Now modifying index %d for a read.\n", node->idx_to_modify);
 		node->cache[node->idx_to_modify].value = pkt.data.data;
 		node->cache[node->idx_to_modify].address = pkt.data.addr;
@@ -149,7 +153,15 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		// 	printf("Has data 0x%x.\n", pkt.data.data);
 		// }
 		*stall = 0;
-		state_change_ctrls++;
+		if (calculate_packet_size(STATECHANGE) > (double) MAX_PKT_SIZE) {
+			double num_pkt_to_represent = calculate_packet_size(STATECHANGE) / (double) MAX_PKT_SIZE;
+			state_change_ctrls +=  (int) CEIL(num_pkt_to_represent);
+			// printf("%d\n", (int) CEIL(num_pkt_to_represent));
+		}
+		else {
+			state_change_ctrls++;
+		}
+		// state_change_ctrls++;
 		fprintf(log_file, "Node %d received response for address 0x%lx at time %d\n\n\n", node->id, pkt.data.addr, global_time);
 	}
 	else if (pkt.flag == TRANSFER) { // essentially a read from the memory
@@ -173,27 +185,51 @@ Packet cnode_process_packet(ComputeNode* node, Packet pkt, int* stall, FILE* log
 		if (pkt.data.data == 0) {
 			// printf("Node %d told to transfer to node %d. Now in owned.\n", node->id, pkt.src);
 			if (node->cache[idxWithData].state != EXCLUSIVE) {
-				state_change_ctrls++;
+				// state_change_ctrls++;
+				if (calculate_packet_size(STATECHANGE) > (double) MAX_PKT_SIZE) {
+					double num_pkt_to_represent = calculate_packet_size(STATECHANGE) / (double) MAX_PKT_SIZE;
+					state_change_ctrls +=  (int) CEIL(num_pkt_to_represent);
+					// printf("%d\n", (int) CEIL(num_pkt_to_represent));
+				}
+				else {
+					state_change_ctrls++;
+				}
 			}
 			node->cache[idxWithData].state = OWNED;
 		}
 		else if (pkt.data.data == 1) {
 			// printf("Node %d told to transfer to node %d. Now in shared.\n", node->id, pkt.src);
 			if (node->cache[idxWithData].state != SHARED) {
-				state_change_ctrls++;
+				// state_change_ctrls++;
+				if (calculate_packet_size(STATECHANGE) > (double) MAX_PKT_SIZE) {
+					double num_pkt_to_represent = calculate_packet_size(STATECHANGE) / (double) MAX_PKT_SIZE;
+					state_change_ctrls +=  (int) CEIL(num_pkt_to_represent);
+					// printf("%d\n", (int) CEIL(num_pkt_to_represent));
+				}
+				else {
+					state_change_ctrls++;
+				}
 			}
 			node->cache[idxWithData].state = SHARED;
-			state_change_ctrls++;
+			// state_change_ctrls++;
 		}
 		control_node_data_returns_to_cnodes++;
 		// log_cwritedata();
 	}
 	else if (pkt.flag == WR_DATA) {
 		// if (node->id == 127) {}
-		printf("Node %d received data from node %d. Now in shared.\n", node->id, pkt.src);;
+		// printf("Node %d received data from node %d. Now in shared.\n", node->id, pkt.src);;
 		node->cache[node->idx_to_modify].valid = 1;
 		node->cache[node->idx_to_modify].state = SHARED;
-		state_change_ctrls++;
+		// state_change_ctrls++;
+		if (calculate_packet_size(STATECHANGE) > (double) MAX_PKT_SIZE) {
+			double num_pkt_to_represent = calculate_packet_size(STATECHANGE) / (double) MAX_PKT_SIZE;
+			state_change_ctrls +=  (int) CEIL(num_pkt_to_represent);
+			// printf("%d\n", (int) CEIL(num_pkt_to_represent));
+		}
+		else {
+			state_change_ctrls++;
+		}
 		node->cache[node->idx_to_modify].address = pkt.data.addr;
 		node->cache[node->idx_to_modify].value = pkt.data.data;
 		fprintf(log_file, "Node %d received response for address 0x%lx at time %d\n\n\n", node->id, pkt.data.addr, global_time);
@@ -217,13 +253,13 @@ void get_statistics()
 {
 	printf("\n\nInvalidation Messages from switch: %ld\n", invalidation_msg);
 	printf("Invalidations from memory to switch: %ld\n", get_memory_to_switch_invalidations());
-	printf("Read requests to memory nodes: %ld\n", control_node_data_requests);
-	printf("Write requests to memory nodes: %ld\n", control_node_write_requests);
-	printf("Transfer requests from memory nodes: %ld\n", transfer_requests());
-	printf("State change requests from memory node: %ld\n", state_change_ctrls);
-	printf("Compute node to compute node data transfers: %ld\n", control_node_data_returns_to_cnodes);
-	printf("Compute node to memory node data transfers: %ld\n", control_node_data_returns);
-	printf("Memory node to compute node data transfer: %ld\n", get_memory_control_count());
+	printf("Read requests to memory nodes: %ld\n", control_node_data_requests); // not split
+	printf("Write requests to memory nodes: %ld\n", control_node_write_requests); // not split
+	printf("Transfer requests from memory nodes: %ld\n", transfer_requests()); // split
+	printf("State change requests from memory node: %ld\n", state_change_ctrls); // split
+	printf("Compute node to compute node data transfers: %ld\n", control_node_data_returns_to_cnodes); // not split
+	printf("Compute node to memory node data transfers: %ld\n", control_node_data_returns); // not split
+	printf("Memory node to compute node data transfer: %ld\n", get_memory_control_count()); // not split
 
 
 }
