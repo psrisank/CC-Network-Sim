@@ -5,7 +5,7 @@
 
 #include "packet.h"
 
-#define QUEUE_SIZE 256
+#define QUEUE_SIZE 1000000000
 
 
 typedef enum
@@ -16,11 +16,13 @@ BufferType_t;
 
 typedef struct Port
 {
-	Packet tx[QUEUE_SIZE];
-	uint32_t tail_tx;
+	// Packet* tx[QUEUE_SIZE];
+	Packet* tx;
+	uint64_t tail_tx;
 
-	Packet rx[QUEUE_SIZE];
-	uint32_t tail_rx;
+	// Packet* rx[QUEUE_SIZE];
+	Packet* rx;
+	uint64_t tail_rx;
 }
 Port;
 

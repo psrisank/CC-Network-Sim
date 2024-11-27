@@ -1,143 +1,67 @@
-Write ratio: 0.0
-Ended on global time: 200000
+rm -f bin/*.o bin/sim
+rm -f *.csv
+gcc -std=c99 -Wall -Wextra -g -c src/compute_node.c -o bin/compute_node.o
+gcc -std=c99 -Wall -Wextra -g -c src/main.c -o bin/main.o
+gcc -std=c99 -Wall -Wextra -g -c src/memory_node.c -o bin/memory_node.o
+gcc -std=c99 -Wall -Wextra -g -c src/packet.c -o bin/packet.o
+gcc -std=c99 -Wall -Wextra -g -c src/port.c -o bin/port.o
+gcc -std=c99 -Wall -Wextra -g bin/compute_node.o bin/main.o bin/memory_node.o bin/packet.o bin/port.o -o bin/sim
+No segfault here!.
+No segfault until switchnode init.
+No segfault until memorynode init.
+No segfault until memory init.
+No segfault until switchnode init.
+number of objects in memory node: 104448.
+PACKET CNT: 200000
+Ended on global time: 40000000
+ADDRESS	VALUE	VALIDITY
+196f6	deadbeef	4
+19708	deadbeef	2
+19727	deadbeef	0
+1979d	deadbeef	4
+195df	deadbeef	4
+19609	deadbeef	0
+37b7	deadbeef	4
+19641	deadbeef	4
+196e6	deadbeef	3
+196ef	deadbeef	2
 
 
-Invalidation Messages from switch: 0
-Invalidations from memory to switch: 0
-Read requests to memory nodes: 591
-Write requests to memory nodes: 0
-Transfer requests from memory nodes: 465
-Compute node to compute node data transfers: 465
-Compute node to memory node data transfers: 0
-Memory node to compute node data transfer: 126
-
-Write ratio: 0.1
-Ended on global time: 200000
+Invalidation Messages from switch: 59726
+Invalidations from memory to switch: 59726
+Read requests to memory nodes: 163940
+Write requests to memory nodes: 34349
+Transfer requests from memory nodes: 96353
+State change requests from memory node: 384533
+Compute node to compute node data transfers: 48180
+Compute node to memory node data transfers: 167292
+Memory node to compute node data transfer: 115760
 
 
-Invalidation Messages from switch: 275
-Invalidations from memory to switch: 80
-Read requests to memory nodes: 527
-Write requests to memory nodes: 100
-Transfer requests from memory nodes: 417
-Compute node to compute node data transfers: 417
-Compute node to memory node data transfers: 23
-Memory node to compute node data transfer: 110
 
-Write ratio: 0.2
-Ended on global time: 200000
-
-
-Invalidation Messages from switch: 397
-Invalidations from memory to switch: 182
-Read requests to memory nodes: 476
-Write requests to memory nodes: 200
-Transfer requests from memory nodes: 363
-Compute node to compute node data transfers: 363
-Compute node to memory node data transfers: 52
-Memory node to compute node data transfer: 113
-
-Write ratio: 0.3
-Ended on global time: 200000
+Pkt Sizes (KB):
+Invalidations from switch: 477.808000
+Invalidations from memory nodes: 477.808000
+Read requests: 12690.496000
+Write requests: 0.000000
+Transfer requests: 770.824000
+Compute -> Compute transfers: 5540.854500
+Compute -> Memory transfers: 18536.619000
+Memory -> Compute transfers: 8811.609750
 
 
-Invalidation Messages from switch: 499
-Invalidations from memory to switch: 251
-Read requests to memory nodes: 411
-Write requests to memory nodes: 300
-Transfer requests from memory nodes: 322
-Compute node to compute node data transfers: 322
-Compute node to memory node data transfers: 68
-Memory node to compute node data transfer: 89
-
-Write ratio: 0.4
-Ended on global time: 200000
 
 
-Invalidation Messages from switch: 617
-Invalidations from memory to switch: 349
-Read requests to memory nodes: 344
-Write requests to memory nodes: 400
-Transfer requests from memory nodes: 257
-Compute node to compute node data transfers: 257
-Compute node to memory node data transfers: 91
-Memory node to compute node data transfer: 87
+Distributions (KB)
+Compute->Switch Memory: 36767.969500
+Compute->Switch Coherence: 0
 
-Write ratio: 0.5
-Ended on global time: 200000
+Switch->Compute Memory: 14352.464250
+Switch->Compute Coherence: 4324.896000
 
+Memory->Switch Memory: 8811.609750
+Memory->Switch Coherence: 4324.896000
 
-Invalidation Messages from switch: 662
-Invalidations from memory to switch: 416
-Read requests to memory nodes: 285
-Write requests to memory nodes: 500
-Transfer requests from memory nodes: 218
-Compute node to compute node data transfers: 218
-Compute node to memory node data transfers: 137
-Memory node to compute node data transfer: 67
-
-Write ratio: 0.6
-Ended on global time: 200000
-
-
-Invalidation Messages from switch: 720
-Invalidations from memory to switch: 500
-Read requests to memory nodes: 235
-Write requests to memory nodes: 600
-Transfer requests from memory nodes: 178
-Compute node to compute node data transfers: 178
-Compute node to memory node data transfers: 173
-Memory node to compute node data transfer: 57
-
-Write ratio: 0.7
-Ended on global time: 200000
-
-
-Invalidation Messages from switch: 814
-Invalidations from memory to switch: 593
-Read requests to memory nodes: 184
-Write requests to memory nodes: 700
-Transfer requests from memory nodes: 142
-Compute node to compute node data transfers: 142
-Compute node to memory node data transfers: 153
-Memory node to compute node data transfer: 42
-
-Write ratio: 0.8
-Ended on global time: 200000
-
-
-Invalidation Messages from switch: 848
-Invalidations from memory to switch: 674
-Read requests to memory nodes: 118
-Write requests to memory nodes: 800
-Transfer requests from memory nodes: 86
-Compute node to compute node data transfers: 86
-Compute node to memory node data transfers: 195
-Memory node to compute node data transfer: 32
-
-Write ratio: 0.9
-Ended on global time: 200000
-
-
-Invalidation Messages from switch: 907
-Invalidations from memory to switch: 751
-Read requests to memory nodes: 61
-Write requests to memory nodes: 900
-Transfer requests from memory nodes: 45
-Compute node to compute node data transfers: 45
-Compute node to memory node data transfers: 209
-Memory node to compute node data transfer: 16
-
-Write ratio: 1.0
-Ended on global time: 200000
-
-
-Invalidation Messages from switch: 954
-Invalidations from memory to switch: 828
-Read requests to memory nodes: 0
-Write requests to memory nodes: 1000
-Transfer requests from memory nodes: 0
-Compute node to compute node data transfers: 0
-Compute node to memory node data transfers: 232
-Memory node to compute node data transfer: 0
+Switch->Memory Memory: 31227.115000
+Switch->Memory Coherence: 0.000000
 

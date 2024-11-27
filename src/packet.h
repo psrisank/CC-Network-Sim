@@ -7,6 +7,7 @@
 #define MULTICAST 0 // Whether to multicast or not
 #define OBJ_SIZE 4 // Bytes
 #define ADDR_SIZE 8 // Bytes
+#define HEADER_SIZE 18 // src dst type 7 7 4
 
 // enum defining various cache states for MSI protocol
 // typedef enum
@@ -16,7 +17,7 @@
 // flag_t;
 
 typedef enum {
-	RESPONSE, READ_REQUEST, TRANSFER, STATECHANGE, WR_REQUEST, WR_DATA, INST_WRITE, INST_READ, ERROR, INVALIDATE
+	RESPONSE, READ_REQUEST, TRANSFER, STATECHANGE, WR_REQUEST, WR_DATA, INST_WRITE, INST_READ, ERROR, INVALIDATE, EVICTION
 } flag_t;
 
 // struct holding data inside a Packet
@@ -40,9 +41,13 @@ typedef struct Packet
 	DataNode data;
 	// uint8_t invalidates[128];
 	uint8_t* invalidates;
+	
+	uint64_t address_size;
+	uint64_t data_size;
+	// Header size (in bits): src + dst + type
 }
 Packet;
 
-double calculate_packet_size(flag_t type);
+double calculate_packet_size(flag_t type, uint64_t addr_size, uint64_t data_size);
 
 #endif

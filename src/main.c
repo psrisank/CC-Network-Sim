@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 		printf(ANSI_COLOR_RED "Usage: ./[exec] [packet input file] [memory input file] [packet log file]" ANSI_COLOR_RESET "\n");
 		return EXIT_FAILURE;
 	}
+	printf("No segfault here!.\n");
 
 	// Initialize global times and IDs
 	uint32_t global_time = 0;
@@ -49,10 +50,14 @@ int main(int argc, char **argv)
 		global_id++;
 		// node.time = global_time;
 		compute_nodes[i].time = global_time;
+		// compute_nodes[i].last_used = 0;
 		for (int j = 0; j < CMP_NUM_BOT_PORTS; j++)
 		{
 			compute_nodes[i].bot_ports[j].tail_tx = 0;
 			compute_nodes[i].bot_ports[j].tail_rx = 0;
+
+			compute_nodes[i].bot_ports[j].rx = malloc(QUEUE_SIZE * sizeof(Packet));
+			compute_nodes[i].bot_ports[j].tx = malloc(QUEUE_SIZE * sizeof(Packet));
 		}
 		for (int j = 0; j < CACHE_LINES; j++)
 		{
@@ -70,6 +75,7 @@ int main(int argc, char **argv)
 	}
 	uint32_t compute_node_max_id = global_id - 1;
 
+	printf("No segfault until switchnode init.\n");
 	// //printf("Node 1: \n");
 	// //printf("Cache line 0 state: %d\n", compute_nodes[1].cache[0].state);
 	// //printf("Cache line 1 state: %d\n", compute_nodes[1].cache[1].state);
@@ -88,12 +94,16 @@ int main(int argc, char **argv)
 		node.time = global_time;
 		for (int j = 0; j < SW_NUM_TOP_PORTS; j++)
 		{
+			node.top_ports[j].rx = malloc(QUEUE_SIZE * sizeof(Packet));
 			node.top_ports[j].tail_rx = 0;
+			node.top_ports[j].tx = malloc(QUEUE_SIZE * sizeof(Packet));
 			node.top_ports[j].tail_tx = 0;
 		}
 		for (int j = 0; j < SW_NUM_BOT_PORTS; j++)
 		{
+			node.bot_ports[j].rx = malloc(QUEUE_SIZE * sizeof(Packet));
 			node.bot_ports[j].tail_rx = 0;
+			node.bot_ports[j].tx = malloc(QUEUE_SIZE * sizeof(Packet));
 			node.bot_ports[j].tail_tx = 0;
 		}
 
@@ -101,6 +111,7 @@ int main(int argc, char **argv)
 	}
 
 	// uint32_t switch_node_max_id = global_id - 1;
+	printf("No segfault until memorynode init.\n");
 
 	// Memory Node Initialization
 	MemoryNode *memory_nodes = malloc(sizeof(MemoryNode) * NUM_MEMORY_NODES);
@@ -114,6 +125,10 @@ int main(int argc, char **argv)
 		{
 			memory_nodes[i].top_ports[j].tail_rx = 0;
 			memory_nodes[i].top_ports[j].tail_tx = 0;
+
+			memory_nodes[i].top_ports[j].rx = malloc(QUEUE_SIZE * sizeof(Packet));
+			memory_nodes[i].top_ports[j].tx = malloc(QUEUE_SIZE * sizeof(Packet));
+
 		}
 
 		for (int k = 0; k < MEM_NUM_LINES; k++) {
@@ -133,54 +148,11 @@ int main(int argc, char **argv)
 		// memory_nodes[i] = node;
 	}
 	uint32_t memory_node_max_id = global_id - 1;
+	printf("No segfault until memory init.\n");
 
 	// Memory data/address initialization
-	char line[255];
+	char line[500];
 	char *token;
-	// FILE *mem_input;
-	// mem_input = fopen(argv[2], "r");
-	// if (mem_input == NULL)
-	// {
-	// 	// printf(ANSI_COLOR_RED "Input file does not exist!" ANSI_COLOR_RESET "\n");
-	// 	return EXIT_FAILURE;
-	// }
-
-	// while (fgets(line, 255, mem_input) != NULL)
-	// {
-	// 	MemoryLine data_line;
-	// 	int curr_field = 0;
-	// 	token = strtok(line, ",");
-	// 	while (token != NULL)
-	// 	{
-	// 		switch (curr_field)
-	// 		{
-	// 		// address
-	// 		case 0:
-	// 		{
-	// 			data_line.address = (uint32_t)strtol(token, NULL, 16);
-	// 			if (data_line.address == 0) {
-	// 				for (int i = 0; i < 128; i++) {
-	// 					data_line.nodeState[i] = SHARED;
-	// 				}
-	// 			}
-	// 			break;
-	// 		}
-
-	// 		// data value
-	// 		case 1:
-	// 		{
-	// 			data_line.value = (uint32_t)strtol(token, NULL, 16);
-	// 		}
-
-	// 		}
-	// 		token = strtok(NULL, ",");
-	// 		curr_field++;
-	// 	}
-	// 	uint8_t memory_node_num = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) / MEM_NUM_LINES;
-	// 	uint8_t memory_node_line = ((data_line.address << 8) / (MEM_NUM_LINES * MEM_LINE_SIZE)) % MEM_NUM_LINES;
-	// 	memory_nodes[memory_node_num].memory[memory_node_line] = data_line;
-	// }
-	// fclose(mem_input);
 	// TODO: change to multiple memory nodes, with data distributed
 	FILE *mem_input = fopen(argv[2], "r");
 	if (mem_input == NULL) {
@@ -188,7 +160,9 @@ int main(int argc, char **argv)
 	}
 
 	int mem_iterator = 0;
-	while (fgets(line, 255, mem_input) != NULL) {
+	while (fgets(line, 500, mem_input) != NULL) {
+		// printf("Entered a loop.\n");
+		// printf("%s", line);
 		uint64_t data_address;
 		uint32_t data_data;
 		int curr_field = 0;
@@ -206,49 +180,60 @@ int main(int argc, char **argv)
 			curr_field++;
 		}
 		
+		// printf("About to assign value data.\n");
 		memory_nodes[0].memory[mem_iterator].value = data_data;
 		memory_nodes[0].memory[mem_iterator++].address = data_address;
+		// printf("Value data assigned.\n");
 	}
+	fclose(mem_input);
+
+	printf("No segfault until switchnode init.\n");
+
 	printf("number of objects in memory node: %d.\n", mem_iterator);
-
-	// TODO: remove once done testing
-	// print existing addresses in memory node
-	for (int i = 0; i < MEM_NUM_LINES; i++) {
-		if (memory_nodes[0].memory[i].address != 0xFFFFFFFFFFFFFFFF) {
-			// printf("Address 0x%lx is present!\n", memory_nodes[0].memory[i].address);
-		}
-	}
-
 
 	// Creating packets based off input trace
 	// Packet packets[2000];
-	Packet* packets = malloc(sizeof(Packet) * 40000);
+	Packet* packets = malloc(sizeof(Packet) * 1000000);
 	FILE *cmd_inputs = fopen(argv[1], "r");
 	if (cmd_inputs == NULL)
 	{
 		return EXIT_FAILURE;
 	}
 	int pkt_iterator;
-	while (fgets(line, sizeof(line), cmd_inputs))
+	int iteration = 0;
+
+
+	while (fgets(line, 255, cmd_inputs) != NULL)
 	{
 		uint8_t pkt_src;
 		uint32_t pkt_time, pkt_data;
 		uint64_t pkt_addr;
 		flag_t pkt_flag;
-		token = strtok(line, ",");
-		pkt_time = (uint32_t)strtol(token, NULL, 10);
-		token = strtok(NULL, ",");
-		pkt_src = (uint8_t)strtol(token, NULL, 10);
-		token = strtok(NULL, ",");
-		pkt_addr = (uint64_t)strtol(token, NULL, 16);
-		token = strtok(NULL, ",");
-		pkt_flag = strtol(token, NULL, 2) ? INST_WRITE : INST_READ;
-		token = strtok(NULL, ",");
-		pkt_data = (uint32_t)strtol(token, NULL, 16);
-		packets[pkt_iterator++] = (Packet){global_id++, pkt_time, pkt_flag, pkt_src, /*pkt_addr / (64 * 4) + */memory_node_min_id, (DataNode){pkt_addr, pkt_data}, NULL};
+		uint64_t pkt_keysize;
+		uint64_t pkt_valuesize;
+
+		char* time[500];
+
+		// line[strcspn(line, "\r\n")] = 0;
+		// printf("Original: %s\n", line);
+		int tmpflag;
+		// char* comma = strchr(line, ',');
+		// printf("%s", line);
+		// printf("%s\n", comma);
+		int result = sscanf(line, "%[^,],%u,%x,%u,%x,%u,%u\n", &time, &pkt_src, &pkt_addr, &tmpflag, &pkt_data, &pkt_keysize, &pkt_valuesize);
+		pkt_time = atoi(time);
+
+		// int result = sscanf(line, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,]", &pkt_time, &pkt_src, &pkt_addr, &tmpflag, &pkt_data, &pkt_keysize, &pkt_valuesize);	
+		// pkt_time = atoi(comma);
+		// printf("%u\n", pkt_time);
+		// pkt_time = atoi(time);
+		pkt_flag = tmpflag == 1 ? INST_WRITE : INST_READ;
+		// printf("%u,%u,%x,%u,%x,%u,%u\n", pkt_time, pkt_src, pkt_addr, pkt_flag, pkt_data, pkt_keysize, pkt_valuesize);
+		packets[pkt_iterator++] = (Packet){global_id++, pkt_time, pkt_flag, pkt_src, /*pkt_addr / (64 * 4) + */memory_node_min_id, (DataNode){pkt_addr, pkt_data}, NULL, pkt_keysize, pkt_valuesize};
 	}
+	fclose(cmd_inputs);
 	int pkt_cnt = pkt_iterator;
-	// //printf("PACKET CNT: %d\n", pkt_cnt);
+	printf("PACKET CNT: %d\n", pkt_cnt);
 
 	// Create an output file
 	FILE *output_file;
@@ -271,6 +256,11 @@ int main(int argc, char **argv)
 	// printf("Switch Node ID: %d\n", switch_node_min_id);
 	// printf("Memory Node Min ID: %d\t| Memory Node Max ID: %d\n", memory_node_min_id, memory_node_max_id);
 	// printf("Number of pkts: %d\n", pkt_cnt);
+
+	if (packets == NULL) {
+		return EXIT_FAILURE;
+	}
+
 	do
 	{
 		// printf("\n--- GLOBAL TIME = %d\n", global_time);
@@ -279,10 +269,13 @@ int main(int argc, char **argv)
 		// printf("\n\n\n\nGlobal time: %d, pkt_iterator: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, pkt_iterator, packets[pkt_iterator].time, stall);
 		if (global_time >= packets[pkt_iterator].time && pkt_iterator < pkt_cnt)
 		{
+			if (!(pkt_iterator % 1000)) {
+				printf("On packet %d\n", pkt_iterator);
+			}
 			// printf("\n----------------------------------------\n");
 			// printf("Pkt number %d:\n", pkt_iterator);
 			// printf("Pkt time: %d\n\n", global_time);
-			int state_action = check_state(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, &recheck);
+			int state_action = check_state(&compute_nodes[packets[pkt_iterator].src - compute_node_min_id], packets[pkt_iterator].data.addr, &recheck, global_id, global_time, packets[pkt_iterator]);
 			// printf("Doing operation on add")
 			// printf("State action is %d.\n", state_action);
 			if (packets[pkt_iterator].flag == INST_READ)
@@ -295,30 +288,30 @@ int main(int argc, char **argv)
 				{
 				// Address matches
 				case 1:	   // modified
-					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
+					// fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 2:	   // owned
-					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
+					// fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 3:	   // exclusive
-					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
+					// fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 4:	   // shared
-					fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
+					// fprintf(output_file, "Node %d not generating read request due to existence in cache.\n\n\n", packets[pkt_iterator].src);
 					pkt_iterator++;
 					break; // do nothing
 				case 5:	   // invalid
 					// Request the data from memory
-					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
+					// fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					// printf("Requesting data.\n");
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
+					log_cdatareq(packets[pkt_iterator]);
 					pkt_iterator++;
 					recheck = 0;
-					log_cdatareq();
 					break;
 				case 6:		// writeback
 					// printf("Eviction!\n");
@@ -353,29 +346,29 @@ int main(int argc, char **argv)
 					log_cwritedata();
 					break;
 				case 8: 	// replace
-					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
+					// fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
+					log_cdatareq(packets[pkt_iterator]);
 					pkt_iterator++;
 					recheck = 0;
-					log_cdatareq();
 					break;
 				case 9:		// replace
-					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
+					// fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
+					log_cdatareq(packets[pkt_iterator]);
 					pkt_iterator++;
 					recheck = 0;
-					log_cdatareq();
 					break;
 				case 10: 	// replace.
 					// printf("Requesting data.\n");
-					fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
+					// fprintf(output_file, "Node %d read request for address 0x%lx at time %d\n", packets[pkt_iterator].src, packets[pkt_iterator].data.addr, global_time);
 					packets[pkt_iterator].flag = READ_REQUEST;
 					push_packet(&(compute_nodes[packets[pkt_iterator].src].bot_ports[0]), TX, packets[pkt_iterator]);
+					log_cdatareq(packets[pkt_iterator]);
 					pkt_iterator++;
 					recheck = 0;
-					log_cdatareq();
 					break;
 				default:
 					break; // none of the above
@@ -391,42 +384,42 @@ int main(int argc, char **argv)
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					case 2: // Owned, write but invalidate other shared copies
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					case 3: // Exclusive, free to write
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					case 4: // Shared, write but invalidate other copies
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						// printf("Node %d sending a write request to memory.\n", compute_nodes[packets[pkt_iterator].src].id);
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					case 5: // Write but invalidate all other copies
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					// Address mismatch
 					case 6: // Writeback
@@ -463,25 +456,25 @@ int main(int argc, char **argv)
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					case 9: // Free to write
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					case 10: // Free to write
 						write_action(&compute_nodes[packets[pkt_iterator].src], packets[pkt_iterator].data.addr, packets[pkt_iterator].data.data);
 						packets[pkt_iterator].flag = WR_REQUEST;
 						push_packet((&(compute_nodes[packets[pkt_iterator].src - compute_node_min_id].bot_ports[0])), TX, packets[pkt_iterator]);
+						log_cwritereq(packets[pkt_iterator]);
 						pkt_iterator++;
 						recheck = 0;
-						log_cwritereq();
 						break;
 					default:
 						break;
@@ -498,6 +491,9 @@ int main(int argc, char **argv)
 				Packet curr_packet_rx = pop_packet((&(compute_nodes[i].bot_ports[j])), RX, 0);
 				if ((curr_packet_tx.flag != ERROR) && (curr_packet_tx.time <= global_time))
 				{
+					// if (curr_packet_tx.flag == EVICTION) {
+						// printf("Spotted an eviction packet coming outside of a compute node!\n");
+					// }
 					curr_packet_tx.time = global_time + GLOBAL_TIME_INCR; // TODO custom value
 					// place packet into switch port corresponding to compute node ID
 					push_packet((&(switch_nodes[0].top_ports[i])), RX, curr_packet_tx);
@@ -598,46 +594,47 @@ int main(int argc, char **argv)
 					{
 						if (curr_packet_rx.flag == INVALIDATE) {
 							if (MULTICAST) {
-								if (calculate_packet_size(INVALIDATE) > MAX_PKT_SIZE) { // packet splitting
-									if (invalidation_num == 0) {
-										for (int k = 0; k < 46; k++) {
-											if (curr_packet_rx.invalidates[k] == 1) {
-												curr_packet_rx.dst = k;
-												push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
-											}
-										}
-									}
-									else if (invalidation_num == 1) {
-										for (int k = 0; k < 46; k++) {
-											if (curr_packet_rx.invalidates[k] == 1) {
-												curr_packet_rx.dst = k + 46;
-												push_packet((&(switch_nodes[i].top_ports[k+46])), TX, curr_packet_rx);
-											}
-										}
-									}
-									else if (invalidation_num == 2) {
-										for (int k = 0; k < 46; k++) {
-											if (curr_packet_rx.invalidates[k] == 1) {
-												curr_packet_rx.dst = k + 92;
-												push_packet((&(switch_nodes[i].top_ports[k+92])), TX, curr_packet_rx);
-											}
-										}
-									}
+								// if (calculate_packet_size(INVALIDATE, curr_packet_rx.address_size, 0) > MAX_PKT_SIZE) { // packet splitting
+								// 	if (invalidation_num == 0) {
+								// 		for (int k = 0; k < 46; k++) {
+								// 			if (curr_packet_rx.invalidates[k] == 1) {
+								// 				curr_packet_rx.dst = k;
+								// 				push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
+								// 			}
+								// 		}
+								// 	}
+								// 	else if (invalidation_num == 1) {
+								// 		for (int k = 0; k < 46; k++) {
+								// 			if (curr_packet_rx.invalidates[k] == 1) {
+								// 				curr_packet_rx.dst = k + 46;
+								// 				push_packet((&(switch_nodes[i].top_ports[k+46])), TX, curr_packet_rx);
+								// 			}
+								// 		}
+								// 	}
+								// 	else if (invalidation_num == 2) {
+								// 		for (int k = 0; k < 46; k++) {
+								// 			if (curr_packet_rx.invalidates[k] == 1) {
+								// 				curr_packet_rx.dst = k + 92;
+								// 				push_packet((&(switch_nodes[i].top_ports[k+92])), TX, curr_packet_rx);
+								// 			}
+								// 		}
+								// 	}
 
-									invalidation_num++;
-									if (invalidation_num == 3) {
-										invalidation_num = 0;
+								// 	invalidation_num++;
+								// 	if (invalidation_num == 3) {
+								// 		invalidation_num = 0;
+								// 	}
+								// }
+								// else { // packet non splitting
+								curr_packet_rx.time = global_time + GLOBAL_TIME_INCR;
+								for (int k = 0; k < 128; k++) {
+									if (curr_packet_rx.invalidates[k] == 1) {
+										// printf("Sent invalidation to node %d.\n", k);
+										curr_packet_rx.dst = k;
+										push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
 									}
 								}
-								else { // packet non splitting
-									for (int k = 0; k < 128; k++) {
-										if (curr_packet_rx.invalidates[k] == 1) {
-											// printf("Sent invalidation to node %d.\n", k);
-											curr_packet_rx.dst = k;
-											push_packet((&(switch_nodes[i].top_ports[k])), TX, curr_packet_rx);
-										}
-									}
-								}
+								// }
 							}
 							else {
 								curr_packet_rx.time = global_time + GLOBAL_TIME_INCR; // TODO custom time
@@ -677,6 +674,9 @@ int main(int argc, char **argv)
 				// Process incoming packets to memory nodes
 				if ((curr_packet_rx.flag != ERROR) && (curr_packet_rx.time <= global_time))
 				{
+					if (curr_packet_rx.flag == EVICTION) {
+						// printf("Sending eviction packet into a memory node\n");
+					}
 					// need to act on this packet
 					// printf(ANSI_COLOR_GREEN "Packet with ID %d has arrived at memory node with ID %d [0x%08x, 0x%08x]" ANSI_COLOR_RESET "\n", curr_packet_rx.id, memory_nodes[i].id, curr_packet_rx.data.addr, curr_packet_rx.data.data);
 					// handle return packet
@@ -718,12 +718,14 @@ int main(int argc, char **argv)
 	} while (finished == 0);
 
 	printf("Ended on global time: %d\n", global_time);
-	for (uint32_t i = 0; i <= compute_node_max_id; i++)
-	{
-		// printf("Compute node %d\n----------------\n", i);
-		// print_cache(&compute_nodes[i]);
-		// printf("\n\n");
+	
+	// Cleanup
+	printf("ADDRESS\tVALUE\tVALIDITY\n");
+	for (int i = 0; i < CACHE_LINES; i++) {
+		ComputeNodeMemoryLine line = compute_nodes[0].cache[i];
+		printf("%x\t%x\t%x\n", line.address, line.value, line.state);
 	}
+	free(packets);
 
 	get_statistics();
 

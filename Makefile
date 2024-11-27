@@ -9,7 +9,7 @@ OBJECTS = $(patsubst $(SRCDIR)/%.c, $(BINDIR)/%.o, $(SOURCES))
 EXECUTABLE = sim
 
 ARTIFACTDIR = artifacts
-INPUTFILE = output_trace.csv
+INPUTFILE = input_trace.csv
 MEMFILE = meminit.csv
 LOGFILE = switchlog.csv
 

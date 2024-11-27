@@ -11,8 +11,13 @@
 #define CEIL(X) ( ((X) > 0) ? CEILING_POS(X) : CEILING_NEG(X) )
 
 long control_message_memory_node_global_counter = 0;
+double control_message_memory_node_global_counter_b = 0;
 long transfer_command_messages = 0;
+double transfer_command_messages_b = 0;
+
 long mem_to_switch_invalidations = 0;
+double mts_invalidations_b;
+
 long memory_data_requests = 0;
 int data_requested;
 long last_sent_node = -1;
@@ -36,6 +41,8 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.flag = ERROR;
 	return_packet.src = node->id;
 	return_packet.dst = pkt.src;
+	return_packet.address_size = pkt.address_size;
+	return_packet.data_size = pkt.data_size;
 	// uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
 	uint64_t address_to_access = (pkt.data.addr / 4); // % 64;
 	// printf("Address 0x%lx\n", pkt.data.addr);
@@ -53,7 +60,7 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	// printf("Address present? %d\n", existsinmem);
 	// printf("Accessing index %d to determine address %llx.\n", address_to_access, pkt.data.addr);
 	if (!existsinmem ) {
-		printf("nonpresent address 0x%lx 0d%ld for write flag %d\n", pkt.data.addr, pkt.data.addr, 1 ? pkt.flag == WR_REQUEST : READ_REQUEST);
+		printf("nonpresent address 0x%lx 0d%ld for write flag %d\n", pkt.data.addr, pkt.data.addr, pkt.flag == WR_REQUEST ? 1 : 0);
 		// return return_packet;
 	}
 	// printf("Accessing index %d for address 0x%lx.\n", address_to_access, pkt.data.addr);
@@ -94,15 +101,20 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			return_packet.dst = elseNode;
 			return_packet.data.addr = pkt.data.addr;
 			return_packet.data.data = 0; // means go to owned
+			return_packet.address_size = pkt.address_size;
+			return_packet.data_size = 0;
+
 			node->memory[address_to_access].nodeState[elseNode] = OWNED;
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
-			printf("Transferring...\n");
-			if (calculate_packet_size(TRANSFER) > (double) MAX_PKT_SIZE) {
-				double num_pkt_to_represent = calculate_packet_size(TRANSFER) / (double) MAX_PKT_SIZE;
+			// printf("Transferring...\n");
+			if (calculate_packet_size(TRANSFER, pkt.address_size, 0) > (double) MAX_PKT_SIZE) {
+				double num_pkt_to_represent = calculate_packet_size(TRANSFER, pkt.address_size, 0) / (double) MAX_PKT_SIZE;
 				transfer_command_messages +=  (int) CEIL(num_pkt_to_represent);
+				transfer_command_messages_b += CEIL(num_pkt_to_represent) * MAX_PKT_SIZE*8;
 			}
 			else {
 				transfer_command_messages++;
+				transfer_command_messages_b += MAX_PKT_SIZE*8; //HEADER_SIZE + pkt.address_size*8;
 			}
 			// transfer_command_messages++;
 			// printf("Modified in node %d\n", elseNode);
@@ -114,16 +126,19 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			return_packet.dst = elseNode;
 			return_packet.data.addr = pkt.data.addr;
 			return_packet.data.data = 1; // means go to shared
+			return_packet.address_size = pkt.address_size;
 			node->memory[address_to_access].nodeState[elseNode] = SHARED;
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
-			printf("Transferring...\n");
+			// printf("Transferring...\n");
 
-			if (calculate_packet_size(TRANSFER) > (double) MAX_PKT_SIZE) {
-				double num_pkt_to_represent = calculate_packet_size(TRANSFER) / (double) MAX_PKT_SIZE;
+			if (calculate_packet_size(TRANSFER, pkt.address_size, 0) > (double) MAX_PKT_SIZE) {
+				double num_pkt_to_represent = calculate_packet_size(TRANSFER, pkt.address_size, 0) / (double) MAX_PKT_SIZE;
 				transfer_command_messages +=  (int) CEIL(num_pkt_to_represent);
+				transfer_command_messages_b += CEIL(num_pkt_to_represent) * MAX_PKT_SIZE*8;
 			}
 			else {
 				transfer_command_messages++;
+				transfer_command_messages_b +=  MAX_PKT_SIZE*8; //HEADER_SIZE + pkt.address_size*8;
 			}
 			// printf("Exclusive in node %d\n", elseNode);
 			// TODO: send a state change packet to SHARED
@@ -134,15 +149,20 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			return_packet.dst = elseNode;
 			return_packet.data.addr = pkt.data.addr;
 			return_packet.data.data = 0; // means stay in owned
+			return_packet.address_size = pkt.address_size;
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
-			printf("Transferring...\n");
+			// printf("Transferring...\n");
 
-			if (calculate_packet_size(TRANSFER) > (double) MAX_PKT_SIZE) {
-				double num_pkt_to_represent = calculate_packet_size(TRANSFER) / (double) MAX_PKT_SIZE;
+			if (calculate_packet_size(TRANSFER, pkt.address_size, 0) > (double) MAX_PKT_SIZE) {
+				double num_pkt_to_represent = calculate_packet_size(TRANSFER, pkt.address_size, 0) / (double) MAX_PKT_SIZE;
 				transfer_command_messages +=  (int) CEIL(num_pkt_to_represent);
+				int new = (int) CEIL(num_pkt_to_represent);
+				transfer_command_messages_b += CEIL(num_pkt_to_represent) * MAX_PKT_SIZE*8;
+				// printf("Generated %d messages for an invalidation from mem node to switch.\n", new);
 			}
 			else {
 				transfer_command_messages++;
+				transfer_command_messages_b += MAX_PKT_SIZE*8; //HEADER_SIZE + pkt.address_size*8;
 			}
 			// printf("Owned in node %d\n");
 		}
@@ -152,15 +172,18 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			return_packet.dst = elseNode;
 			return_packet.data.addr = pkt.data.addr;
 			return_packet.data.data = 1; // means stay in shared
+			return_packet.address_size = pkt.address_size;
 			node->memory[address_to_access].nodeState[pkt.src] = SHARED;
-			printf("Transferring...\n");
+			// printf("Transferring...\n");
 
-			if (calculate_packet_size(TRANSFER) > (double) MAX_PKT_SIZE) {
-				double num_pkt_to_represent = calculate_packet_size(TRANSFER) / (double) MAX_PKT_SIZE;
+			if (calculate_packet_size(TRANSFER, pkt.address_size, 0) > (double) MAX_PKT_SIZE) {
+				double num_pkt_to_represent = calculate_packet_size(TRANSFER, pkt.address_size, 0) / (double) MAX_PKT_SIZE;
 				transfer_command_messages +=  (int) CEIL(num_pkt_to_represent);
+				transfer_command_messages_b += CEIL(num_pkt_to_represent) * MAX_PKT_SIZE * 8;
 			}
 			else {
 				transfer_command_messages++;
+				transfer_command_messages_b += MAX_PKT_SIZE*8; // + pkt.address_size*8;
 			}
 		}
 		// Memory's job to update the requestor
@@ -171,6 +194,12 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 			return_packet.data.addr = pkt.data.addr;
 			return_packet.data.data = node->memory[address_to_access].value;
 			control_message_memory_node_global_counter++;
+			if ((HEADER_SIZE + pkt.address_size*8 + pkt.data_size*8) < 64) {
+				control_message_memory_node_global_counter_b += 64*8;
+			}
+			else {
+				control_message_memory_node_global_counter_b += HEADER_SIZE + pkt.address_size*8 + pkt.data_size*8;
+			}
 			node->memory[address_to_access].nodeState[pkt.src] = EXCLUSIVE;
 		}
 	}
@@ -184,198 +213,34 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 		int sendInvalidations = 0;
 		int invalidation_num = 0;
 
-
-
-
-		// int pkt_size = calculate_packet_size(INVALIDATE);
-		// if (MULTICAST) {
-		// if (MULTICAST) 
-		// 	if (pkt_size > (double) MAX_PKT_SIZE) { // split packet
-		// 		// For 128 nodes, we need 3 invalidation packets to make sure we don't go over IPG packet size
-		// 		Packet invalidate_packet_0 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-		// 		invalidate_packet_0.invalidates = malloc(sizeof(uint8_t) * 46);
-		// 		Packet invalidate_packet_1 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-		// 		invalidate_packet_1.invalidates = malloc(sizeof(uint8_t) * 46);
-		// 		Packet invalidate_packet_2 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-		// 		invalidate_packet_2.invalidates = malloc(sizeof(uint8_t) * 46);
-		// 		// Packet invalidate_packet_3 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-		// 		// invalidate_packet_3.invalidates = malloc(sizeof(uint8_t) * 27);
-		// 		// Packet invalidate_packet_4 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-		// 		// invalidate_packet_4.invalidates = malloc(sizeof(uint8_t) * 27);
-
-		// 		for (int i = 0; i < 128; i++) {
-		// 			// Split packet into 5 packets
-		// 			if (i >= 0 && i <= 45) {
-		// 				invalidation_num = 0;
-		// 			}
-		// 			if (i >= 46 && i <= 91) {
-		// 				invalidation_num = 1;
-		// 			}
-		// 			if (i >= 92 && i <= 127) {
-		// 				invalidation_num = 2;
-		// 			}
-		// 			// if (i >= 81 && i <= 107) {
-		// 			// 	invalidation_num = 3;
-		// 			// }
-		// 			// if (i >= 108 && i <= 127) {
-		// 			// 	invalidation_num = 4;
-		// 			// }
-
-
-		// 			int invalidate_i = 0;
-		// 			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
-		// 				// printf("Node %i not in invalid.\n", i);
-		// 				// return_packet.invalidates[i] = 1;
-		// 				invalidate_i = 1;
-		// 				node->memory[address_to_access].nodeState[i] = INVALID;
-		// 				sendInvalidations = 1;
-		// 				// printf("Setting invalidations for %d.\n", i);
-		// 			}
-
-					
-		// 			if (invalidate_i) {
-		// 				switch (invalidation_num) {
-		// 					case 0:
-		// 						invalidate_packet_0.invalidates[i] = 1;
-		// 						break;
-		// 					case 1:
-		// 						invalidate_packet_1.invalidates[i - 46] = 1;
-		// 						break;
-		// 					case 2:
-		// 						invalidate_packet_2.invalidates[i - 92] = 1;
-		// 						break;
-		// 					// case 3:
-		// 					// 	invalidate_packet_3.invalidates[i - 81] = 1;
-		// 					// 	break;
-		// 					// case 4: 
-		// 					// 	invalidate_packet_4.invalidates[i - 108] = 1;
-		// 					// 	break;
-		// 				}
-		// 			}
-		// 			// else {
-		// 			// 	return_packet.invalidates[i] = 0;
-		// 			// }
-		// 		}
-
-		// 		if (sendInvalidations) {
-		// 			mem_to_switch_invalidations += 3; // 5 Packets in order to limit to 6 byte packets
-		// 			push_packet(p, TX, invalidate_packet_0);
-		// 			push_packet(p, TX, invalidate_packet_1);
-		// 			push_packet(p, TX, invalidate_packet_2);
-		// 			// push_packet(p, TX, invalidate_packet_3);
-		// 			// push_packet(p, TX, invalidate_packet_4);
-		// 			return_packet.flag = ERROR; // we don't want the returned packet to be put anywhere, so let main discard it for us
-		// 		}
-
-		// 	}
-		// 	else {
-		// 		// printf("ELSE\n");
-		// 		for (int i = 0; i < 128; i++) {
-		// 			if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
-		// 				return_packet.invalidates[i] = 1;
-		// 				node->memory[address_to_access].nodeState[i] = INVALID;
-		// 				sendInvalidations = 1;
-		// 			}
-		// 			else {
-		// 				return_packet.invalidates[i] = 0;
-		// 			}
-		// 		}
-
-		// 		if (sendInvalidations) {
-		// 			mem_to_switch_invalidations++;
-		// 			return_packet.flag = INVALIDATE;
-		// 		}
-		// 	}
-		// }
-		// else { // no need to send an array, just send individual 
-		// 	generate_invalidations(node, pkt, p, global_id, global_time);
-		// }
-
 		if (MULTICAST) { // multicasting, so send one packet with all destinations
-			if (calculate_packet_size(INVALIDATE) > MAX_PKT_SIZE) {
-				// For 128 nodes, we need 3 invalidation packets to make sure we don't go over IPG packet size
-				Packet invalidate_packet_0 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-				invalidate_packet_0.invalidates = malloc(sizeof(uint8_t) * 46);
-				Packet invalidate_packet_1 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-				invalidate_packet_1.invalidates = malloc(sizeof(uint8_t) * 46);
-				Packet invalidate_packet_2 = (Packet) {global_id, global_time, INVALIDATE, node->id, 0, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
-				invalidate_packet_2.invalidates = malloc(sizeof(uint8_t) * 46);
-
-
-
-				for (int i = 0; i < 128; i++) {
-					// Split packet into 5 packets
-					if (i >= 0 && i <= 45) {
-						invalidation_num = 0;
-					}
-					if (i >= 46 && i <= 91) {
-						invalidation_num = 1;
-					}
-					if (i >= 92 && i <= 127) {
-						invalidation_num = 2;
-					}
-
-
-					int invalidate_i = 0;
-					if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
-						// printf("Node %i not in invalid.\n", i);
-						// return_packet.invalidates[i] = 1;
-						invalidate_i = 1;
-						node->memory[address_to_access].nodeState[i] = INVALID;
-						sendInvalidations = 1;
-						// printf("Setting invalidations for %d.\n", i);
-					}
-
-			
-					if (invalidate_i) {
-						switch (invalidation_num) {
-							case 0:
-								invalidate_packet_0.invalidates[i] = 1;
-								break;
-							case 1:
-								invalidate_packet_1.invalidates[i - 46] = 1;
-								break;
-							case 2:
-								invalidate_packet_2.invalidates[i - 92] = 1;
-								break;
-							// case 3:
-							// 	invalidate_packet_3.invalidates[i - 81] = 1;
-							// 	break;
-							// case 4: 
-							// 	invalidate_packet_4.invalidates[i - 108] = 1;
-							// 	break;
-						}
-					}
+			for (int i = 0; i < 128; i++) {
+				if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
+					// printf("Node %i not in invalid.\n", i);
+					return_packet.invalidates[i] = 1;
+					node->memory[address_to_access].nodeState[i] = INVALID;
+					sendInvalidations = 1;
+					// printf("Setting invalidations for %d.\n", i);
 				}
-
-				if (sendInvalidations) {
-					mem_to_switch_invalidations += 3; // 5 Packets in order to limit to 6 byte packets
-					push_packet(p, TX, invalidate_packet_0);
-					push_packet(p, TX, invalidate_packet_1);
-					push_packet(p, TX, invalidate_packet_2);
-					// push_packet(p, TX, invalidate_packet_3);
-					// push_packet(p, TX, invalidate_packet_4);
-					return_packet.flag = ERROR; // we don't want the returned packet to be put anywhere, so let main discard it for us
+				else {
+					return_packet.invalidates[i] = 0;
 				}
 			}
-			else { // No split required, but still multicasting
-				for (int i = 0; i < 128; i++) {
-					if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
-						// printf("Node %i not in invalid.\n", i);
-						return_packet.invalidates[i] = 1;
-						node->memory[address_to_access].nodeState[i] = INVALID;
-						sendInvalidations = 1;
-						// printf("Setting invalidations for %d.\n", i);
-					}
-					else {
-						return_packet.invalidates[i] = 0;
-					}
+			if (sendInvalidations) {
+				return_packet.flag = INVALIDATE;
+				if (calculate_packet_size(INVALIDATE, pkt.address_size, 0) > (double) MAX_PKT_SIZE) {
+					double num_pkt_to_represent = calculate_packet_size(INVALIDATE, pkt.address_size, 0) / (double) MAX_PKT_SIZE;
+					// new = (int) CEIL(num_pkt_to_represent);
+					mem_to_switch_invalidations += (int) CEIL(num_pkt_to_represent);
+					mts_invalidations_b += CEIL(num_pkt_to_represent) * MAX_PKT_SIZE * 8;
 				}
-				if (sendInvalidations) {
+				else {
 					mem_to_switch_invalidations++;
-					return_packet.flag = INVALIDATE;
+					// new = 1;
+					mts_invalidations_b += HEADER_SIZE + pkt.address_size*8;
 				}
-			}
+			}		
+			// printf("Generated %d messages for an invalidation.\n", new);
 		}
 		else {
 			generate_invalidations(node, pkt, p, global_id, global_time, address_to_access);
@@ -388,6 +253,12 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 		node->memory[address_to_access].value = pkt.data.data;
 
 	}
+	else if (pkt.flag == EVICTION) {
+		// printf("Received an eviction packet from node %d.\n", pkt.src);
+		node->memory[address_to_access].value = pkt.data.data;
+		node->memory[address_to_access].nodeState[pkt.src] = INVALID;
+		// node->memory[address_to_access].value = 0xBEEFDEAD;
+	}
 	return return_packet;
 }
 
@@ -396,26 +267,18 @@ void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t glob
 	for (int i = 0; i < 128; i++) {
 		// send an invalidation to ever non modified node
 		if (node->memory[address_to_access].nodeState[i] != INVALID && i != pkt.src) {
-			// printf("Due to write from Compute node %d, Invalidating Compute Node %d\n", pkt.src, i);
-			// invalidate
-			// Packet new_packet;
-			// new_packet.id = global_id;
-			// new_packet.time = global_time + 1;
-			// new_packet.flag = INVALIDATE; 
-			// new_packet.src = node->id;
-			// new_packet.dst = i;
-			printf("Invalidations generated.\n");
-			Packet invalidate_packet = (Packet) {global_id, global_time, INVALIDATE, node->id, i, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL};
+			Packet invalidate_packet = (Packet) {global_id, global_time, INVALIDATE, node->id, i, (DataNode) {pkt.data.addr, 0xFFFFFFFF}, NULL, pkt.address_size, pkt.data_size};
 			push_packet(p, TX, invalidate_packet);
 			node->memory[address_to_access].nodeState[i] = INVALID;
-			if (calculate_packet_size(INVALIDATE) > MAX_PKT_SIZE) {
-				double num_pkt_to_represent = calculate_packet_size(INVALIDATE) / (double) MAX_PKT_SIZE;
+			if (calculate_packet_size(INVALIDATE, pkt.address_size, 0) > MAX_PKT_SIZE) {
+				double num_pkt_to_represent = calculate_packet_size(INVALIDATE, pkt.address_size, 0) / (double) MAX_PKT_SIZE;
 				mem_to_switch_invalidations += (int) CEIL(num_pkt_to_represent);
+				mts_invalidations_b += CEIL(num_pkt_to_represent) * MAX_PKT_SIZE * 8;
 			}
 			else {
 				mem_to_switch_invalidations++;
+				mts_invalidations_b += MAX_PKT_SIZE;
 			}
-			// mem_to_switch_invalidations++;
 		}
 	}
 }
@@ -425,8 +288,16 @@ long get_memory_control_count()
 	return control_message_memory_node_global_counter;
 }
 
+double mem_to_compute_b() {
+	return control_message_memory_node_global_counter_b;
+}
+
 long transfer_requests() {
 	return transfer_command_messages;
+}
+
+double transfer_requests_b() {
+	return transfer_command_messages_b;
 }
 
 long get_memory_to_compute_requests() {
@@ -435,4 +306,8 @@ long get_memory_to_compute_requests() {
 
 long get_memory_to_switch_invalidations() {
 	return mem_to_switch_invalidations;
+}
+
+double get_mts_invalidations_b() {
+	return mts_invalidations_b;
 }
