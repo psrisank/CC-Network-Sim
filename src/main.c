@@ -268,8 +268,10 @@ int main(int argc, char **argv)
 
 		// coherence logic
 		// printf("\n\n\n\nGlobal time: %d, pkt_iterator: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, pkt_iterator, packets[pkt_iterator].time, stall);
+		// If the global time has passed the instruction's time and we are on the next packet, insert into the packet queue
 		if (global_time >= packets[pkt_iterator].time && pkt_iterator < pkt_cnt)
 		{
+
 			if (!(pkt_iterator % 100000)) {
 				printf("On packet %d\n", pkt_iterator);
 			}
