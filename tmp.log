@@ -1,0 +1,70 @@
+rm -f bin/*.o bin/sim
+rm -f *.csv
+gcc -std=c99 -Wall -Wextra -g -c src/compute_node.c -o bin/compute_node.o
+gcc -std=c99 -Wall -Wextra -g -c src/main.c -o bin/main.o
+gcc -std=c99 -Wall -Wextra -g -c src/memory_node.c -o bin/memory_node.o
+gcc -std=c99 -Wall -Wextra -g -c src/packet.c -o bin/packet.o
+gcc -std=c99 -Wall -Wextra -g -c src/port.c -o bin/port.o
+gcc -std=c99 -Wall -Wextra -g bin/compute_node.o bin/main.o bin/memory_node.o bin/packet.o bin/port.o -o bin/sim
+On packet 0
+On packet 100000
+On packet 200000
+On packet 300000
+On packet 400000
+On packet 500000
+On packet 600000
+On packet 700000
+On packet 800000
+On packet 900000
+Ended on global time: 20000180
+ADDRESS	VALUE	VALIDITY
+7a05b	deadbeef	2
+7a05c	deadbeef	0
+7a0aa	deadbeef	0
+7a0cb	deadbeef	0
+7a0fd	deadbeef	2
+79eff	deadbeef	0
+79f24	deadbeef	2
+79f42	deadbeef	0
+79fe3	deadbeef	2
+7a051	deadbeef	2
+
+
+Invalidation Messages from switch: 1387347
+Invalidations from memory to switch: 1387347
+Read requests to memory nodes: 500174
+Write requests to memory nodes: 499805
+Transfer requests from memory nodes: 498
+State change requests from memory node: 1501020
+Compute node to compute node data transfers: 166
+Compute node to memory node data transfers: 499496
+Memory node to compute node data transfer: 500008
+
+
+
+Pkt Sizes (KB):
+Invalidations from switch: 11098.776000
+Invalidations from memory nodes: 11098.776000
+Read requests: 63998.656000
+Write requests: 0.000000
+Transfer requests: 3.984000
+Compute -> Compute transfers: 13.971250
+Compute -> Memory transfers: 610200.480000
+Memory -> Compute transfers: 12125.224000
+
+
+
+
+Distributions (KB)
+Compute->Switch Memory: 674213.107250
+Compute->Switch Coherence: 0
+
+Switch->Compute Memory: 12139.195250
+Switch->Compute Coherence: 23110.920000
+
+Memory->Switch Memory: 12125.224000
+Memory->Switch Coherence: 23110.920000
+
+Switch->Memory Memory: 674199.136000
+Switch->Memory Coherence: 0.000000
+

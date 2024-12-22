@@ -44,23 +44,29 @@ Packet process_packet(MemoryNode* node, Packet pkt, uint32_t global_id, uint32_t
 	return_packet.address_size = pkt.address_size;
 	return_packet.data_size = pkt.data_size;
 	// uint32_t address_to_access = (pkt.data.addr >> 3) - (64 * (node->id - memory_node_min_id)); // need to figure out which memory block this is to get correct line
-	uint64_t address_to_access = (pkt.data.addr / 4); // % 64;
+	uint64_t address_to_access;// = (pkt.data.addr / 4); // % 64;
 	// printf("Address 0x%lx\n", pkt.data.addr);
 	int existsinmem = 0;
 	// printf("Searching for address 0x%llx\n", pkt.data.addr);
-	for (int i = 0; i < MEM_NUM_LINES; i++) {
-		// printf("Checking index %d.\n", i);
-		if (node->memory[i].address == pkt.data.addr) {
-			// printf("Address %lx exists in memory.\n", pkt.data.addr);
-			existsinmem = 1;
-			address_to_access = i;
-			// printf("Address present.\n");
-		}
+	// for (int i = 0; i < MEM_NUM_LINES; i++) {
+	// 	// printf("Checking index %d.\n", i);
+	// 	if (node->memory[i].address == pkt.data.addr) {
+	// 		// printf("Address %lx exists in memory.\n", pkt.data.addr);
+	// 		existsinmem = 1;
+	// 		address_to_access = i;
+	// 		break;
+	// 		// printf("Address present.\n");
+	// 	}
+	// }
+	address_to_access = pkt.data.addr;
+	if (node->memory[address_to_access].address != pkt.data.addr) {
+		existsinmem = 0;
+		printf("Address %lx in mem node is actually%lx.\n", pkt.data.addr, node->memory[address_to_access].address);
 	}
 	// printf("Address present? %d\n", existsinmem);
 	// printf("Accessing index %d to determine address %llx.\n", address_to_access, pkt.data.addr);
-	if (!existsinmem ) {
-		printf("nonpresent address 0x%lx 0d%ld for write flag %d\n", pkt.data.addr, pkt.data.addr, pkt.flag == WR_REQUEST ? 1 : 0);
+	if (!existsinmem) {
+		// printf("nonpresent address 0x%lx 0d%ld for write flag %d\n", pkt.data.addr, pkt.data.addr, pkt.flag == WR_REQUEST ? 1 : 0);
 		// return return_packet;
 	}
 	// printf("Accessing index %d for address 0x%lx.\n", address_to_access, pkt.data.addr);
@@ -277,7 +283,7 @@ void generate_invalidations(MemoryNode* node, Packet pkt, Port* p, uint32_t glob
 			}
 			else {
 				mem_to_switch_invalidations++;
-				mts_invalidations_b += MAX_PKT_SIZE;
+				mts_invalidations_b += MAX_PKT_SIZE*8;
 			}
 		}
 	}

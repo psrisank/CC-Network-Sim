@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 		printf(ANSI_COLOR_RED "Usage: ./[exec] [packet input file] [memory input file] [packet log file]" ANSI_COLOR_RESET "\n");
 		return EXIT_FAILURE;
 	}
-	printf("No segfault here!.\n");
+	// printf("No segfault here!.\n");
 
 	// Initialize global times and IDs
 	uint32_t global_time = 0;
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	}
 	uint32_t compute_node_max_id = global_id - 1;
 
-	printf("No segfault until switchnode init.\n");
+	// printf("No segfault until switchnode init.\n");
 	// //printf("Node 1: \n");
 	// //printf("Cache line 0 state: %d\n", compute_nodes[1].cache[0].state);
 	// //printf("Cache line 1 state: %d\n", compute_nodes[1].cache[1].state);
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	}
 
 	// uint32_t switch_node_max_id = global_id - 1;
-	printf("No segfault until memorynode init.\n");
+	// printf("No segfault until memorynode init.\n");
 
 	// Memory Node Initialization
 	MemoryNode *memory_nodes = malloc(sizeof(MemoryNode) * NUM_MEMORY_NODES);
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 		// memory_nodes[i] = node;
 	}
 	uint32_t memory_node_max_id = global_id - 1;
-	printf("No segfault until memory init.\n");
+	// printf("No segfault until memory init.\n");
 
 	// Memory data/address initialization
 	char line[500];
@@ -179,7 +179,8 @@ int main(int argc, char **argv)
 			token = strtok(NULL, ",");
 			curr_field++;
 		}
-		
+		// printf("Address %x placed in index %x\n", data_address, mem_iterator);
+
 		// printf("About to assign value data.\n");
 		memory_nodes[0].memory[mem_iterator].value = data_data;
 		memory_nodes[0].memory[mem_iterator++].address = data_address;
@@ -187,9 +188,9 @@ int main(int argc, char **argv)
 	}
 	fclose(mem_input);
 
-	printf("No segfault until switchnode init.\n");
+	// printf("No segfault until switchnode init.\n");
 
-	printf("number of objects in memory node: %d.\n", mem_iterator);
+	// printf("number of objects in memory node: %d.\n", mem_iterator);
 
 	// Creating packets based off input trace
 	// Packet packets[2000];
@@ -233,7 +234,7 @@ int main(int argc, char **argv)
 	}
 	fclose(cmd_inputs);
 	int pkt_cnt = pkt_iterator;
-	printf("PACKET CNT: %d\n", pkt_cnt);
+	// printf("PACKET CNT: %d\n", pkt_cnt);
 
 	// Create an output file
 	FILE *output_file;
@@ -269,7 +270,7 @@ int main(int argc, char **argv)
 		// printf("\n\n\n\nGlobal time: %d, pkt_iterator: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, pkt_iterator, packets[pkt_iterator].time, stall);
 		if (global_time >= packets[pkt_iterator].time && pkt_iterator < pkt_cnt)
 		{
-			if (!(pkt_iterator % 1000)) {
+			if (!(pkt_iterator % 100000)) {
 				printf("On packet %d\n", pkt_iterator);
 			}
 			// printf("\n----------------------------------------\n");
