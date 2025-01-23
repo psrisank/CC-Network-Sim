@@ -179,9 +179,6 @@ int main(int argc, char **argv)
 	int pkt_iterator;
 	int iteration = 0;
 
-
-
-
 	while (fgets(line, 255, cmd_inputs) != NULL)
 	{
 		uint8_t pkt_src;
@@ -208,18 +205,23 @@ int main(int argc, char **argv)
 		// pkt_time = atoi(time);
 		pkt_flag = tmpflag == 1 ? INST_WRITE : INST_READ;
 		// printf("%u,%u,%x,%u,%x,%u,%u\n", pkt_time, pkt_src, pkt_addr, pkt_flag, pkt_data, pkt_keysize, pkt_valuesize);
-		packets[pkt_iterator++] = (Packet){global_id++, pkt_time, pkt_flag, pkt_src, pkt_addr / (MEM_NUM_LINES * NUM_MEMORY_NODES) + memory_node_min_id, (DataNode){pkt_addr, pkt_data}, NULL, pkt_keysize, pkt_valuesize};
-		printf("Address %x Goes to Memory Node %x\n", pkt_addr / (MEM_NUM_LINES * NUM_MEMORY_NODES) + memory_node_min_id);
+		packets[pkt_iterator++] = (Packet){global_id++, pkt_time, pkt_flag, pkt_src, pkt_addr / (MEM_NUM_LINES) + memory_node_min_id, (DataNode){pkt_addr, pkt_data}, NULL, pkt_keysize, pkt_valuesize};
+		// printf("Address %u Goes to Memory Node %u\n", pkt_addr, pkt_addr / (MEM_NUM_LINES) + memory_node_min_id);
 	}
 	fclose(cmd_inputs);
 	int pkt_cnt = pkt_iterator;
 	// printf("PACKET CNT: %d\n", pkt_cnt);
 
+
+
 	// Create an output file
 	FILE *output_file;
 	output_file = fopen(argv[3], "w");
 
-	// printf("\nCOMPUTE NODES ID: [%d-%d], SWITCH NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, switch_node_min_id, switch_node_max_id, memory_node_min_id, memory_node_max_id);
+	printf("\nCOMPUTE NODES ID: [%d-%d], MEMORY NODES ID: [%d-%d]\n", compute_node_min_id, compute_node_max_id, memory_node_min_id, memory_node_max_id);
+
+
+
 
 	// Main execution loop
 	// Excecution is as follows:
@@ -248,7 +250,7 @@ int main(int argc, char **argv)
 		// coherence logic
 		// printf("\n\n\n\nGlobal time: %d, pkt_iterator: %d, pkt_iterator instruction time: %d, stalling: %d\n", global_time, pkt_iterator, packets[pkt_iterator].time, stall);
 		// If the global time has passed the instruction's time and we are on the next packet, insert into the packet queue
-		while (global_time >= packets[pkt_iterator].time && pkt_iterator < pkt_cnt)
+		if (global_time >= packets[pkt_iterator].time && pkt_iterator < pkt_cnt)
 		{
 			// Start
 			if (!(pkt_iterator % 100000)) {
@@ -289,7 +291,7 @@ int main(int argc, char **argv)
 					wb_pkt.time= global_time;
 					wb_pkt.flag = WR_DATA;
 					wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-					wb_pkt.dst = memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+					wb_pkt.dst = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (128 * MEM_NUM_LINES) + memory_node_min_id;//memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
 					// TODO: remove
 					wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
 					wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;
@@ -303,7 +305,7 @@ int main(int argc, char **argv)
 					wb_pkt.time= global_time;
 					wb_pkt.flag = WR_DATA;
 					wb_pkt.src = compute_nodes[packets[pkt_iterator].src].id;
-					wb_pkt.dst = memory_node_min_id;//compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (64 * 4) + memory_node_min_id;
+					wb_pkt.dst = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address / (128 * MEM_NUM_LINES) + memory_node_min_id;
 					// TODO: remove
 					wb_pkt.data.addr = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].address;
 					wb_pkt.data.data = compute_nodes[packets[pkt_iterator].src].cache[compute_nodes[packets[pkt_iterator].src].idx_to_modify].value;

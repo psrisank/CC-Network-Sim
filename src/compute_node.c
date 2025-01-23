@@ -61,10 +61,10 @@ int check_state(ComputeNode* node, uint64_t address, int* recheck, int global_id
 		// Tell memory node that this node will be replaced
 		if (node->cache[node->last_used].state == MODIFIED || node->cache[node->last_used].state == OWNED || node->cache[node->last_used].state == EXCLUSIVE || node->cache[node->last_used].state == SHARED) {
 			// printf("Eviction!\n");
-			Packet eviction_pkt = (Packet) {global_id, global_time, EVICTION, node->id, 129, (DataNode) {node->cache[node->last_used].address, node->cache[node->last_used].value}, NULL};
+			Packet eviction_pkt = (Packet) {global_id, global_time, EVICTION, node->id, node->cache[node->last_used].address / MEM_NUM_LINES + 129, (DataNode) {node->cache[node->last_used].address, node->cache[node->last_used].value}, NULL, 0, 0}; // Writes data to the address
 			push_packet(&(node->bot_ports[0]), TX, eviction_pkt);
 			node->cache[node->last_used].state = INVALID;
-			if (node->cache[node->last_used].state != EXCLUSIVE && node->cache[node->last_used].state != SHARED) {
+			if (node->cache[node->last_used].state != EXCLUSIVE && node->cache[node->last_used].state != SHARED) { // Only count the packet if it actually necessitated a write
 				control_node_data_returns++;
 				if ((HEADER_SIZE + pkt.address_size*8 + pkt.data_size*8) < 64*8) {
 					compute_to_memory_b += 64*8;
