@@ -66,6 +66,7 @@ int push_packet(Port * port, BufferType_t type, Packet pkt)
 		if ((* port).tail_tx >= (QUEUE_SIZE - 1))
 		{
 			// no room in buffer
+			fprintf(stderr, "Transmit buffer out of space!\n");
 			return -1;
 		}
 		else
@@ -81,6 +82,7 @@ int push_packet(Port * port, BufferType_t type, Packet pkt)
 		if ((* port).tail_rx >= (QUEUE_SIZE - 1))
 		{
 			// no room in buffer
+			fprintf(stderr, "Receive buffer out of space!\n");
 			return -1;
 		}
 		else
@@ -93,6 +95,7 @@ int push_packet(Port * port, BufferType_t type, Packet pkt)
 	}
 	else
 	{
+		fprintf(stderr, "Invalid buffer type!\n");
 		return -1;
 	}
 }
